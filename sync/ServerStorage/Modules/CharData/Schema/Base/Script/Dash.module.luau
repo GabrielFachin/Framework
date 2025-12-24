@@ -25,15 +25,15 @@ callbacks = {
 			--local state = statsTable.PlayerStates.Out.cast
 			local state = statsTable.PlayerStates.Self.selfCast
 			 
-			stateID = self.cd:ApplyStatus(state,self.tpd, 9999, self)
+			stateID = self.cd:ApplyStatus(state,self.ED, 9999, self)
 			
-			self.cd:ApplyStatus(control,self.tpd,5,self,stateID)
+			self.cd:ApplyStatus(control,self.ED,5,self,stateID)
 			
 			print(stateID)
 			
-			local dir = self.tpd:getDirection()
+			local dir = self.ED:getDirection()
 			local speed = self.data.speed
-			root = self.tpd.Root
+			root = self.ED.Root
 		
 			
 			dashDir = BaseSkills.dash(dir,speed)

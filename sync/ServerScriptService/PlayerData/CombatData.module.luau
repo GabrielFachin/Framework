@@ -17,14 +17,14 @@ local UpdateHPBar = RS.RemoteEvents:WaitForChild("UpdateHealthBar")
 local CombatData = {}
 CombatData.__index = CombatData
 
-function CombatData.new(player,TPD)
+function CombatData.new(player,ED)
 	local self = setmetatable({}, CombatData)
 
 	self.Player = player
 	self.Character = player.Character or player.CharacterAdded:Wait()
 	self.Humanoid = self.Character:WaitForChild("Humanoid")
 	self.Root = self.Character:WaitForChild("HumanoidRootPart")
-	self.tpd = TPD
+	self.ED = ED
 	
 
 	self.Status = StatusController.new(self)
@@ -37,8 +37,8 @@ function CombatData.new(player,TPD)
 end
 
 -- Apenas repassa a aplicação do status para o StatusController (já devolve o ID criado)
-function CombatData:ApplyStatus(Data, targetTPD, duration, sourceSkill,ID)
-	return self.Status:HandleApplication(Data, targetTPD, duration, sourceSkill, ID) --Envia pro StatusController fazer o direcionamento pro StatusHandler antes de aplicar
+function CombatData:ApplyStatus(Data, targetED, duration, sourceSkill,ID)
+	return self.Status:HandleApplication(Data, targetED, duration, sourceSkill, ID) --Envia pro StatusController fazer o direcionamento pro StatusHandler antes de aplicar
 end
 
 -- Verifica se o player pode realizar a ação
@@ -154,7 +154,7 @@ function CombatData:ApplyDamage(amount, sourceData)		--Essa função roda INTERN
 	-- extrai flags e CombatData de origem
 	if type(sourceData) == "table" and sourceData.skillData then
 		local skillData = sourceData.skillData								--Pega os dados da habilidade/status que chamou a intenção
-		sourceCombatData = sourceData.tpd and sourceData.tpd.CombatData		--Pega o tpd e o cd da origem do pedido
+		sourceCombatData = sourceData.ED and sourceData.ED.CombatData		--Pega o ED e o cd da origem do pedido
 								
 		if skillData.data and skillData.data.flags then						--Se tiver flags então guarde elas
 			effectFlags = skillData.data.flags

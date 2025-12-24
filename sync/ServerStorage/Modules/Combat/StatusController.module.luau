@@ -23,22 +23,22 @@ end
 
 
 --Lida com o pedido do CombatData, enviando pro StatusHandler pra preparar injeções e sanitização de dados
-function StatusController:HandleApplication(Data, targetTPD, duration, sourceSkill, ID)
+function StatusController:HandleApplication(Data, targetED, duration, sourceSkill, ID)
 	
 	
 	local Handler = require(game.ServerScriptService.Modules.StatusHandler)
-	local treatedStatus = Handler:HandleStatus(Data, targetTPD, duration, sourceSkill, ID)
+	local treatedStatus = Handler:HandleStatus(Data, targetED, duration, sourceSkill, ID)
 	
 
 	if treatedStatus then
-		return self:Apply(treatedStatus, targetTPD, duration, sourceSkill, ID)
+		return self:Apply(treatedStatus, targetED, duration, sourceSkill, ID)
 	end
 end
 
 
 
 --Aplica Status e/ou Estados
-function StatusController:Apply(data, targetTPD, duration, sourceSkill,ID)
+function StatusController:Apply(data, targetED, duration, sourceSkill,ID)
 	
 	data = table.clone(data)
 	
@@ -85,9 +85,9 @@ function StatusController:Apply(data, targetTPD, duration, sourceSkill,ID)
 			return data.ID
 		end
 
-		warn("Aplicado", data.data.name, "em:", targetTPD.Player)
+		warn("Aplicado", data.data.name, "em:", targetED.Entity)
 
-		local runner = SkillRunner.new(data, targetTPD, meta.name,runnerType)
+		local runner = SkillRunner.new(data, targetED, meta.name,runnerType)
 		
 		runner.onFinish = function()
 		self:_OnRunnerFinished(meta.name, runner)
@@ -117,9 +117,9 @@ function StatusController:Apply(data, targetTPD, duration, sourceSkill,ID)
 		local list = group[meta.name] or {} --Prepara uma lista/table pra guardar as instâncias
 		if #list >= (meta.maxStacks or math.huge) then return end --Testa se passou do limite
 		
-		print("Aplicado: ", data.data.name, "; Em: ", targetTPD.Player)
+		print("Aplicado: ", data.data.name, "; Em: ", targetED.Entity)
 
-		local runner = SkillRunner.new(data, targetTPD, meta.name,runnerType)  --Cria o runner recebendo o TPD do alvo
+		local runner = SkillRunner.new(data, targetED, meta.name,runnerType)  --Cria o runner recebendo o ED do alvo
 		
 			runner.onFinish = function()
 			self:_OnRunnerFinished(meta.name, runner)
@@ -154,9 +154,9 @@ function StatusController:Apply(data, targetTPD, duration, sourceSkill,ID)
 		end
 	end
 	
-	warn("Aplicado:", data.data.name, "Em:", targetTPD.Player)
+	warn("Aplicado:", data.data.name, "Em:", targetED.Entity)
 
-	local runner = SkillRunner.new(data, targetTPD, meta.name,runnerType)
+	local runner = SkillRunner.new(data, targetED, meta.name,runnerType)
 	
 		runner.onFinish = function()
 		self:_OnRunnerFinished(meta.name, runner)

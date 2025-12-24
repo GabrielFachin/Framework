@@ -5,27 +5,27 @@ local DataManager = Script.PlayerData.DataManager
 local MovementController = {}
 MovementController.__index = MovementController
 
--- Lista de todos os TPDs ativos 
+-- Lista de todos os EDs ativos 
 local tracked = {}
 -- Cache para BodyVelocity/BodyPosition objects
 local bodyObjects = {}
 
-function MovementController.Track(tpd)
-	if not tracked[tpd] then
-		tracked[tpd] = true
+function MovementController.Track(ED)
+	if not tracked[ED] then
+		tracked[ED] = true
 	end
 end
 
-function MovementController.Untrack(tpd)
-	tracked[tpd] = nil
+function MovementController.Untrack(ED)
+	tracked[ED] = nil
 	-- Limpa body objects quando para de trackear
-	if bodyObjects[tpd] then
-		for _, obj in pairs(bodyObjects[tpd]) do
+	if bodyObjects[ED] then
+		for _, obj in pairs(bodyObjects[ED]) do
 			if obj and obj.Parent then
 				obj:Destroy()
 			end
 		end
-		bodyObjects[tpd] = nil
+		bodyObjects[ED] = nil
 	end
 end
 
@@ -45,47 +45,47 @@ local function createFreezeObjects(root)
 end
 
 -- Função para remover objetos de congelamento
-local function removeFreezeObjects(tpd)
-	if bodyObjects[tpd] then
-		for _, obj in pairs(bodyObjects[tpd]) do
+local function removeFreezeObjects(ED)
+	if bodyObjects[ED] then
+		for _, obj in pairs(bodyObjects[ED]) do
 			if obj and obj.Parent then
 				obj:Destroy()
 			end
 		end
-		bodyObjects[tpd] = nil
+		bodyObjects[ED] = nil
 	end
 end
 
 -- Heartbeat loop para aplicar restrições
 RunService.Heartbeat:Connect(function()
-	for tpd in pairs(tracked) do
-		local status = tpd.CombatData and tpd.CombatData.Status
+	for ED in pairs(tracked) do
+		local status = ED.CombatData and ED.CombatData.Status
 		if not status then continue end
 
 		local tags = status:GetActiveTags()
 		local canMove = tags.canMove ~= false
 		local canControl = tags.canControl ~= false
 
-		local root = tpd.Root
+		local root = ED.Root
 		if not root then continue end
 
-		local humanoid = tpd.Humanoid
+		local humanoid = ED.Humanoid
 		if humanoid then
 			humanoid.AutoRotate = canControl
 
 			if canMove then
 				-- Remove restrições de movimento
-				removeFreezeObjects(tpd)
+				removeFreezeObjects(ED)
 
 				-- Restaura velocidades normais
-				humanoid.WalkSpeed = tpd.BaseWalkSpeed
-				humanoid.JumpPower = tpd.BaseJumpPower
+				humanoid.WalkSpeed = ED.BaseWalkSpeed
+				humanoid.JumpPower = ED.BaseJumpPower
 				humanoid.PlatformStand = false
 
 			else
 				-- Cria BodyVelocity se não existir
-				if not bodyObjects[tpd] then
-					bodyObjects[tpd] = createFreezeObjects(root)
+				if not bodyObjects[ED] then
+					bodyObjects[ED] = createFreezeObjects(root)
 				end
 
 				-- Zera velocidades do Humanoid
@@ -97,10 +97,10 @@ RunService.Heartbeat:Connect(function()
 			-- NPC customizado (não-humanoide)
 			if root:IsA("BasePart") then
 				if canMove then
-					removeFreezeObjects(tpd)
+					removeFreezeObjects(ED)
 				else
-					if not bodyObjects[tpd] then
-						bodyObjects[tpd] = createFreezeObjects(root)
+					if not bodyObjects[ED] then
+						bodyObjects[ED] = createFreezeObjects(root)
 					end
 				end
 			end
@@ -110,9 +110,9 @@ end)
 
 -- Limpeza quando o player sai
 game.Players.PlayerRemoving:Connect(function(player)
-	for tpd in pairs(tracked) do
-		if tpd.Player == player then
-			MovementController.Untrack(tpd)
+	for ED in pairs(tracked) do
+		if ED.Entity == player then
+			MovementController.Untrack(ED)
 		end
 	end
 end)

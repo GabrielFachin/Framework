@@ -1,18 +1,18 @@
 local Storage = game:GetService("ServerStorage")
 local RS = game:GetService("ReplicatedStorage")
 
-local TempPlayerData = {}
-TempPlayerData.__index = TempPlayerData
+local Entity = {}
+Entity.__index = Entity
 CombatData = require(game.ServerScriptService.PlayerData.CombatData)
 MovementController = require(game.ServerStorage.Modules.MovementController)
 local HealthModule = require(Storage.Modules.Combat.HealthController)
 
 
-function TempPlayerData.new(player)
-	local self = setmetatable({}, TempPlayerData)
+function Entity.new(entity)
+	local self = setmetatable({}, Entity)
 
-	-- Dados fixos do player
-	self.Player = player
+	-- Dados fixos da entidade
+	self.Entity = entity
 	self.ChosenChar = "Schema"
 	self.Character = nil
 	self.form = "Base"
@@ -22,7 +22,7 @@ function TempPlayerData.new(player)
 	self._direction = Vector3.zero
 	
 	--Controladores	
-	self.CombatData = CombatData.new(player,self)
+	self.CombatData = CombatData.new(entity,self)
 
 
 	MovementController.Track(self)
@@ -76,7 +76,7 @@ end
 
 
 --Pega o nome da skill, utilizado para obter os Script de lógica e dados
-function TempPlayerData:getSkillName(index)
+function Entity:getSkillName(index)
 	if not self.SkillsData then
 		warn("SkillsData não carregado")
 		return nil
@@ -90,8 +90,8 @@ function TempPlayerData:getSkillName(index)
 	return skillName
 end
 
---Pega Skill do Character escolhido pelo player usando o index da skill (o TempData fica armazenado no player, então ele já sabe o personagem, sem necessidade desse parametro)
-function TempPlayerData:GetSkill(index)
+--Pega Skill da entidade usando o index da skill
+function Entity:GetSkill(index)
 	if not self.SkillsData then
 		warn("SkillsData não carregado")
 		return nil
@@ -113,8 +113,8 @@ end
 
 
 
---Adiciona a skill atual na lista de skills/runners atviso
-function TempPlayerData:addSkill(name, runner)
+--Adiciona a skill atual na lista de skills/runners ativos
+function Entity:addSkill(name, runner)
 	if not self.ActiveSkills[name] then
 		self.ActiveSkills[name] = {}
 	end
@@ -123,8 +123,8 @@ end
 
 
 
---Remove a skill recebi da lista de skills/runners ativos
-function TempPlayerData:removeSkill(name, runner)
+--Remove a skill recebida da lista de skills/runners ativos
+function Entity:removeSkill(name, runner)
 	local list = self.ActiveSkills[name]
 	if not list then return end
 
@@ -144,7 +144,7 @@ end
 
 
 --Confere o cooldown no módulo da skill (agora localizado em Script/, acessando .data.cooldown)
-function TempPlayerData:getSkillCooldown(skillName)
+function Entity:getSkillCooldown(skillName)
 
 	local skillModuleInstance = self._formFolder:FindFirstChild("Script") and self._formFolder.Script:FindFirstChild(skillName)
 	if not skillModuleInstance then
@@ -168,52 +168,49 @@ function TempPlayerData:getSkillCooldown(skillName)
 end
 
 
-function TempPlayerData:hasCooldown(skillName)
+function Entity:hasCooldown(skillName)
 	local currentTime = tick()
 	return (self.Cooldowns[skillName] or 0) > currentTime
 end
 
-function TempPlayerData:setCooldown(skillName, customCooldown)
+function Entity:setCooldown(skillName, customCooldown)
 	local cd = customCooldown or self:getSkillCooldown(skillName)
 	self.Cooldowns[skillName] = tick() + cd
 end
 
 --Mostra o cooldown "limpo" da skill, tirando o tick do cálculo e apenas mostrando o tempo restante
-function TempPlayerData:getCooldown(skillName)
+function Entity:getCooldown(skillName)
 	return (self.Cooldowns[skillName] or 0) - tick()
 end
 
 
 
-function TempPlayerData:setStatusCooldown(name, duration)
+function Entity:setStatusCooldown(name, duration)
 	self.StatusCooldowns[name] = tick() + duration
 end
 
-
-
-function TempPlayerData:getStatusCooldown(name)
+function Entity:getStatusCooldown(name)
 	local cooldownEnd = self.StatusCooldowns[name] or 0
 	return math.max(0, cooldownEnd - tick())
 end
 
 
 
-function TempPlayerData:hasStatusCooldown(name)
+function Entity:hasStatusCooldown(name)
 	return self:getStatusCooldown(name) > 0
 end
 
+--=========================INFORMAÇÕES PERSONAGEM/ENTIDADE=====================
 
---=========================INFORMAÇÕES PERSONAGEM/PLAYER=====================
-
-function TempPlayerData:getCharStats()
+function Entity:getCharStats()
 	local CharDataFolder = self.charFolder:FindFirstChild(self.form)
 	local CharData = require(CharDataFolder.Data.Base)
 	
 	return CharData
 end
 
---Setta as informações do Character do player, como root (deve ser atualizado toda vez que o player morrer)
-function TempPlayerData:setPlayer(character)
+--Setta as informações do Character da entidade, como root (deve ser atualizado toda vez que a entidade morrer)
+function Entity:setPlayer(character)
 	self.Character = character
 	self.Root = character:FindFirstChild("HumanoidRootPart") or character.PrimaryPart or character:FindFirstChildWhichIsA("BasePart")
 	self.Humanoid = character:FindFirstChildWhichIsA("Humanoid")
@@ -252,8 +249,8 @@ end
 
 
 
---Dá attach da arma ao player
-function TempPlayerData:setWeapon(modelName)
+--Dá attach da arma à entidade
+function Entity:setWeapon(modelName)
 	if self.weapon then return end
 	
 	local char = self.Character
@@ -292,13 +289,14 @@ end
 
 
 
---Recebem a ultima direção do player
-function TempPlayerData:setDirection(dir)
+--Setta a direção da entidade
+function Entity:setDirection(dir)
 	self._direction = dir
 end
 
-function TempPlayerData:getDirection()
+--Retorna a direção da entidade
+function Entity:getDirection()
 	return self._direction or Vector3.zero
 end
 
-return TempPlayerData
+return Entity

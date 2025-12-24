@@ -29,7 +29,7 @@ type HitResult = {
 }
 
 --Inicializa a hitbox, podendo receber um excludeSelf como parâmetro, o padrão é True caso não declarado
-function HitboxWrapper.new(tpd,excludeSelf : BoolValue?)
+function HitboxWrapper.new(ED,excludeSelf : BoolValue?)
 	
 	
 	--Se não receber nada informando se a hitbox deveria ou não excluir o usuário, então a hitbox vai ignorar o usuário por padrão
@@ -38,10 +38,10 @@ function HitboxWrapper.new(tpd,excludeSelf : BoolValue?)
 	end
 	
 	local self = setmetatable({}, HitboxWrapper)
-	self.tpd = tpd
+	self.ED = ED
 	
-	if tpd.weapon then
-	self.weapon = tpd.weapon end
+	if ED.weapon then
+	self.weapon = ED.weapon end
 	self.activeHitboxes = {}
 	self.hitboxConfigs = {}
 	self.isActive = false
@@ -52,7 +52,7 @@ function HitboxWrapper.new(tpd,excludeSelf : BoolValue?)
 	-- RaycastParams, inicia a configuração de exclusão
 	self.raycastParams = RaycastParams.new()
 	self.raycastParams.FilterType = Enum.RaycastFilterType.Exclude
-	self.raycastParams.FilterDescendantsInstances = {tpd.Character, self.weapon}
+	self.raycastParams.FilterDescendantsInstances = {ED.Character, self.weapon}
 
 	-- Descobre hitboxes
 	self:_discoverHitboxes()
@@ -214,18 +214,18 @@ function HitboxWrapper:_handleHit(result: RaycastResult, segment, config: Hitbox
 	if not result then return end
 
 
-	--Busca o TPD do alvo atingido
-	local targetTPD = self:_getTargetTPD(result.Instance)
-	if not targetTPD then return end
+	--Busca o ED do alvo atingido
+	local targetED = self:_getTargetED(result.Instance)
+	if not targetED then return end
 
 	-- Anti multi-hit
 	--Vale notar que, caso a skill seja feita pra ter multi hit é necessário desligar a hitbox a cada hit e reativar depois do cooldown/ticks entre hits!
-	local targetId = targetTPD.Player.UserId
+	local targetId = targetED.Entity.UserId
 	if self.hitTargets[targetId] then return end
 	self.hitTargets[targetId] = true
 
 	local hitResult: HitResult = {
-		target = targetTPD,
+		target = targetED,
 		hitboxName = config.name,
 		position = result.Position,
 		normal = result.Normal,
@@ -244,8 +244,8 @@ function HitboxWrapper:_handleHit(result: RaycastResult, segment, config: Hitbox
 	end
 end
 
---Busca o TPD do alvo atingido
-function HitboxWrapper:_getTargetTPD(hitInstance: Instance)
+--Busca o ED do alvo atingido
+function HitboxWrapper:_getTargetED(hitInstance: Instance)
 	local current = hitInstance
 
 	--Se atingir uma parte, busca o humanoid e o player (precisa ser alterado futuramente pra suportar NPCs)
@@ -284,7 +284,7 @@ end
 --Destrói a hitbox
 function HitboxWrapper:Destroy()
 	self:Stop()
-	self.tpd = nil
+	self.ED = nil
 	self.weapon = nil
 	self.raycastParams = nil
 	table.clear(self.hitboxConfigs)

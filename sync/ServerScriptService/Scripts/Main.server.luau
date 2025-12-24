@@ -8,14 +8,14 @@ local Handler = ServerScriptService.Scripts.SkillHandler
 
 
 local Players = game:GetService("Players")
-local TempPlayerDataManager = require(game.ServerScriptService.PlayerData.DataManager)
+local EntityDataManager = require(game.ServerScriptService.PlayerData.DataManager)
 
 Players.PlayerAdded:Connect(function(player)
-	TempPlayerDataManager.Create(player)
+	EntityDataManager.Create(player)
 end)
 
 Players.PlayerRemoving:Connect(function(player)
-	TempPlayerDataManager.Remove(player)
+	EntityDataManager.Remove(player)
 end)
 
 
@@ -34,20 +34,20 @@ Players.PlayerAdded:Connect(function(player)
 
 	player.Chatted:Connect(function(msg)
 		if msg == ";bleed" then
-			local TPD = DataManager.Get(player)
+			local ED = DataManager.Get(player)
 			
-			if not TPD then
-				warn("TempPlayerData não encontrado para:", player.Name)
+			if not ED then
+				warn("EntityData não encontrado para:", player.Name)
 				return
 			end
 
 			local Status = StateTable.Status.Bleed
 			local duration = Status.data.duration
 
-			local cd = TPD.CombatData
+			local cd = ED.CombatData
 			
 			
-			cd:ApplyStatus(Status,TPD,nil,nil)
+			cd:ApplyStatus(Status,ED,nil,nil)
 			
 			print ("Stacks: ",cd:Count(Status))
 			
@@ -63,15 +63,15 @@ local Players = game:GetService("Players")
 local DataManager = require(ServerScriptService.PlayerData.DataManager)
 
 local function toggleMoveBlock(player)
-	local tpd = DataManager.Get(player)
-	local cd = tpd.CombatData
+	local ED = DataManager.Get(player)
+	local cd = ED.CombatData
 
 	if cd.Status:GetStatus("Stun") then
 		warn("Stun removido!")
 		cd:Remove({ data = { name = "Stun" } })
 	else
 		warn("Stun aplicado!")
-		cd:ApplyStatus(StatusTable.States.stun, tpd, 5) -- 5 segundos
+		cd:ApplyStatus(StatusTable.States.stun, ED, 5) -- 5 segundos
 	end
 end
 

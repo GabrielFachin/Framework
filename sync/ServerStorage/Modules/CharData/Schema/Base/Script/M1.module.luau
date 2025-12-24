@@ -40,9 +40,9 @@ local Skill = {
 			 
 
 			--Gera o primeiro ID do pacote de estados (usado pra controle), esse ID  será usado como parametro no resto dos estados de controle pra serem removidos juntos ao fim do m1!
-			stateID = self.cd:ApplyStatus(state,self.tpd, 9999, self)
+			stateID = self.cd:ApplyStatus(state,self.ED, 9999, self)
 
-			self.cd:ApplyStatus(control,self.tpd,5,self,stateID)
+			self.cd:ApplyStatus(control,self.ED,5,self,stateID)
 			
 			
 			self.weaponHitbox:Start(self.data.duration)
@@ -53,16 +53,16 @@ local Skill = {
 		
 		onHit = function(self,hitResult)
 			
-			local targetTPD = hitResult.target
+			local targetED = hitResult.target
 			
 			print(self)
 
-			print(targetTPD)
+			print(targetED)
 
 			print(self.cd)
 
-			if self.cd:TryHit(targetTPD,{}) then
-			targetTPD.CombatData:ApplyDamage(damage,self)
+			if self.cd:TryHit(targetED,{}) then
+			targetED.CombatData:ApplyDamage(damage,self)
 			end
 
 		end,
@@ -106,9 +106,9 @@ local Skill = {
 				
 				warn("ESTAGIO 2!")
 				
-				self.cd:ApplyStatus(state,self.tpd, 9999, self,stateID)
+				self.cd:ApplyStatus(state,self.ED, 9999, self,stateID)
 
-				self.cd:ApplyStatus(control,self.tpd,5,self,stateID)
+				self.cd:ApplyStatus(control,self.ED,5,self,stateID)
 				
 				self.weaponHitbox:Start(self.data.duration,function(hitResult) self:onHit(hitResult.target, hitResult)end)
 				

@@ -1,11 +1,11 @@
 local Players = game:GetService("Players")
-local TempPlayerData = require(script.Parent.TempPlayerData)
+local EntityData = require(script.Parent.EntityData)
 
 local DataManager = {}
 local playerMap = {}
 
 function DataManager.Create(player)
-	local data = TempPlayerData.new(player)
+	local data = EntityData.new(player)
 	playerMap[player.UserId] = data
 
 	-- Se o personagem já estiver carregado (ex: F5 ou respawn instantâneo)
@@ -32,14 +32,14 @@ end
 
 Players.PlayerAdded:Connect(function(player)
 	task.delay(0.1, function()
-		local TPD = DataManager.Get(player)
-		if not TPD then
-			warn("[Main] TPD nil:", player.Name)
+		local ED = DataManager.Get(player)
+		if not ED then
+			warn("[Main] ED nil:", player.Name)
 			return
 		end
-		print("[Main] TPD gerado:", TPD.Player)
-		TPD:setPlayer(player.Character) 
-		print("Table: ", TPD)
+		print("[Main] ED gerado:", ED.Entity)
+		ED:setPlayer(player.Character) 
+		print("Table: ", ED)
 	end)
 end)
 Players.PlayerRemoving:Connect(function(player)

@@ -29,7 +29,7 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 	--Futuramente precisamos fazer um debounce aqui, checando o delay entre o ultimo envio do cliente e o atual, evitando spam e cheats (ambos pro input de movimento e skills)
 
-	local char = tempData.Character --Pega o player guardado no TPD
+	local char = tempData.Character --Pega o player guardado no ED
 
 
 	local skillScript = tempData:GetSkill(skillIndex) --Pega o script da skill
@@ -44,7 +44,7 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 	local skillName = tempData:getSkillName(skillIndex) -- Pega o nome da skill pra checagem de multiplos requests
 
-	local activeRunners = tempData.ActiveSkills[skillName] or {} --Busca instâncias ativas da skill no TPD
+	local activeRunners = tempData.ActiveSkills[skillName] or {} --Busca instâncias ativas da skill no ED
 
 	local SkillCount = #activeRunners --Conta quantas instâncias ativas existem
 
@@ -98,7 +98,7 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 		
 		RemoteEventSkillFired:FireClient(player,skillName,maxCooldown)
 
-		local runner = SkillRunner.new(skill,tempData,skillName,"skill") --lança skill(após checagem de cooldown,validação pelo TempPlayerData e preparação de fallback pelo SkillFactory)
+		local runner = SkillRunner.new(skill,tempData,skillName,"skill") --lança skill(após checagem de cooldown,validação pelo EntityData e preparação de fallback pelo SkillFactory)
 		runner:start()
 
 	end

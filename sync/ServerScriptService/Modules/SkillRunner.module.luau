@@ -15,13 +15,13 @@ local STATES = {  				--Breakpoints do ciclo de vida da skill
 }
 
 
-function SkillRunner.new(skillData,TPD,name,type) --Instancia o SkillRunner como um objeto responsável de criar a habilidade junto do TempPlayerData para as skills utilizarem
+function SkillRunner.new(skillData,ED,name,type) --Instancia o SkillRunner como um objeto responsável de criar a habilidade junto do EntityData para as skills utilizarem
 	local self = setmetatable({}, SkillRunner)
 	self.lib = require(Storage.Modules.Animation.AnimationLib) --Prepara a lib de animações
 	
 	self.skillData = skillData -- Informações extras da skill que vai rodar
-	self.tpd = TPD --Tabela de dados do player que usou a habilidade
-	self.cd = self.tpd.CombatData --Separa o CombatData pra fácil acesso pelas skills
+	self.ED = ED --Tabela de dados do player que usou a habilidade
+	self.cd = self.ED.CombatData --Separa o CombatData pra fácil acesso pelas skills
 	self.state = STATES.Idle --Estado do lifetime skill
 	self.skillName = name   --Guarda o nome da skill pra controle de runners ativos
 	self.elapsedTime = 0    --Tempo de vida atual da skill
@@ -30,12 +30,12 @@ function SkillRunner.new(skillData,TPD,name,type) --Instancia o SkillRunner como
 	self.stop = false --cancelada/parar a força?
 	self.statusTable = require(Storage.Modules.Combat.StateTable) --Facilita acesso a aplicação de estados pelas skills
 	self.anim = self.cd.Anim  --Fácil acesso ao controlador de animações
-	self.charLib = self.lib.character[self.tpd.ChosenChar]
-	self.hitPoint = self.tpd.hitPoint --Prepara a origen das hitboxes da arma
+	self.charLib = self.lib.character[self.ED.ChosenChar]
+	self.hitPoint = self.ED.hitPoint --Prepara a origen das hitboxes da arma
 	self.weaponHitboxModule = require(Storage.Modules.Combat.ShapecastHitbox) --Prepara o modulo do shapecast para facil acesso e criação de hitboxes
-	self.weaponHitboxFolder = Storage.Assets.Hitboxes:FindFirstChild(self.tpd.ChosenChar) --Busca a pasta de hitboxes do personagem escolhido
-	self.weaponHitbox = self.tpd.Hitbox --Facilita acesso ao wrapper da hitbox
-	self.weapon = self.tpd.weapon --Pega a arma sendo utilizada pelo player
+	self.weaponHitboxFolder = Storage.Assets.Hitboxes:FindFirstChild(self.ED.ChosenChar) --Busca a pasta de hitboxes do personagem escolhido
+	self.weaponHitbox = self.ED.Hitbox --Facilita acesso ao wrapper da hitbox
+	self.weapon = self.ED.weapon --Pega a arma sendo utilizada pelo player
 	self.type = type
 	
 	-- Facilita o acesso aos dados da skill.
@@ -44,7 +44,7 @@ function SkillRunner.new(skillData,TPD,name,type) --Instancia o SkillRunner como
 	self.utils     = skillData.utils or {}
 	
 	
-	assert(TPD and TPD.addSkill, "SkillRunner recebeu TPD inválido")
+	assert(ED and ED.addSkill, "SkillRunner recebeu ED inválido")
 	
 	return self
 end
@@ -69,7 +69,7 @@ function SkillRunner:start()
 	end
 	
 	
-	self.tpd:addSkill(self.skillName,self)
+	self.ED:addSkill(self.skillName,self)
 end
 
 
@@ -157,7 +157,7 @@ function SkillRunner:endSkill(cancel)
 	
 	self.weaponHitbox:RemoveOwner(self) --Limpa a hitbox
 
-	self.tpd:removeSkill(self.skillName, self)
+	self.ED:removeSkill(self.skillName, self)
 
 
 	if cancel then

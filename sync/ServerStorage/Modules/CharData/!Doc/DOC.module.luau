@@ -95,7 +95,7 @@
 	 vai retornar true se a interação tiver dado continuidade, a partir daqui pode ser feito algo como
 	 
 	 if success then
-	 	CD:ApplyStatus(Status,targetTPD,duration,sourceSkill,ID)
+	 	CD:ApplyStatus(Status,targetED,duration,sourceSkill,ID)
 	 	ID não é obrigatorio e pode ser criado pelo própio aplicador dos status caso não tenha um, além disso, retorna o ID
 	 end
   
@@ -213,9 +213,9 @@ SkillHandler capta o dado, pega o index, acessa o ServerStorage > Modules > Char
 Salva o Script da skill encontrado em:                                                      > Script > [Nome da skill]
 
 
-Checa pelo nome da skill no TempPlayerData, validando o request de cast (checando cooldowns e afins)
+Checa pelo nome da skill no EntityData, validando o request de cast (checando cooldowns e afins)
 
-Se receber o OK pro cast, então envia pro SkillRunner e comunica o cooldown obtido em Data para o TPD (Temp Player Data)
+Se receber o OK pro cast, então envia pro SkillRunner e comunica o cooldown obtido em Data para o ED (Temp Player Data)
 
 SkillRunner está responsável somente de ler e executar as informações da skill, mantendo alto nível de modularidade e separação de responsabilidade
 

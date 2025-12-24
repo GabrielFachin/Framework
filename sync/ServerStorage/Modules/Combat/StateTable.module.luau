@@ -294,7 +294,7 @@ StateTable.Status = {
 
 					local damage = self.skillData.data.damage * self.counter
 
-					self.tpd.CombatData:ApplyDamage(damage, self) -- Status se envia como parametro
+					self.ED.CombatData:ApplyDamage(damage, self) -- Status se envia como parametro
 				end
 			end,
 
