@@ -8,18 +8,18 @@ MovementController = require(game.ServerStorage.Modules.MovementController)
 local HealthModule = require(Storage.Modules.Combat.HealthController)
 
 
-function Entity.new(entity)
+function Entity.new(entity,ID)
 	local self = setmetatable({}, Entity)
 
 	-- Dados fixos da entidade
-	self.Entity = entity
-	self.ChosenChar = "Schema"
-	self.Character = nil
-	self.mode = "Base"
-	self.Cooldowns = {}
-	self.StatusCooldowns = {}
-	self.ActiveSkills = {}
-	self._direction = Vector3.zero
+	self.Entity = entity        --global
+	self.ChosenChar = "Schema"  --Character
+	self.Character = nil      --Character
+	self.mode = "Base"        --Character
+	self.Cooldowns = {}       --Cooldown
+	self.StatusCooldowns = {} --Cooldown
+	self.ActiveSkills = {} --Combat
+	self._direction = Vector3.zero --Character
 	
 	--Controladores	
 	self.CombatData = CombatData.new(entity,self)

@@ -1933,10 +1933,6 @@
               "className": "Humanoid",
               "children": [
                 {
-                  "name": "Animator",
-                  "className": "Animator"
-                },
-                {
                   "name": "HumanoidDescription",
                   "className": "HumanoidDescription",
                   "children": [
@@ -1945,6 +1941,10 @@
                       "className": "BodyPartDescription"
                     }
                   ]
+                },
+                {
+                  "name": "Animator",
+                  "className": "Animator"
                 }
               ]
             },
@@ -2935,10 +2935,6 @@
               "className": "Humanoid",
               "children": [
                 {
-                  "name": "Animator",
-                  "className": "Animator"
-                },
-                {
                   "name": "HumanoidDescription",
                   "className": "HumanoidDescription",
                   "children": [
@@ -2947,6 +2943,10 @@
                       "className": "BodyPartDescription"
                     }
                   ]
+                },
+                {
+                  "name": "Animator",
+                  "className": "Animator"
                 }
               ]
             },
@@ -3281,6 +3281,64 @@
                                       "className": "Pose"
                                     }
                                   ]
+                                },
+                                {
+                                  "name": "LavaTail",
+                                  "className": "Pose"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Pulabate",
+                  "className": "KeyframeSequence",
+                  "children": [
+                    {
+                      "name": "Keyframe",
+                      "className": "Keyframe",
+                      "children": [
+                        {
+                          "name": "HumanoidRootPart",
+                          "className": "Pose",
+                          "children": [
+                            {
+                              "name": "Torso",
+                              "className": "Pose",
+                              "children": [
+                                {
+                                  "name": "Left Leg",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Right Leg",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Head",
+                                  "className": "Pose",
+                                  "children": [
+                                    {
+                                      "name": "FireHair",
+                                      "className": "Pose"
+                                    },
+                                    {
+                                      "name": "LavaHorns",
+                                      "className": "Pose"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "name": "Right Arm",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Left Arm",
+                                  "className": "Pose"
                                 },
                                 {
                                   "name": "LavaTail",
@@ -3987,6 +4045,17 @@
               "name": "ShapecastSelector",
               "className": "Part"
             }
+          ]
+        },
+        {
+          "name": "RBX_MICROBONE_NODES",
+          "className": "Folder"
+        },
+        {
+          "name": "Script",
+          "className": "Script",
+          "filePaths": [
+            "sync/Workspace/Script.server.luau"
           ]
         }
       ]
@@ -5603,698 +5672,6 @@
           ]
         },
         {
-          "name": "RBX_ANIMSAVES",
-          "className": "Model",
-          "children": [
-            {
-              "name": "Rig",
-              "className": "ObjectValue",
-              "children": [
-                {
-                  "name": "Automatic Save",
-                  "className": "KeyframeSequence",
-                  "children": [
-                    {
-                      "name": "Keyframe",
-                      "className": "Keyframe",
-                      "children": [
-                        {
-                          "name": "HumanoidRootPart",
-                          "className": "Pose",
-                          "children": [
-                            {
-                              "name": "LowerTorso",
-                              "className": "Pose",
-                              "children": [
-                                {
-                                  "name": "UpperTorso",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "LeftUpperArm",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "LeftLowerArm",
-                                          "className": "Pose"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "name": "RightUpperArm",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "RightLowerArm",
-                                          "className": "Pose",
-                                          "children": [
-                                            {
-                                              "name": "RightHand",
-                                              "className": "Pose"
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "name": "RigAnimationRigData",
-                      "className": "AnimationRigData"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "Schema Ohuhu",
-              "className": "ObjectValue",
-              "children": [
-                {
-                  "name": "Automatic Save",
-                  "className": "KeyframeSequence",
-                  "children": [
-                    {
-                      "name": "Keyframe",
-                      "className": "Keyframe",
-                      "children": [
-                        {
-                          "name": "HumanoidRootPart",
-                          "className": "Pose",
-                          "children": [
-                            {
-                              "name": "LowerTorso",
-                              "className": "Pose",
-                              "children": [
-                                {
-                                  "name": "UpperTorso",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "RightUpperArm",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "RightLowerArm",
-                                          "className": "Pose",
-                                          "children": [
-                                            {
-                                              "name": "RightHand",
-                                              "className": "Pose"
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "name": "Head",
-                                      "className": "Pose"
-                                    },
-                                    {
-                                      "name": "LeftUpperArm",
-                                      "className": "Pose"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "name": "RightUpperLeg",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "RightLowerLeg",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "RightFoot",
-                                          "className": "Pose"
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "name": "LeftUpperLeg",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "LeftLowerLeg",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "LeftFoot",
-                                          "className": "Pose"
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "name": "Schema OhuhuAnimationRigData",
-                      "className": "AnimationRigData"
-                    }
-                  ]
-                },
-                {
-                  "name": "Schema",
-                  "className": "KeyframeSequence",
-                  "children": [
-                    {
-                      "name": "Keyframe",
-                      "className": "Keyframe",
-                      "children": [
-                        {
-                          "name": "HumanoidRootPart",
-                          "className": "Pose",
-                          "children": [
-                            {
-                              "name": "LowerTorso",
-                              "className": "Pose",
-                              "children": [
-                                {
-                                  "name": "LeftUpperLeg",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "LeftLowerLeg",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "LeftFoot",
-                                          "className": "Pose"
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "name": "UpperTorso",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "Head",
-                                      "className": "Pose"
-                                    },
-                                    {
-                                      "name": "LeftUpperArm",
-                                      "className": "Pose"
-                                    },
-                                    {
-                                      "name": "RightUpperArm",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "RightLowerArm",
-                                          "className": "Pose",
-                                          "children": [
-                                            {
-                                              "name": "RightHand",
-                                              "className": "Pose"
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  "name": "RightUpperLeg",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "RightLowerLeg",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "RightFoot",
-                                          "className": "Pose"
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "name": "Schema OhuhuAnimationRigData",
-                      "className": "AnimationRigData"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "",
-              "className": "ObjectValue"
-            },
-            {
-              "name": "Ashley Parker",
-              "className": "ObjectValue",
-              "children": [
-                {
-                  "name": "Automatic Save",
-                  "className": "KeyframeSequence",
-                  "children": [
-                    {
-                      "name": "Keyframe",
-                      "className": "Keyframe",
-                      "children": [
-                        {
-                          "name": "HumanoidRootPart",
-                          "className": "Pose",
-                          "children": [
-                            {
-                              "name": "LowerTorso",
-                              "className": "Pose",
-                              "children": [
-                                {
-                                  "name": "UpperTorso",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "LeftUpperArm",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "LeftLowerArm",
-                                          "className": "Pose",
-                                          "children": [
-                                            {
-                                              "name": "LeftHand",
-                                              "className": "Pose"
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "name": "RightUpperArm",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "RightLowerArm",
-                                          "className": "Pose"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "name": "Head",
-                                      "className": "Pose"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "name": "LeftUpperLeg",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "LeftLowerLeg",
-                                      "className": "Pose"
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "name": "Ashley ParkerAnimationRigData",
-                      "className": "AnimationRigData"
-                    }
-                  ]
-                },
-                {
-                  "name": "AshleyIdle",
-                  "className": "KeyframeSequence",
-                  "children": [
-                    {
-                      "name": "Keyframe",
-                      "className": "Keyframe",
-                      "children": [
-                        {
-                          "name": "HumanoidRootPart",
-                          "className": "Pose",
-                          "children": [
-                            {
-                              "name": "LowerTorso",
-                              "className": "Pose",
-                              "children": [
-                                {
-                                  "name": "UpperTorso",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "LeftUpperArm",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "LeftLowerArm",
-                                          "className": "Pose",
-                                          "children": [
-                                            {
-                                              "name": "LeftHand",
-                                              "className": "Pose"
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "name": "RightUpperArm",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "RightLowerArm",
-                                          "className": "Pose"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "name": "Head",
-                                      "className": "Pose"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "name": "LeftUpperLeg",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "LeftLowerLeg",
-                                      "className": "Pose"
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "name": "Ashley ParkerAnimationRigData",
-                      "className": "AnimationRigData"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "Eva Vanhousen",
-              "className": "ObjectValue",
-              "children": [
-                {
-                  "name": "Automatic Save",
-                  "className": "KeyframeSequence",
-                  "children": [
-                    {
-                      "name": "Keyframe",
-                      "className": "Keyframe",
-                      "children": [
-                        {
-                          "name": "HumanoidRootPart",
-                          "className": "Pose",
-                          "children": [
-                            {
-                              "name": "LowerTorso",
-                              "className": "Pose",
-                              "children": [
-                                {
-                                  "name": "UpperTorso",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "LeftUpperArm",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "LeftLowerArm",
-                                          "className": "Pose"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "name": "RightUpperArm",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "RightLowerArm",
-                                          "className": "Pose"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "name": "Head",
-                                      "className": "Pose"
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "name": "Eva VanhousenAnimationRigData",
-                      "className": "AnimationRigData"
-                    }
-                  ]
-                },
-                {
-                  "name": "EvaIdle",
-                  "className": "KeyframeSequence",
-                  "children": [
-                    {
-                      "name": "Keyframe",
-                      "className": "Keyframe",
-                      "children": [
-                        {
-                          "name": "HumanoidRootPart",
-                          "className": "Pose",
-                          "children": [
-                            {
-                              "name": "LowerTorso",
-                              "className": "Pose",
-                              "children": [
-                                {
-                                  "name": "UpperTorso",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "LeftUpperArm",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "LeftLowerArm",
-                                          "className": "Pose"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "name": "RightUpperArm",
-                                      "className": "Pose",
-                                      "children": [
-                                        {
-                                          "name": "RightLowerArm",
-                                          "className": "Pose"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "name": "Head",
-                                      "className": "Pose"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "name": "LeftUpperLeg",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "RightUpperLeg",
-                                  "className": "Pose"
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "name": "Eva VanhousenAnimationRigData",
-                      "className": "AnimationRigData"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "AshleyRig",
-              "className": "ObjectValue"
-            },
-            {
-              "name": "SchemaRig",
-              "className": "ObjectValue",
-              "children": [
-                {
-                  "name": "Imported Animation Clip",
-                  "className": "KeyframeSequence",
-                  "children": [
-                    {
-                      "name": "Keyframe",
-                      "className": "Keyframe",
-                      "children": [
-                        {
-                          "name": "HumanoidRootPart",
-                          "className": "Pose",
-                          "children": [
-                            {
-                              "name": "Torso",
-                              "className": "Pose",
-                              "children": [
-                                {
-                                  "name": "Left Leg",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Right Leg",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Head",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "FireHair",
-                                      "className": "Pose"
-                                    },
-                                    {
-                                      "name": "LavaHorns",
-                                      "className": "Pose"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "name": "Right Arm",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Left Arm",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "LavaTail",
-                                  "className": "Pose"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Hit",
-                          "className": "KeyframeMarker"
-                        },
-                        {
-                          "name": "End",
-                          "className": "KeyframeMarker"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "Automatic Save",
-                  "className": "KeyframeSequence",
-                  "children": [
-                    {
-                      "name": "Keyframe",
-                      "className": "Keyframe",
-                      "children": [
-                        {
-                          "name": "HumanoidRootPart",
-                          "className": "Pose",
-                          "children": [
-                            {
-                              "name": "Torso",
-                              "className": "Pose",
-                              "children": [
-                                {
-                                  "name": "Left Leg",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Right Leg",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Head",
-                                  "className": "Pose",
-                                  "children": [
-                                    {
-                                      "name": "FireHair",
-                                      "className": "Pose"
-                                    },
-                                    {
-                                      "name": "LavaHorns",
-                                      "className": "Pose"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "name": "Right Arm",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Left Arm",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "LavaTail",
-                                  "className": "Pose"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Hit",
-                          "className": "KeyframeMarker"
-                        },
-                        {
-                          "name": "End",
-                          "className": "KeyframeMarker"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "VanhousenRig",
-              "className": "ObjectValue"
-            }
-          ]
-        },
-        {
           "name": "Assets",
           "className": "Folder",
           "children": [
@@ -6367,6 +5744,16 @@
                   ]
                 }
               ]
+            }
+          ]
+        },
+        {
+          "name": "RBX_ANIMSAVES",
+          "className": "Model",
+          "children": [
+            {
+              "name": "AshleyRig",
+              "className": "ObjectValue"
             }
           ]
         }
