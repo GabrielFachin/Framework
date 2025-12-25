@@ -3,7 +3,7 @@ local RS = game:GetService("ReplicatedStorage")
 
 local Entity = {}
 Entity.__index = Entity
-CombatData = require(game.ServerScriptService.PlayerData.CombatData)
+CombatData = require(game.ServerScriptService.EntityData.CombatData)
 MovementController = require(game.ServerStorage.Modules.MovementController)
 local HealthModule = require(Storage.Modules.Combat.HealthController)
 
@@ -15,7 +15,7 @@ function Entity.new(entity)
 	self.Entity = entity
 	self.ChosenChar = "Schema"
 	self.Character = nil
-	self.form = "Base"
+	self.mode = "Base"
 	self.Cooldowns = {}
 	self.StatusCooldowns = {}
 	self.ActiveSkills = {}
@@ -34,7 +34,7 @@ function Entity.new(entity)
 	local charFolder = Storage.Modules.CharData:FindFirstChild(self.ChosenChar)
 
 	if charFolder then
-		local formFolder = charFolder:FindFirstChild(self.form)
+		local formFolder = charFolder:FindFirstChild(self.mode)
 		self._formFolder = formFolder
 		self.charFolder = charFolder
 
@@ -203,7 +203,7 @@ end
 --=========================INFORMAÇÕES PERSONAGEM/ENTIDADE=====================
 
 function Entity:getCharStats()
-	local CharDataFolder = self.charFolder:FindFirstChild(self.form)
+	local CharDataFolder = self.charFolder:FindFirstChild(self.mode)
 	local CharData = require(CharDataFolder.Data.Base)
 	
 	return CharData

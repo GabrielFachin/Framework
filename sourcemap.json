@@ -5021,28 +5021,62 @@
           ]
         },
         {
-          "name": "PlayerData",
+          "name": "EntityData",
           "className": "Folder",
           "children": [
             {
               "name": "EntityData",
               "className": "ModuleScript",
               "filePaths": [
-                "sync/ServerScriptService/PlayerData/EntityData.module.luau"
+                "sync/ServerScriptService/EntityData/EntityData.module.luau"
               ]
             },
             {
               "name": "DataManager",
               "className": "ModuleScript",
               "filePaths": [
-                "sync/ServerScriptService/PlayerData/DataManager.module.luau"
+                "sync/ServerScriptService/EntityData/DataManager.module.luau"
               ]
             },
             {
               "name": "CombatData",
               "className": "ModuleScript",
               "filePaths": [
-                "sync/ServerScriptService/PlayerData/CombatData.module.luau"
+                "sync/ServerScriptService/EntityData/CombatData.module.luau"
+              ]
+            },
+            {
+              "name": "EntityFunctions",
+              "className": "Folder",
+              "children": [
+                {
+                  "name": "Combat",
+                  "className": "ModuleScript",
+                  "filePaths": [
+                    "sync/ServerScriptService/EntityData/EntityFunctions/Combat.module.luau"
+                  ]
+                },
+                {
+                  "name": "Character",
+                  "className": "ModuleScript",
+                  "filePaths": [
+                    "sync/ServerScriptService/EntityData/EntityFunctions/Character.module.luau"
+                  ]
+                },
+                {
+                  "name": "Stats",
+                  "className": "ModuleScript",
+                  "filePaths": [
+                    "sync/ServerScriptService/EntityData/EntityFunctions/Stats.module.luau"
+                  ]
+                },
+                {
+                  "name": "Weapon",
+                  "className": "ModuleScript",
+                  "filePaths": [
+                    "sync/ServerScriptService/EntityData/EntityFunctions/Weapon.module.luau"
+                  ]
+                }
               ]
             }
           ]
@@ -5072,10 +5106,10 @@
               ]
             },
             {
-              "name": "Entity",
+              "name": "EntityWrapper",
               "className": "ModuleScript",
               "filePaths": [
-                "sync/ServerStorage/Modules/Entity.module.luau"
+                "sync/ServerStorage/Modules/EntityWrapper.module.luau"
               ]
             },
             {

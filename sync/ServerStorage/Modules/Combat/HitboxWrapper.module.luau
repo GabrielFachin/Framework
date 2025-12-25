@@ -2,7 +2,7 @@
 HitboxWrapper.__index = HitboxWrapper
 
 local ShapecastModule = require(script.Parent.ShapecastHitbox)
-local DataManager = require(game.ServerScriptService.PlayerData.DataManager)
+local DataManager = require(game.ServerScriptService.EntityData.DataManager)
 
 -- Pool global
 local hitboxPool = {}

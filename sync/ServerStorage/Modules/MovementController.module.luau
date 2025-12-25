@@ -1,6 +1,6 @@
 local RunService = game:GetService("RunService")
 local Script = game:GetService("ServerScriptService")
-local DataManager = Script.PlayerData.DataManager
+local DataManager = Script.EntityData.DataManager
 
 local MovementController = {}
 MovementController.__index = MovementController

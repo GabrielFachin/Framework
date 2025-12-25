@@ -5,7 +5,7 @@ local Server = game:GetService("ServerScriptService")
 
 
 local SkillRunner = require(Server.Modules.SkillRunner)
-local DataManager = require(Server.PlayerData.DataManager)
+local DataManager = require(Server.EntityData.DataManager)
 local SkillFactory = require(Server.Modules.SkillFactory)
 
 
