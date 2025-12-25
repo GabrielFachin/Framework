@@ -27,7 +27,7 @@ function DataManager.Create(Entity)
 	if Entity:IsA("Player") then
 		entityMap.players[id] = data
 
-		-- Se o personagem já estiver carregado (ex: F5 ou respawn instantâneo)
+		-- Se o personagem já estiver carregado, setta o player
 		if Entity.Character then
 		data:setPlayer(Entity.Character)
 		end
@@ -37,8 +37,12 @@ function DataManager.Create(Entity)
 			data:setPlayer(char)
 		end)
 		
-	else
+	elseif Entity:IsA("Model") then
 		entityMap.NPCs[id] = data
+
+	else
+		warn("[DataManager] Entidade inválida, func Create")
+		return nil
 	end
 
 	Instance.new("StringValue", Entity).Name = "ID"
@@ -55,7 +59,13 @@ function DataManager.Get(Entity)
 	   return entityMap.players[Entity.ID.Value]
 	end
 
-	return entityMap.NPCs[Entity.ID.Value]
+	if Entity:IsA("Model") then
+		return entityMap.NPCs[Entity.ID.Value] 
+	end
+
+	warn("[DataManager] Entidade inválidam, func Get")
+	return nil 
+
 
 end
 
@@ -100,7 +110,7 @@ function DataManager.CreateID(Entity)
 
 		--Gera um ID baseado no UserID do Player
 		local id = "Player_" .. Entity.UserId
-			if entityMap[Entity.UserId] then
+			if entityMap.players[id] then
 				warn("[DataManager]ID já existe para o jogador:", Entity.Name)
 				return nil
 			end
@@ -113,7 +123,7 @@ function DataManager.CreateID(Entity)
 		local id = "Entity_" .. tostring(Entity:GetDebugId())
 
 			--Se o ID já existir, gere um novo até achar um único
-		   while entityMap[id] do
+		   while entityMap.NPCs[id] do
 			   id = "Entity_" .. tostring(math.random(100000,999999))
 		   end
 		return id
