@@ -108,6 +108,7 @@ end
 Retorna a velocidade de movimento base da entidade
 @return velocidade de movimento NUMBER
 ]]
+
 function MovementComponent:GetSpeed()
 	local charComp = self.Entity:GetComponent("Character")
 	if charComp then
