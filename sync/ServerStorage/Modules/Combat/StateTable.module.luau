@@ -33,6 +33,8 @@ PlayerState = "PlayerState"
 
 -- [ TAGS DE BYPASS ] --
 
+--[[Essas tags são utilizadas pra ignorar certos comportamentos]]
+
 canCancel = "Cancel"   --Essa tag é mais pra uso interno da skill na hora de conversar com o combatData, não deve ser levada em consideração com as outras tags de bypass
 
 ----------------------------------------------
@@ -42,8 +44,12 @@ blockBreak = "BlockBreak" --Qubra a defesa do adversario, também vai ser mais t
 trueHit = "TrueHit"       --Ignora qualquer tipo de imunidade
 
 
-
-
+-- [Tags de breakpoints pra ativação de status] --
+local reactTags = {
+	onHeal = "OnHeal",       --Ativa o status quando o alvo recebe cura
+	onDamage = "OnDamage",   --Ativa o status quando o alvo recebe dano
+	onKill = "OnKill",       --Ativa o status quando o alvo morre
+}
 
 
 --==[ INFORMAÇÕES EXTRAS ]==--
@@ -78,6 +84,7 @@ local tagsBase = {
 
 local StateTable = { States = {} }
 
+StateTable.reactTags = reactTags
 
 -- =============[ TABELA DE AÇÕES DO PLAYER ]==================== --
 
@@ -273,8 +280,6 @@ StateTable.Status = {
 		tickRate = 0.5, 
 		damage = 1,
 		cooldown = 1,
-
-		--tags = {},
 		
 		flags = {canCancel}
 	
@@ -302,23 +307,6 @@ StateTable.Status = {
 	}}
 
 	
-	
-	
-	
-
--- =============[ TABELA DE MODIFICADORES DE SKILLS ]==================== --
-
-StateTable.Modifiers = {
-	
-	
-	
-	
-}
-
-
-
-
-
 
 --Prepara as tags usando as tags base estabelicidas caso não tenham sido declaradas
 function StateTable:GetTags(stateName)
@@ -333,21 +321,7 @@ function StateTable:GetTags(stateName)
 end
 
 
--- Função utilitária: pegar os dados visuais
-function StateTable:GetVisual(stateName)
-	local state = self.States[stateName]
-	return state and state.visual or {}
-end
-
-
--- Função utilitária: Validação de nome de estado
-function StateTable:Exists(stateName)
-	return self.States[stateName] ~= nil
-end
-
-
-
-
+--Verifica se o estado existe na tabela
 function StateTable:IsState(meta)
 	if not meta or not meta.name then return false end
 

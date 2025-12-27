@@ -19,6 +19,8 @@ function DataManager.Create(Entity)
 
 	--Gera um ID único pra entidade
 	local id = DataManager.CreateID(Entity)
+	
+	print(id)
 
 	--Salva esse ID no mapa de entidades
 	local data = EntityData.new(Entity,id)
@@ -47,6 +49,7 @@ function DataManager.Create(Entity)
 
 	Instance.new("StringValue", Entity).Name = "ID"
 	Entity.ID.Value = id
+	
 	return data
 
 end
@@ -120,7 +123,7 @@ function DataManager.CreateID(Entity)
 		--Se for uma entidade genérica, então:
 	else
 		--Gera um ID único baseado no DebugId da entidade
-		local id = "Entity_" .. tostring(Entity:GetDebugId())
+		local id = "Entity_" ..  tostring(math.random(100000,999999))
 
 			--Se o ID já existir, gere um novo até achar um único
 		   while entityMap.NPCs[id] do

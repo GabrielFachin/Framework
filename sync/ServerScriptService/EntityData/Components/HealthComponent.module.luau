@@ -1,0 +1,266 @@
+--[[
+============================Componente de HP, responsável por gerenciar a vida da entidade.============================
+- Entrada principal de dano e cura
+- Pub/Sub de entrada de dano pra garantir que efeitos como rupture ativem ao ser atingido e devolva a informação ao atacante/status
+- Callbacks para eventos de dano, cura e morte
+- Histórico de dano
+======================================================================================================================
+]]
+
+local ServerStorage = game:GetService("ServerStorage")
+local StateTable = require(ServerStorage.Modules.Combat.StateTable)
+
+local HealthComponent = {}
+HealthComponent.__index = HealthComponent
+
+function HealthComponent.new(entity, config)
+	local self = setmetatable({}, HealthComponent)
+	
+	self.Entity = entity
+	self.MaxHP = config.MaxHP or 100
+	self.HP = config.StartHP or self.MaxHP
+	self.IsDead = false
+	self._lastDamageTime = 0
+	
+	-- Callbacks de eventos
+	self.OnDamage = self._Trigger(self, StateTable.reactTags.onDamage)
+	self.OnHeal = self._Trigger(self, StateTable.reactTags.onHeal)
+	self.OnDeath = self._Trigger(self, StateTable.reactTags.onDeath)
+	self.OnRevive = self._Trigger(self, StateTable.reactTags.onRevive)
+
+	-- Histórico de dano
+	self.DamageHistory = {}
+	self.MaxHistorySize = 10
+	
+	return self
+end
+
+--=============================================================================
+--  DANO
+--=============================================================================
+
+function HealthComponent:TakeDamage(amount, source, flags)
+	if self.IsDead or amount <= 0 then 
+		return false
+	end
+	
+	-- Se tem StatusComponent, valida o hit e aplica modificadores
+	local statusComp = self.Entity:GetComponent("Status")
+	if statusComp then
+		local canHit, reason = statusComp:ValidateHit(source, flags)
+		if not canHit then
+			return false, reason
+		end
+		
+		-- Modificadores de dano
+		amount = statusComp:ModifyIncomingDamage(amount, source, flags)
+	end
+	
+	-- Aplica dano
+	local lastHP = self.HP
+	self.HP = math.max(0, self.HP - amount)
+	local actualDamage = lastHP - self.HP
+	
+	-- Registra no histórico
+	self:_RecordDamage(actualDamage, source)
+	
+	-- Marca tempo do último dano 
+	self._lastDamageTime = tick()
+	
+	-- Callback
+	if self.OnDamage then
+		task.spawn(self.OnDamage, self, actualDamage, source)
+	end
+	
+	-- Checa morte
+	if self.HP <= 0 and not self.IsDead then
+		self:Die(source)
+	end
+	
+	return true, actualDamage
+end
+
+
+--[[Cria um sistema de inscrição pub/sub para eventos locais na entidade, dano cura e morte.
+A váriavel é criada aqui pra evitar poluição do namespace do componente]]
+
+--[[
+Inscreve um listener para um evento específico
+@param eventType - Tipo do evento ("OnDamage", "OnHeal", "OnDeath") STRING,
+@param callback - Função callback a ser chamada quando o evento ocorrer FUNCTION
+@return função de cancelamento da inscrição FUNCTION
+]]
+function HealthComponent:Subscribe(eventType: string, callback: (...any) -> ()): () -> ()
+	if not self.EventListeners then
+		self.EventListeners = {}
+	end
+	if not self.EventListeners[eventType] then
+		self.EventListeners[eventType] = {}
+	end
+	table.insert(self.EventListeners[eventType], callback)
+
+	return function()
+		self:Unsubscribe(eventType, callback)
+	end
+end
+
+
+function HealthComponent:_Trigger(breakPoint)
+
+	if not self.EventListeners or not self.EventListeners[breakPoint] then
+		return
+	end
+	
+	for _, callback in ipairs(self.EventListeners[breakPoint]) do
+		task.spawn(callback, self)
+	end
+end
+
+
+function HealthComponent:Heal(amount)
+	if self.IsDead or amount <= 0 then return 0 end
+	
+	local oldHP = self.HP
+	self.HP = math.min(self.MaxHP, self.HP + amount)
+	local actualHeal = self.HP - oldHP
+	
+	if actualHeal > 0 and self.OnHeal then
+		task.spawn(self.OnHeal, self, actualHeal)
+	end
+	
+	return actualHeal
+end
+
+function HealthComponent:Die(killer)
+	if self.IsDead then return end
+	
+	self.IsDead = true
+	self.HP = 0
+	
+	if self.OnDeath then
+		task.spawn(self.OnDeath, self, killer)
+	end
+
+end
+
+function HealthComponent:Revive(hpAmount)
+	if not self.IsDead then return false end
+	
+	self.IsDead = false
+	self.HP = math.min(hpAmount or self.MaxHP, self.MaxHP)
+	
+	if self.OnRevive then
+		task.spawn(self.OnRevive, self)
+	end
+	
+	return true
+end
+
+
+
+--=============================================================================
+--  GETTERS/SETTERS
+--=============================================================================
+
+function HealthComponent:GetHP()
+	return self.HP
+end
+
+function HealthComponent:GetMaxHP()
+	return self.MaxHP
+end
+
+function HealthComponent:SetHP(value)
+	if self.IsDead then return end
+	
+	local oldHP = self.HP
+	self.HP = math.clamp(value, 0, self.MaxHP)
+	
+	if self.HP <= 0 then
+		self:Die(nil)
+	elseif self.HP > oldHP and self.OnHeal then
+		task.spawn(self.OnHeal, self, self.HP - oldHP)
+	end
+end
+
+function HealthComponent:SetMaxHP(value)
+	local ratio = self.HP / self.MaxHP
+	self.MaxHP = math.max(1, value)
+	self.HP = math.floor(self.MaxHP * ratio)
+end
+
+
+function HealthComponent:GetHealthRatio()
+	return self.HP / self.MaxHP
+end
+
+
+function HealthComponent:IsAlive()
+	return not self.IsDead
+end
+
+--=============================================================================
+--  UTILITY
+--=============================================================================
+
+function HealthComponent:_RecordDamage(amount, source)
+	table.insert(self.DamageHistory, 1, {
+		amount = amount,
+		source = source,
+		time = tick()
+	})
+	
+	-- Limita tamanho do histórico
+	if #self.DamageHistory > self.MaxHistorySize then
+		table.remove(self.DamageHistory)
+	end
+end
+
+function HealthComponent:GetDamageHistory()
+	return self.DamageHistory
+end
+
+function HealthComponent:GetTotalDamageTaken()
+	local total = 0
+	for _, record in ipairs(self.DamageHistory) do
+		total += record.amount
+	end
+	return total
+end
+
+--=============================================================================
+--  LIFECYCLE
+--=============================================================================
+
+
+function HealthComponent:Destroy()
+	self:StopRegen()
+	self.Entity = nil
+	self.OnDamage = nil
+	self.OnHeal = nil
+	self.OnDeath = nil
+	self.OnRevive = nil
+	table.clear(self.DamageHistory)
+end
+
+--=============================================================================
+--  API EXPOSE
+--=============================================================================
+
+local ExposeAPI = {
+	TakeDamage = function(component, ...) return component:TakeDamage(...) end,
+	Heal = function(component, ...) return component:Heal(...) end,
+	Die = function(component, ...) return component:Die(...) end,
+	Revive = function(component, ...) return component:Revive(...) end,
+	GetHP = function(component) return component:GetHP() end,
+	GetMaxHP = function(component) return component:GetMaxHP() end,
+	SetHP = function(component, ...) return component:SetHP(...) end,
+	SetMaxHP = function(component, ...) return component:SetMaxHP(...) end,
+	GetHealthRatio = function(component) return component:GetHealthRatio() end,
+	IsAlive = function(component) return component:IsAlive() end,
+}
+
+return {
+	new = HealthComponent.new,
+	ExposeAPI = ExposeAPI
+}

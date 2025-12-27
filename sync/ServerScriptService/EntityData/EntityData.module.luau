@@ -12,14 +12,14 @@ function Entity.new(entity,ID)
 	local self = setmetatable({}, Entity)
 
 	-- Dados fixos da entidade
-	self.Entity = entity        --global
-	self.ChosenChar = "Schema"  --Character
-	self.Character = nil      --Character
-	self.mode = "Base"        --Character
-	self.Cooldowns = {}       --Cooldown
-	self.StatusCooldowns = {} --Cooldown
-	self.ActiveSkills = {} --Combat
-	self._direction = Vector3.zero --Character
+	self.Entity = entity        	--global
+	self.ChosenChar = "Schema"  	--Character
+	self.Character = nil      		--Character
+	self.mode = "Base"        		--Stats
+	self.Cooldowns = {}       		--Cooldown
+	self.StatusCooldowns = {} 		--Cooldown
+	self.ActiveSkills = {} 			--Combat
+	self._direction = Vector3.zero  --Character
 	
 	--Controladores	
 	self.CombatData = CombatData.new(entity,self)
@@ -141,7 +141,10 @@ end
 
 --Setta o cooldown da skill usando o index, pegando o tick atual e somando com o cooldown da skill (ou seja, o cooldown registrado é o momento futuro em que a skill vai voltar)
 
-
+function Entity:setSkillCooldown(skillName, customCooldown)
+	local cd = customCooldown or self:getSkillCooldown(skillName)
+	self.Cooldowns[skillName] = tick() + cd
+end
 
 --Confere o cooldown no módulo da skill (agora localizado em Script/, acessando .data.cooldown)
 function Entity:getSkillCooldown(skillName)
