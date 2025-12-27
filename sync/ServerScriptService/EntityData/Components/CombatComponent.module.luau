@@ -1,30 +1,28 @@
 --[[
-	SkillComponent - Gerencia skills, cooldowns, runners ativos
-	
-	RESPONSABILIDADES:
 	- Lista de skills disponíveis
 	- Cooldowns de skills
 	- Runners ativos
 	- Validação de cast
-	
-	NÃO FAZ:
-	- Lógica de skills (SkillRunner)
-	- Stats de personagem (CharacterComponent)
-	- Tags de cast (StatusComponent)
 ]]
 
 local ServerStorage = game:GetService("ServerStorage")
 
-local SkillComponent = {}
-SkillComponent.__index = SkillComponent
+local CombatComponent = {}
+CombatComponent.__index = CombatComponent
 
-function SkillComponent.new(entity, config)
-	local self = setmetatable({}, SkillComponent)
+--[[
+Inicializa o componente de combate na entidade
+@param entity - Entidade dona do componente Entity, enviar EntityData
+@param config - Configurações iniciais do componente TABLE { ChosenChar: string, Mode: string }
+@return nova instância do CombatComponent CombatComponent
+]]
+function CombatComponent.new(entity, config)
+	local self = setmetatable({}, CombatComponent)
 
 	self.Entity = entity
 
 	-- Skills disponíveis (carregadas depois)
-	self.SkillsData = config.SkillsData or nil
+	self.SkillsData = nil
 
 	-- Cooldowns
 	self.Cooldowns = {} -- [skillName] = timestamp
@@ -33,7 +31,7 @@ function SkillComponent.new(entity, config)
 	-- Skills ativas (runners)
 	self.ActiveSkills = {} -- [skillName] = {runner1, runner2, ...}
 
-	-- Configuração
+	-- Personagem e modo
 	self.ChosenChar = config.ChosenChar or "Schema"
 	self.Mode = config.Mode or "Base"
 
@@ -44,10 +42,14 @@ end
 --  SKILL DATA LOADING
 --=============================================================================
 
-function SkillComponent:LoadSkillsData()
+--[[
+Inicializa a pasta de skills, carrega dados e inicializa cooldowns
+@return sucesso BOOLEAN
+]]
+function CombatComponent:LoadSkillsData() : boolean
 	local charComp = self.Entity:GetComponent("Character")
 	if not charComp then
-		warn("[SkillComponent] Precisa de CharacterComponent pra carregar skills")
+		warn("[CombatComponent] Entidade não tem componente de Character!")
 		return false
 	end
 
@@ -79,21 +81,34 @@ end
 --  SKILL GETTERS
 --=============================================================================
 
-function SkillComponent:GetSkillName(index)
+--[[
+Devolve o nome da skill no índice fornecido
+@param index - índice da skill NUMBER
+@return nome da skill STRING ou nil se não encontrada
+]]
+function CombatComponent:GetSkillName(index : number) : string?
 	if not self.SkillsData then
-		warn("[SkillComponent] SkillsData não carregado")
+		warn("[CombatComponent] SkillsData não carregado")
 		return nil
 	end
 
 	return self.SkillsData[index]
 end
 
-function SkillComponent:GetSkillScript(index)
+--[[
+Devevolve o script (não requirido) da skill no índice fornecido
+@param index - índice da skill (opcional se fornecer name) NUMBER
+@param name - nome da skill STRING (opcional, se fornecido, ignora index)
+]]
+function CombatComponent:GetSkillScript(index : number?, name : string?) : Instance?
 	local charComp = self.Entity:GetComponent("Character")
 	if not charComp then return nil end
 
-	local skillName = self:GetSkillName(index)
-	if not skillName then return nil end
+		local skillName = name or self:GetSkillName(index)
+		if not skillName then 
+			warn("[CombatComponent] GetSkillScript não recebeu um parametro!")
+			 return nil end
+
 
 	local skillScript = charComp._formFolder:FindFirstChild("Script")
 		and charComp._formFolder.Script:FindFirstChild(skillName)
@@ -101,9 +116,21 @@ function SkillComponent:GetSkillScript(index)
 	return skillScript
 end
 
-function SkillComponent:GetSkillData(skillName)
+
+--[[
+Devevolve o módulo (requirido) da skill pelo nome ou index
+@param skillName - nome da skill (opcional, se fornecer index) STRING
+@param index - índice da skill NUMBER (opcional se fornecer name)
+@return módulo da skill TABLE ou nil se não encontrado
+]]
+function CombatComponent:GetSkillData(skillName : string, index : number?) : any?
 	local charComp = self.Entity:GetComponent("Character")
 	if not charComp or not charComp._formFolder then return nil end
+
+	skillName = skillName or self:GetSkillName(index)
+	if not skillName then
+		warn("[CombatComponent] GetSkillData não recebeu um parametro!")
+		return nil end
 
 	local skillScript = charComp._formFolder:FindFirstChild("Script")
 		and charComp._formFolder.Script:FindFirstChild(skillName)
@@ -120,11 +147,22 @@ end
 --  COOLDOWN SYSTEM
 --=============================================================================
 
-function SkillComponent:HasCooldown(skillName)
+
+--[[
+Checa se a skill está em cooldown
+@param skillName - nome da skill STRING
+@return está em cooldown BOOLEAN
+]]
+function CombatComponent:HasCooldown(skillName : string) : boolean
 	return (self.Cooldowns[skillName] or 0) > tick()
 end
 
-function SkillComponent:SetCooldown(skillName, customCooldown)
+--[[
+Define o cooldown de uma skill
+@param skillName - nome da skill STRING
+@param customCooldown - cooldown customizado NUMBER (opcional, se não fornecido, busca no módulo da skill)
+]]
+function CombatComponent:SetCooldown(skillName : string, customCooldown : number?)
 	local cd = customCooldown
 
 	-- Se não forneceu cooldown customizado, busca no módulo
@@ -140,15 +178,28 @@ function SkillComponent:SetCooldown(skillName, customCooldown)
 	end
 end
 
-function SkillComponent:GetCooldown(skillName)
+--[[
+Devolve o tempo restante do cooldown de uma skill
+@param skillName - nome da skill STRING
+@return tempo restante do cooldown NUMBER
+]]
+function CombatComponent:GetCooldown(skillName : string) : number
 	return math.max(0, (self.Cooldowns[skillName] or 0) - tick())
 end
 
-function SkillComponent:ResetCooldown(skillName)
+
+--[[
+Reseta o cooldown de uma skill
+@param skillName - nome da skill STRING
+]]
+function CombatComponent:ResetCooldown(skillName : string)
 	self.Cooldowns[skillName] = 0
 end
 
-function SkillComponent:ResetAllCooldowns()
+--[[
+Reseta todos os cooldowns de skills registrados
+]]
+function CombatComponent:ResetAllCooldowns()
 	for skillName in pairs(self.Cooldowns) do
 		self.Cooldowns[skillName] = 0
 	end
@@ -158,15 +209,30 @@ end
 --  STATUS COOLDOWN
 --=============================================================================
 
-function SkillComponent:HasStatusCooldown(name)
+--[[
+Checa se o status está em cooldown
+@param name - nome do status STRING
+@return está em cooldown BOOLEAN
+]]
+function CombatComponent:HasStatusCooldown(name)
 	return (self.StatusCooldowns[name] or 0) > tick()
 end
 
-function SkillComponent:SetStatusCooldown(name, duration)
+--[[
+Seta o cooldown de um status
+@param name - nome do status STRING
+@param duration - duração do cooldown NUMBER
+]]
+function CombatComponent:SetStatusCooldown(name : string, duration : number)
 	self.StatusCooldowns[name] = tick() + duration
 end
 
-function SkillComponent:GetStatusCooldown(name)
+--[[
+Devolve o tempo restante do cooldown de um status
+@param name - nome do status STRING
+@return tempo restante do cooldown NUMBER
+]]
+function CombatComponent:GetStatusCooldown(name : string) : number
 	return math.max(0, (self.StatusCooldowns[name] or 0) - tick())
 end
 
@@ -174,14 +240,24 @@ end
 --  ACTIVE SKILLS (Runners)
 --=============================================================================
 
-function SkillComponent:AddActiveSkill(skillName, runner)
+--[[
+Adiciona uma skill pra lista de habilidades ativas
+@param skillName - nome da skill STRING
+@param runner - instância do runner da skill TABLE
+]]
+function CombatComponent:AddActiveSkill(skillName : string, runner)
 	if not self.ActiveSkills[skillName] then
 		self.ActiveSkills[skillName] = {}
 	end
 	table.insert(self.ActiveSkills[skillName], runner)
 end
 
-function SkillComponent:RemoveActiveSkill(skillName, runner)
+--[[
+Remove uma skill da lista de habilidades ativas
+@param skillName - nome da skill STRING
+@param runner - instância do runner da skill TABLE
+]]
+function CombatComponent:RemoveActiveSkill(skillName : string, runner)
 	local list = self.ActiveSkills[skillName]
 	if not list then return end
 
@@ -198,23 +274,43 @@ function SkillComponent:RemoveActiveSkill(skillName, runner)
 	end
 end
 
-function SkillComponent:GetActiveSkills(skillName)
+--[[
+Retorna uma ou várias habilidades ativas, junto de seus runners responsáveis
+@param skillName - nome da skill STRING (opcional, se fornecido, devolve só essa skill)
+@return lista de runners TABLE ou tabela com todas as skills ativas TABLE
+]]
+function CombatComponent:GetActiveSkills(skillName : string?)
 	if skillName then
 		return self.ActiveSkills[skillName] or {}
 	end
 	return self.ActiveSkills
 end
 
-function SkillComponent:GetActiveSkillCount(skillName)
+--[[
+Retorna a quantidade de runners ativos para uma skill específica
+@param skillName - nome da skill STRING
+@return quantidade de runners NUMBER
+]]
+function CombatComponent:GetActiveSkillCount(skillName : string) : number
 	local list = self.ActiveSkills[skillName]
 	return list and #list or 0
 end
 
-function SkillComponent:HasActiveSkill(skillName)
+--[[
+Verifica se a skill especificada está ativa
+@param skillName - nome da skill STRING
+@return está ativa BOOLEAN
+]]
+function CombatComponent:HasActiveSkill(skillName : string) : boolean
 	return self:GetActiveSkillCount(skillName) > 0
 end
 
-function SkillComponent:StopAllActiveSkills(cancel)
+
+--[[
+Para cada skill ativa, para todos os runners, chama o método Stop ou endSkill
+@param cancel - se true, indica que a skill foi cancelada (opcional, padrão false) BOOLEAN
+]]
+function CombatComponent:StopAllActiveSkills(cancel : boolean?)
 	for skillName, runners in pairs(self.ActiveSkills) do
 		for _, runner in ipairs(runners) do
 			if runner.Stop then
@@ -231,7 +327,13 @@ end
 --  VALIDATION
 --=============================================================================
 
-function SkillComponent:CanCastSkill(skillName)
+
+--[[
+Verifica se a skill pode ser castada
+@param skillName - nome da skill STRING
+@return pode ser castada BOOLEAN, motivo STRING (se não puder)
+]]
+function CombatComponent:CanCastSkill(skillName : string) : (boolean, string?)
 	-- Checa cooldown
 	if self:HasCooldown(skillName) then
 		return false, "cooldown"
@@ -250,14 +352,21 @@ end
 --  LIFECYCLE
 --=============================================================================
 
-function SkillComponent:OnAdded()
+--[[
+Função de inicialização do componente, tenta carregar skills automaticamente
+]]
+function CombatComponent:OnAdded()
 	-- Tenta carregar skills automaticamente
 	task.defer(function()
 		self:LoadSkillsData()
 	end)
 end
 
-function SkillComponent:Destroy()
+
+--[[
+Função de destruição do componente, para todas as skills ativas e limpa tabelas
+]]
+function CombatComponent:Destroy()
 	self:StopAllActiveSkills(true)
 	table.clear(self.Cooldowns)
 	table.clear(self.StatusCooldowns)
@@ -298,6 +407,6 @@ local ExposeAPI = {
 }
 
 return {
-	new = SkillComponent.new,
+	new = CombatComponent.new,
 	ExposeAPI = ExposeAPI
 }

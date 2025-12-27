@@ -9,7 +9,7 @@
 	- Caminhos de dados
 	
 	NÃO FAZ:
-	- Skills (SkillComponent)
+	- Skills (CombatComponent)
 	- Status (StatusComponent)
 	- Armas (WeaponComponent)
 ]]
@@ -23,10 +23,6 @@ function CharacterComponent.new(entity, config)
 	local self = setmetatable({}, CharacterComponent)
 
 	self.Entity = entity
-
-	-- Personagem
-	self.ChosenChar = config.ChosenChar or "Schema"
-	self.Mode = config.Mode or "Base"
 
 	-- Referências ao modelo do Roblox
 	self.Character = nil
@@ -52,15 +48,21 @@ end
 --=============================================================================
 
 function CharacterComponent:_LoadFolders()
-	local charFolder = ServerStorage.Modules.CharData:FindFirstChild(self.ChosenChar)
-	if not charFolder then
-		warn("[CharacterComponent] Personagem não encontrado:", self.ChosenChar)
+	local skillComp = self.Entity:GetComponent("Skill")
+	if not skillComp then
+		warn("[CharacterComponent] entidade não tem componente de skill:", skillComp.chosenChar)
 		return false
 	end
 
-	local formFolder = charFolder:FindFirstChild(self.Mode)
+	local charFolder = ServerStorage.Modules.CharData:FindFirstChild(skillComp.chosenChar)
+	if not charFolder then
+		warn("[CharacterComponent] Personagem não encontrado:", skillComp.chosenChar)
+		return false
+	end
+
+	local formFolder = charFolder:FindFirstChild(skillComp.mode)
 	if not formFolder then
-		warn("[CharacterComponent] Forma não encontrada:", self.Mode)
+		warn("[CharacterComponent] Forma não encontrada:", skillComp.mode)
 		return false
 	end
 
@@ -159,7 +161,7 @@ function CharacterComponent:ChangeForm(newMode)
 		return false
 	end
 
-	-- Recarrega skills se tiver SkillComponent
+	-- Recarrega skills se tiver CombatComponent
 	local skillComp = self.Entity:GetComponent("Skills")
 	if skillComp then
 		skillComp:LoadSkillsData()
@@ -221,9 +223,6 @@ end
 --  UTILITY
 --=============================================================================
 
-function CharacterComponent:IsAlive()
-	return self.Humanoid and self.Humanoid.Health > 0
-end
 
 function CharacterComponent:GetPosition()
 	return self.Root and self.Root.Position or Vector3.zero

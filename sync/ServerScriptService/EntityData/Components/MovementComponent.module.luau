@@ -1,19 +1,20 @@
 --[[
 	MovementComponent - Gerencia movimento e direção
-	
-	RESPONSABILIDADES:
-	- Direção atual
-	- Integração com MovementController
-	
-	NÃO FAZ:
-	- Tags de movimento (StatusComponent)
-	- Velocidades base (CharacterComponent)
-	- Aplicação física (MovementController global)
 ]]
+
+
+local Storage = game:GetService("ServerStorage")
+local MovementController = require(Storage.Modules.MovementController)
 
 local MovementComponent = {}
 MovementComponent.__index = MovementComponent
 
+--[[[
+Inicializa o componente de movimento na entidade
+@param entity - Entidade dona do componente Entity, enviar EntityData
+@param config - desnecessário, mantido por consistência com outros componentes TABLE
+@return nova instância do MovementComponent MovementComponent
+]]
 function MovementComponent.new(entity, config)
 	local self = setmetatable({}, MovementComponent)
 
@@ -60,9 +61,6 @@ end
 
 function MovementComponent:StartTracking()
 	if self._tracked then return end
-
-	local Storage = game:GetService("ServerStorage")
-	local MovementController = require(Storage.Modules.MovementController)
 
 	-- MovementController espera um objeto com estrutura específica
 	-- Vamos criar um wrapper compatível

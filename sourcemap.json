@@ -5187,10 +5187,10 @@
                   ]
                 },
                 {
-                  "name": "SkillComponent",
+                  "name": "CombatComponent",
                   "className": "ModuleScript",
                   "filePaths": [
-                    "sync/ServerScriptService/EntityData/Components/SkillComponent.module.luau"
+                    "sync/ServerScriptService/EntityData/Components/CombatComponent.module.luau"
                   ]
                 },
                 {

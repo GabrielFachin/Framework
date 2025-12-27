@@ -1,15 +1,7 @@
 --[[
-	WeaponComponent - Gerencia armas equipadas e hitboxes
-	
-	RESPONSABILIDADES:
 	- Equipar/desequipar armas
 	- Hitbox wrapper
 	- HitOrigin
-	
-	NÃO FAZ:
-	- Personagem (CharacterComponent)
-	- Skills (SkillComponent)
-	- Dano (HealthComponent)
 ]]
 
 local RS = game:GetService("ReplicatedStorage")
