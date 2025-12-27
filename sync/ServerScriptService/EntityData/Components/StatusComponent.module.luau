@@ -264,9 +264,9 @@ end
 
 --[[
 RemoveByID
-@param id - ID único do status STRING
+@param id - ID único do status/estado STRING
 @return sucesso BOOLEAN
-Remove um status completamente pelo ID único
+Remove um status/estado completamente pelo ID único
 ]]
 function StatusComponent:RemoveByID(id : string) : boolean
 	local removed = false
@@ -281,35 +281,39 @@ function StatusComponent:RemoveByID(id : string) : boolean
 			end
 		elseif groupName == "status" then
 			for name, list in pairs(group) do
-				-- Single entry
+				-- single entry
 				if list.ID == id then
 					self:Remove(name)
 					removed = true
-				-- Multiple entries
-				elseif type(list) == "table" and #list > 0 then
+
+				-- multiple entries (array-only)
+				elseif type(list) == "table" and list[1] ~= nil then
 					for i = #list, 1, -1 do
-						if list[i].ID == id then
-							if list[i].runner then
-								list[i].runner:Stop(true)
+						local entry = list[i]
+						if entry.ID == id then
+							if entry.runner then
+								entry.runner:Stop(true)
 							end
 							table.remove(list, i)
 							removed = true
 						end
 					end
-					if #list == 0 then
+
+					if list[1] == nil then
 						group[name] = nil
 					end
 				end
 			end
 		end
 	end
-	
+
 	if removed then
 		self:_MarkTagsDirty()
 	end
-	
 	return removed
 end
+
+	
 
 --[[
 Callback injetavel para a func de limpeza do runner
