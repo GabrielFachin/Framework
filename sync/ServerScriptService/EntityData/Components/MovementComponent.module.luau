@@ -34,6 +34,11 @@ end
 --  DIRECTION
 --=============================================================================
 
+--[[
+Define a direção do movimento 
+ - nota, isso não altera diretamente a direção da entidade, apenas atualiza pra direção mais recente em relação entidade/mundo
+@param direction - direção do movimento Vector3
+]]
 function MovementComponent:SetDirection(direction)
 	if direction.Magnitude > 0 then
 		self.LastDirection = self.Direction
@@ -43,15 +48,27 @@ function MovementComponent:SetDirection(direction)
 	end
 end
 
+--[[
+Retorna a direção atual do movimento
+@return direção do movimento Vector3
+]]
 function MovementComponent:GetDirection()
 	return self.Direction
 end
 
-function MovementComponent:GetLastDirection()
+--[[
+Retorna a penúltima direção válida do movimento (não a mais recente!)
+@return penúltima direção do movimento Vector3
+]]
+function MovementComponent:GetLastDirection() 
 	return self.LastDirection
 end
 
-function MovementComponent:IsMoving()
+--[[
+Verifica se a entidade teve mudanças significativas na direção do movimento
+@return está se movendo BOOLEAN
+]]
+function MovementComponent:IsMoving() : boolean
 	return self.Direction.Magnitude > 0.01
 end
 
@@ -59,55 +76,38 @@ end
 --  MOVEMENT CONTROLLER INTEGRATION
 --=============================================================================
 
+--[[
+Se inscreve no controller de movimento (responsável por aplicar restrições de movimento)
+]]
 function MovementComponent:StartTracking()
 	if self._tracked then return end
 
-	-- MovementController espera um objeto com estrutura específica
-	-- Vamos criar um wrapper compatível
-	local wrapper = {
-		CombatData = {
-			Status = self.Entity:GetComponent("Status")
-		},
-		Root = self.Entity.Root,
-		Humanoid = self.Entity.Humanoid,
-		BaseWalkSpeed = 16,
-		BaseJumpPower = 50
-	}
-
-	-- Pega velocidades do CharacterComponent se existir
-	local charComp = self.Entity:GetComponent("Character")
-	if charComp then
-		wrapper.BaseWalkSpeed = charComp.BaseWalkSpeed
-		wrapper.BaseJumpPower = charComp.BaseJumpPower
-	end
-
-	MovementController.Track(wrapper)
+	--Movement controller ainda não foi atualizado pra suportar entidades genéricas, atualizar!
+	MovementController.Track(self.Entity)
 	self._tracked = true
-	self._wrapper = wrapper
 end
 
+--[[
+Se desinscreve do controller de movimento
+]]
 function MovementComponent:StopTracking()
 	if not self._tracked then return end
 
 	local Storage = game:GetService("ServerStorage")
 	local MovementController = require(Storage.Modules.MovementController)
 
-	MovementController.Untrack(self._wrapper)
+	MovementController.Untrack(self.Entity)
 	self._tracked = false
-	self._wrapper = nil
 end
 
 --=============================================================================
 --  UTILITY
 --=============================================================================
 
-function MovementComponent:CanMove()
-	local status = self.Entity:GetComponent("Status")
-	if not status then return true end
-
-	return status:CanPerformAction("Move")
-end
-
+--[[
+Retorna a velocidade de movimento base da entidade
+@return velocidade de movimento NUMBER
+]]
 function MovementComponent:GetSpeed()
 	local charComp = self.Entity:GetComponent("Character")
 	if charComp then
@@ -120,6 +120,9 @@ end
 --  LIFECYCLE
 --=============================================================================
 
+--[[
+Função de inicialização do componente, inicia tracking pro MovementController automaticamente
+]]
 function MovementComponent:OnAdded()
 	-- Inicia tracking automaticamente
 	task.defer(function()
@@ -127,6 +130,8 @@ function MovementComponent:OnAdded()
 	end)
 end
 
+--[[
+Função de destruição do componente, para tracking e limpa referências]]
 function MovementComponent:Destroy()
 	self:StopTracking()
 	self.Entity = nil
