@@ -35,7 +35,14 @@ end
 --  STATUS APPLICATION
 --=============================================================================
 
-function StatusComponent:Apply(statusData, duration, sourceSkill, ID)
+--[[
+Aplica um status à entidade
+@param statusData - Dados do status TABLE
+@param duration - Duração do status NUMBER (opcional, pode ser definido em statusData)
+@param sourceSkill - SkillRunner responsável pela skill que aplicou o status ANY (opcional)
+@param ID - ID único do status STRING (opcional)
+@return ID do status STRING ou nil se não aplicado]]
+function StatusComponent:Apply(statusData : {}, duration : number?, sourceSkill : any?, ID : string?) : string?
 	-- Gera ID único se não fornecido
 	if not ID then
 		ID = self:generateUniqueId(sourceSkill and sourceSkill.skillName or "Generic")
@@ -141,7 +148,14 @@ function StatusComponent:Apply(statusData, duration, sourceSkill, ID)
 	return ID
 end
 
-function StatusComponent:_CreateRunner(data, name, duration)
+--[[
+Cria um SkillRunner para o status
+@param data - Dados do status TABLE
+@param name - Nome do status STRING
+@param duration - Duração do status NUMBER (opcional)
+@return SkillRunner criado SkillRunner
+]]
+function StatusComponent:_CreateRunner(data : {[string]: any}, name : string, duration : number?)
 	local SkillRunner = require(game.ServerScriptService.Modules.SkillRunner)
 	
 	-- Injeta duração se fornecida
@@ -166,7 +180,11 @@ end
 --  STATUS REMOVAL
 --=============================================================================
 
-function StatusComponent:Remove(name)
+--[[
+Remove um status completamente pelo nome
+@param name - Nome do status STRING
+]]
+function StatusComponent:Remove(name : string)
 	for _, group in pairs(self.Statuses) do
 		local entry = group[name]
 		if not entry then continue end
@@ -193,7 +211,7 @@ end
 RemoveAmount
 @param name - Nome do status
 @param amount - Quantidade de instâncias a serem removidas
-Remove uma quantidade específica de instâncias de um status
+Remove uma quantidade específica de instâncias de um status por nome
 ]]
 
 function StatusComponent:RemoveAmount(name: string, amount: number): boolean
@@ -244,7 +262,13 @@ function StatusComponent:RemoveAmount(name: string, amount: number): boolean
 	return removed
 end
 
-function StatusComponent:RemoveByID(id)
+--[[
+RemoveByID
+@param id - ID único do status STRING
+@return sucesso BOOLEAN
+Remove um status completamente pelo ID único
+]]
+function StatusComponent:RemoveByID(id : string) : boolean
 	local removed = false
 	
 	for groupName, group in pairs(self.Statuses) do
@@ -287,7 +311,12 @@ function StatusComponent:RemoveByID(id)
 	return removed
 end
 
-function StatusComponent:_OnRunnerFinished(name, runner)
+--[[
+Callback injetavel para a func de limpeza do runner
+@param name - Nome do status STRING
+@param runner - SkillRunner que finalizou SkillRunner
+]]
+function StatusComponent:_OnRunnerFinished(name : string, runner)
 	local list = self.Statuses.status[name]
 	if not list then return end
 	
@@ -318,7 +347,10 @@ end
 --  TAGS SYSTEM
 --=============================================================================
 
-function StatusComponent:GetActiveTags()
+--[[
+Obtém as tags ativas combinadas da entidade
+@return tabela de tags TABLE]]
+function StatusComponent:GetActiveTags() : { [string]: any }
 	if not self._tagsDirty and self._cachedTags then
 		return self._cachedTags
 	end
@@ -356,7 +388,12 @@ end
 --  HIT VALIDATION
 --=============================================================================
 
-function StatusComponent:ValidateHit(source, flags)
+--[[
+Valida se um ataque pode afetar a entidade baseado em suas tags de imunidade
+@param source - Fonte do ataque (geralmente um ED) ANY
+@param flags - Flags/tags fornecidas para interações envolvendo StatusTable, obrigatório mas pode ser {}
+@return sucesso BOOLEAN, razão STRING (nome da imunidade que bloqueou o hit)]]
+function StatusComponent:ValidateHit(source : any, flags : {string}) : (boolean, string?)
 	local targetTags = self:GetActiveTags()
 	local immunityRules = self._immunityRules or self:_InitImmunityRules()
 	
@@ -380,6 +417,11 @@ function StatusComponent:ValidateHit(source, flags)
 	return true
 end
 
+--[[
+Função interna!
+Inicializa as regras de imunidade baseadas na StateTable
+@return tabela de regras TABLE
+]]
 function StatusComponent:_InitImmunityRules()
 	local rules = {}
 	
@@ -406,6 +448,9 @@ end
 --  PLAYER STATE (Cast, GlobalCast, etc)
 --=============================================================================
 
+--[[
+Retorna todos ESTADOS ativos
+]]
 function StatusComponent:GetActivePlayerState()
 	for name, state in pairs(self.Statuses.state) do
 		if state and state.data.data then
@@ -417,11 +462,18 @@ function StatusComponent:GetActivePlayerState()
 	return nil
 end
 
-function StatusComponent:GetPlayerState(stateName)
+--[[
+Busca por um estado especifico
+]]
+function StatusComponent:GetPlayerState(stateName : string)
 	return self.Statuses.state[stateName]
 end
 
-function StatusComponent:CanContinue()
+--[[
+valida se a entidade pode continuar a ação atual (cast, ataque, etc)
+@return sucesso BOOLEAN
+]]
+function StatusComponent:CanContinue() : boolean
 	local tags = self:GetActiveTags()
 	if tags["canCast"] == false then
 		return false
@@ -442,7 +494,11 @@ function StatusComponent:CanContinue()
 	return false
 end
 
-function StatusComponent:TrySelfCancel()
+--[[
+Cancelamento interno de skills buscando por estados do tipo SelfCast
+@return sucesso BOOLEAN
+]]
+function StatusComponent:TrySelfCancel() : boolean
 	for stateName, _ in pairs(self.Statuses.state) do
 		local state = self:GetPlayerState(stateName)
 		if not state or not state.data.data then continue end
@@ -469,7 +525,12 @@ end
 --  GETTERS
 --=============================================================================
 
-function StatusComponent:GetStatus(name)
+--[[
+Retorna um status especifico por nome
+@param name - Nome do status STRING
+@return lista de entradas do status TABLE ou nil se não encontrado
+]]
+function StatusComponent:GetStatus(name : string) : {}?
 	local entry = self.Statuses.status[name] or self.Statuses.state[name]
 	if not entry then return nil end
 	
@@ -479,7 +540,12 @@ function StatusComponent:GetStatus(name)
 	return entry
 end
 
-function StatusComponent:GetCounter(name)
+--[[
+Retorna o contador de stacks de um status por nome
+@param name - Nome do status STRING
+@return contador - NUMBER
+]]
+function StatusComponent:GetCounter(name : string) : number
 	local list = self:GetStatus(name)
 	if not list then return 0 end
 	
@@ -491,7 +557,12 @@ function StatusComponent:GetCounter(name)
 	end
 end
 
-function StatusComponent:generateUniqueId(sourceName)
+--[[
+Gera um ID único para um status
+@param sourceName - Nome da fonte STRING (opcional)
+@return ID único STRING
+]]
+function StatusComponent:generateUniqueId(sourceName : string) : string
 	sourceName = sourceName or "Generic"
 	return sourceName .. "_" .. tostring(tick()):gsub("%.", "") .. "_" .. math.random(1000, 999999)
 end
@@ -500,14 +571,24 @@ end
 --  LIFECYCLE
 --=============================================================================
 
-function StatusComponent:ClearAll()
+--[[
+Limpa todos os STATUS ativos e devolve quantos foram removidos
+@return quantidade de instancias removidas NUMBER
+]]
+function StatusComponent:ClearAll() : number
+	local removed = 0
 	for _, group in pairs(self.Statuses) do
 		for name in pairs(group) do
 			self:Remove(name)
+			removed += 1
 		end
 	end
+	return removed
 end
 
+--[[
+Destroi o componente, limpando referências e parando processos
+]]
 function StatusComponent:Destroy()
 	self:ClearAll()
 	self.Entity = nil
