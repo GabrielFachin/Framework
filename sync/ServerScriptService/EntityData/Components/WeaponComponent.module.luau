@@ -6,10 +6,17 @@
 
 local RS = game:GetService("ReplicatedStorage")
 local Storage = game:GetService("ServerStorage")
+local HitboxWrapper = require(Storage.Modules.Combat.HitboxWrapper)
 
 local WeaponComponent = {}
 WeaponComponent.__index = WeaponComponent
 
+--[[
+Inicializa o componente de arma na entidade
+@param entity - Entidade dona do componente Entity, enviar EntityData
+@param config - Configurações iniciais do componente TABLE { WeaponName: string }
+@return nova instância do WeaponComponent WeaponComponent
+]]
 function WeaponComponent.new(entity, config)
 	local self = setmetatable({}, WeaponComponent)
 
@@ -37,14 +44,19 @@ end
 --  WEAPON EQUIP
 --=============================================================================
 
-function WeaponComponent:EquipWeapon(weaponName)
+--[[
+Equipar uma arma ao personagem
+@param weaponName - nome da arma a ser equipada STRING
+@return sucesso BOOLEAN
+]]
+function WeaponComponent:EquipWeapon(weaponName : string) : boolean
 	-- Remove arma antiga
 	self:UnequipWeapon()
 
 	-- Busca personagem
 	local charComp = self.Entity:GetComponent("Character")
 	if not charComp or not charComp.Character then
-		warn("[WeaponComponent] Precisa de Character pra equipar arma")
+		warn("[WeaponComponent] entidade sem CharacterModule, EquipWeapon falhou")
 		return false
 	end
 
@@ -103,7 +115,6 @@ function WeaponComponent:EquipWeapon(weaponName)
 	self.HitOrigin = weaponClone:FindFirstChild("hitOrigin")
 
 	-- Cria wrapper de hitbox
-	local HitboxWrapper = require(Storage.Modules.Combat.HitboxWrapper)
 	self.Hitbox = HitboxWrapper.new(self.Entity)
 
 	return true
