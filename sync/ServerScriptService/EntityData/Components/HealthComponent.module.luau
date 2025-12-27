@@ -13,6 +13,12 @@ local StateTable = require(ServerStorage.Modules.Combat.StateTable)
 local HealthComponent = {}
 HealthComponent.__index = HealthComponent
 
+
+--[[
+Cria uma nova instância do HealthComponent
+@param entity - Entidade dona do componente Entity, enviar EntityData
+@param config - Configurações iniciais do componente TABLE { MaxHP: number, StartHP: number }
+@return nova instância do HealthComponent HealthComponent]]
 function HealthComponent.new(entity, config)
 	local self = setmetatable({}, HealthComponent)
 	
@@ -39,7 +45,14 @@ end
 --  DANO
 --=============================================================================
 
-function HealthComponent:TakeDamage(amount, source, flags)
+
+--[[
+Aplica dano à entidade
+@param amount - Quantidade de dano a ser aplicada NUMBER
+@param source - Fonte do dano ANY
+@param flags - Flags/tags fornecidas para interações envolvendo StatusTable
+@return sucesso BOOLEAN, quantidade real de dano aplicada NUMBER]]
+function HealthComponent:TakeDamage(amount : number, source : any, flags : {[string]: any})
 	if self.IsDead or amount <= 0 then 
 		return false
 	end
@@ -81,8 +94,6 @@ function HealthComponent:TakeDamage(amount, source, flags)
 end
 
 
---[[Cria um sistema de inscrição pub/sub para eventos locais na entidade, dano cura e morte.
-A váriavel é criada aqui pra evitar poluição do namespace do componente]]
 
 --[[
 Inscreve um listener para um evento específico
@@ -104,7 +115,9 @@ function HealthComponent:Subscribe(eventType: string, callback: (...any) -> ()):
 	end
 end
 
-
+--[[
+Função para ativar listeners inscritos em um evento específico
+@param breakPoint - Tipo do evento a ser disparado STRING]]
 function HealthComponent:_Trigger(breakPoint)
 
 	if not self.EventListeners or not self.EventListeners[breakPoint] then
@@ -117,7 +130,12 @@ function HealthComponent:_Trigger(breakPoint)
 end
 
 
-function HealthComponent:Heal(amount)
+--[[
+Cura a entidade por uma quantidade específica
+@param amount - Quantidade de HP a ser curada NUMBER
+@return quantidade real de HP curada NUMBER
+]]
+function HealthComponent:Heal(amount : number) : number
 	if self.IsDead or amount <= 0 then return 0 end
 	
 	local oldHP = self.HP
@@ -131,7 +149,11 @@ function HealthComponent:Heal(amount)
 	return actualHeal
 end
 
-function HealthComponent:Die(killer)
+--[[
+Mata a entidade
+@param killer - Quem matou a entidade, recebe any, pois pode ser ED ou Nil
+]]
+function HealthComponent:Die(killer : any)
 	if self.IsDead then return end
 	
 	self.IsDead = true
@@ -143,7 +165,12 @@ function HealthComponent:Die(killer)
 
 end
 
-function HealthComponent:Revive(hpAmount)
+--[[
+Revive a entidade
+@param hpAmount - Quantidade de HP ao reviver NUMBER, se nil, revive com MaxHP
+@return sucesso BOOLEAN
+]]
+function HealthComponent:Revive(hpAmount : number) : boolean
 	if not self.IsDead then return false end
 	
 	self.IsDead = false
@@ -203,6 +230,11 @@ end
 --  UTILITY
 --=============================================================================
 
+--[[
+Registra o dano no histórico interno
+@param amount - Quantidade de dano NUMBER
+@param source - Fonte do dano ANY
+]]
 function HealthComponent:_RecordDamage(amount, source)
 	table.insert(self.DamageHistory, 1, {
 		amount = amount,
@@ -232,7 +264,9 @@ end
 --  LIFECYCLE
 --=============================================================================
 
-
+--[[
+Destroi o componente, limpando referências e parando processos
+]]
 function HealthComponent:Destroy()
 	self:StopRegen()
 	self.Entity = nil
@@ -258,6 +292,9 @@ local ExposeAPI = {
 	SetMaxHP = function(component, ...) return component:SetMaxHP(...) end,
 	GetHealthRatio = function(component) return component:GetHealthRatio() end,
 	IsAlive = function(component) return component:IsAlive() end,
+	GetDamageHistory = function(component) return component:GetDamageHistory() end,
+	GetTotalDamageTaken = function(component) return component:GetTotalDamageTaken() end,
+	Subscribe = function(component, ...) return component:Subscribe(...) end,
 }
 
 return {
