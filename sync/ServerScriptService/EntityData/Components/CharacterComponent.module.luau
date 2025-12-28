@@ -9,7 +9,6 @@ local ServerStorage = game:GetService("ServerStorage")
 
 local CharacterComponent = {}
 CharacterComponent.__index = CharacterComponent
-
 --[[
 Inicializa o componente de personagem na entidade
 @param entity - Entidade dona do componente Entity, enviar EntityData

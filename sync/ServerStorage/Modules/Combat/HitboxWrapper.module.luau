@@ -29,7 +29,7 @@ type HitResult = {
 }
 
 --Inicializa a hitbox, podendo receber um excludeSelf como parâmetro, o padrão é True caso não declarado
-function HitboxWrapper.new(ED,excludeSelf : BoolValue?)
+function HitboxWrapper.new(Entity,excludeSelf : boolean?)
 	
 	
 	--Se não receber nada informando se a hitbox deveria ou não excluir o usuário, então a hitbox vai ignorar o usuário por padrão
@@ -38,10 +38,10 @@ function HitboxWrapper.new(ED,excludeSelf : BoolValue?)
 	end
 	
 	local self = setmetatable({}, HitboxWrapper)
-	self.ED = ED
+	self.Entity = Entity
 	
-	if ED.weapon then
-	self.weapon = ED.weapon end
+	if Entity:HasComponent(Entity.Components.Weapon) then --Se tem o componente de arma, pega a arma atual
+	self.weapon = Entity:GetComponent(Entity.Components.Weapon) end
 	self.activeHitboxes = {}
 	self.hitboxConfigs = {}
 	self.isActive = false
@@ -52,7 +52,7 @@ function HitboxWrapper.new(ED,excludeSelf : BoolValue?)
 	-- RaycastParams, inicia a configuração de exclusão
 	self.raycastParams = RaycastParams.new()
 	self.raycastParams.FilterType = Enum.RaycastFilterType.Exclude
-	self.raycastParams.FilterDescendantsInstances = {ED.Character, self.weapon}
+	self.raycastParams.FilterDescendantsInstances = {Entity.Character, self.weapon}
 
 	-- Descobre hitboxes
 	self:_discoverHitboxes()
@@ -214,18 +214,18 @@ function HitboxWrapper:_handleHit(result: RaycastResult, segment, config: Hitbox
 	if not result then return end
 
 
-	--Busca o ED do alvo atingido
-	local targetED = self:_getTargetED(result.Instance)
-	if not targetED then return end
+	--Busca o Entity do alvo atingido
+	local targetEntity = self:_getTargetEntity(result.Instance)
+	if not targetEntity then return end
 
 	-- Anti multi-hit
 	--Vale notar que, caso a skill seja feita pra ter multi hit é necessário desligar a hitbox a cada hit e reativar depois do cooldown/ticks entre hits!
-	local targetId = targetED.Entity.UserId
+	local targetId = targetEntity.Entity.UserId
 	if self.hitTargets[targetId] then return end
 	self.hitTargets[targetId] = true
 
 	local hitResult: HitResult = {
-		target = targetED,
+		target = targetEntity,
 		hitboxName = config.name,
 		position = result.Position,
 		normal = result.Normal,
@@ -244,8 +244,8 @@ function HitboxWrapper:_handleHit(result: RaycastResult, segment, config: Hitbox
 	end
 end
 
---Busca o ED do alvo atingido
-function HitboxWrapper:_getTargetED(hitInstance: Instance)
+--Busca o Entity do alvo atingido
+function HitboxWrapper:_getTargetEntity(hitInstance: Instance)
 	local current = hitInstance
 
 	--Se atingir uma parte, busca o humanoid e o player (precisa ser alterado futuramente pra suportar NPCs)
@@ -284,23 +284,23 @@ end
 --Destrói a hitbox
 function HitboxWrapper:Destroy()
 	self:Stop()
-	self.ED = nil
+	self.Entity = nil
 	self.weapon = nil
 	self.raycastParams = nil
 	table.clear(self.hitboxConfigs)
 end
 -- Limpa pool global
 function HitboxWrapper.ClearPool()
-	local totalDestroyed = 0
+	local totalDestroyEntity = 0
 	for poolKey, pool in pairs(hitboxPool) do
 		for _, hitbox in ipairs(pool) do
 			hitbox:Destroy()
-			totalDestroyed += 1
+			totalDestroyEntity += 1
 		end
 	end
 
 	table.clear(hitboxPool)
-	print("[HitboxWrapper] Pool limpo. Destruídas:", totalDestroyed)
+	print("[HitboxWrapper] Pool limpo. Destruídas:", totalDestroyEntity)
 end
 -- Debug
 function HitboxWrapper.GetPoolStats()

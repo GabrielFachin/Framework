@@ -7,6 +7,7 @@
 ]]
 
 local EntityCore = {}
+EntityCore.Components = {}
 EntityCore.__index = EntityCore
 
 -- Registry de componentes
@@ -80,7 +81,7 @@ function EntityCore:AddComponent(componentName : string, config : {[string]: any
 		end
 	end
 
-	-- Callback de inicialização (se existir)
+	-- Callback de inicialização do componente
 	if component.OnAdded then
 		component:OnAdded()
 	end
@@ -243,12 +244,15 @@ local function AutoRegisterComponents()
 		return
 	end
 
+																			--Pra cada módulo na pasta de componentes, registra automaticamente
 	for _, componentModule in ipairs(componentsFolder:GetChildren()) do
-		if componentModule:IsA("ModuleScript") then
-			local success, component = pcall(require, componentModule)
-			if success then
-				local name = componentModule.Name:gsub("Component", "")
-				EntityCore.RegisterComponent(name, component)
+		if componentModule:IsA("ModuleScript") then                         --Se for um modulo
+			local success, component = pcall(require, componentModule)		--Tenta requerer o módulo
+			if success then													--Se conseguiu
+				local name = componentModule.Name:gsub("Component", "")		--Pega o nome do componente sem o sufixo "Component" (gsub substitui a string)
+				EntityCore.RegisterComponent(name, component)				--Registra o componente no EntityCore
+				EntityCore.Components[name] = name							--Adiciona o nome do componente no enum  EntityCore.Components
+				EntityCore.Components = table.freeze(EntityCore.Components) --Freeze o enum pra eviltar alterações em runtime
 			else
 				warn("[EntityCore] Erro ao carregar componente:", componentModule.Name)
 			end

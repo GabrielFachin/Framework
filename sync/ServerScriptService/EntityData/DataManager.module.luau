@@ -1,5 +1,5 @@
 local Players = game:GetService("Players")
-local EntityData = require(script.Parent.EntityData)
+local EntityCore = require(script.Parent.EntityCore)
 
 local DataManager = {}
 local entityMap = {
@@ -7,7 +7,7 @@ local entityMap = {
 	NPCs = {}
 }
 
---Cria o EntityData do jogador
+--Cria o EntityCore do jogador
 
 --[[
 DataManager.Create(Entity)
@@ -15,32 +15,32 @@ Caso Player, passar o Player inteiro, caso NPC, passar o modelo da entidade
 @param Entity - Player ou entidade genérica
 @return void
 ]]
-function DataManager.Create(Entity)
+function DataManager.Create(Entity,components)
 
 	--Gera um ID único pra entidade
-	local id = DataManager.CreateID(Entity)
+	local id,entityType = DataManager.CreateID(Entity)
 	
 	print(id)
 
 	--Salva esse ID no mapa de entidades
-	local data = EntityData.new(Entity,id)
+	local core = EntityCore.new(Entity,entityType,id)
 
-	--Salva o EntityData no mapa correto
+	--Salva o EntityCore no mapa correto
 	if Entity:IsA("Player") then
-		entityMap.players[id] = data
+		entityMap.players[id] = core
 
 		-- Se o personagem já estiver carregado, setta o player
 		if Entity.Character then
-		data:setPlayer(Entity.Character)
+		core:setPlayer(Entity.Character)
 		end
 
 		-- Monitorar respawn
 		Entity.CharacterAdded:Connect(function(char)
-			data:setPlayer(char)
+			core:setPlayer(char)
 		end)
 		
 	elseif Entity:IsA("Model") then
-		entityMap.NPCs[id] = data
+		entityMap.NPCs[id] = core
 
 	else
 		warn("[DataManager] Entidade inválida, func Create")
@@ -50,12 +50,12 @@ function DataManager.Create(Entity)
 	Instance.new("StringValue", Entity).Name = "ID"
 	Entity.ID.Value = id
 	
-	return data
+	return core
 
 end
 
 
---Recupera o EntityData do jogador
+--Recupera o EntityCore do jogador
 function DataManager.Get(Entity)
 
 	if Entity:IsA("Player") then
@@ -72,7 +72,7 @@ function DataManager.Get(Entity)
 
 end
 
---Remove o EntityData do jogador
+--Remove o EntityCore do jogador
 function DataManager.Remove(Entity)
 	
 		if Entity:IsA("Player") then
@@ -83,7 +83,7 @@ function DataManager.Remove(Entity)
 end
 
 
---Monitorar fluxo de jogadores, removendo e adicionando EntityData conforme necessário
+--Monitorar fluxo de jogadores, removendo e adicionando EntityCore conforme necessário
 Players.PlayerAdded:Connect(function(player)
 	task.delay(0.1, function()
 		local ED = DataManager.Get(player)
@@ -117,7 +117,7 @@ function DataManager.CreateID(Entity)
 				warn("[DataManager]ID já existe para o jogador:", Entity.Name)
 				return nil
 			end
-		return id
+		return id,"Player"
 			
 
 		--Se for uma entidade genérica, então:
@@ -129,7 +129,7 @@ function DataManager.CreateID(Entity)
 		   while entityMap.NPCs[id] do
 			   id = "Entity_" .. tostring(math.random(100000,999999))
 		   end
-		return id
+		return id,"Entity"
 	end
 end
 
