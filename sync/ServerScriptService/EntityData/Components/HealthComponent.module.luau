@@ -64,9 +64,15 @@ function HealthComponent:TakeDamage(amount : number, source : any, flags : {[str
 		if not canHit then
 			return false, reason
 		end
-		
-		-- Modificadores de dano
-		amount = statusComp:ModifyIncomingDamage(amount, source, flags)
+	
+
+			-- Alterações de dano pré-mitigação
+		if self.OnDamage then
+			local preMitigationAmount = task.spawn(self.OnDamage, self, amount, source)
+					if preMitigationAmount then
+						amount = preMitigationAmount
+					end
+		end
 	end
 	
 	-- Aplica dano
@@ -79,11 +85,6 @@ function HealthComponent:TakeDamage(amount : number, source : any, flags : {[str
 	
 	-- Marca tempo do último dano 
 	self._lastDamageTime = tick()
-	
-	-- Callback
-	if self.OnDamage then
-		task.spawn(self.OnDamage, self, actualDamage, source)
-	end
 	
 	-- Checa morte
 	if self.HP <= 0 and not self.IsDead then
@@ -118,22 +119,23 @@ end
 --[[
 Função para ativar listeners inscritos em um evento específico
 @param breakPoint - Tipo do evento a ser disparado STRING]]
-function HealthComponent:_Trigger(breakPoint)
+function HealthComponent:_Trigger(breakPoint : string)
 
 	if not self.EventListeners or not self.EventListeners[breakPoint] then
 		return
 	end
 	
 	for _, callback in ipairs(self.EventListeners[breakPoint]) do
-		task.spawn(callback, self)
+		 return task.spawn(callback, self) 
 	end
+	return false
 end
 
 
 --[[
 Cura a entidade por uma quantidade específica
 @param amount - Quantidade de HP a ser curada NUMBER
-@return quantidade real de HP curada NUMBER
+@return quantidade total de HP curada NUMBER
 ]]
 function HealthComponent:Heal(amount : number) : number
 	if self.IsDead or amount <= 0 then return 0 end

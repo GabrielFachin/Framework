@@ -1,3 +1,262 @@
-local module = {}
+--[[
+	EntityCore - Sistema base para qualquer entidade
+	USO:
+	local player = EntityCore.new(playerInstance, "Player")
+	player:AddComponent("Health", {MaxHP = 100})
+	player:AddComponent("Status")
+]]
 
-return module
+local EntityCore = {}
+EntityCore.__index = EntityCore
+
+-- Registry de componentes
+local ComponentRegistry = {}
+
+--=============================================================================
+--  CONSTRUCTOR
+--=============================================================================
+
+--[[
+Instancia uma nova entidade
+@param instance - Instância Roblox associada à entidade (model para NPCs Custom) Instance
+@param entityType - Tipo da entidade ("Player", "NPC") STRING
+@param entityID - ID único da entidade STRING 
+@return nova instância do EntityCore EntityCore
+]]
+function EntityCore.new(instance : Instance, entityType : string, entityID : string?)
+	local self = setmetatable({}, EntityCore)
+
+	-- Dados mínimos
+	self.ID = entityID or ("Entity_" .. tostring(tick()))
+	self.Instance = instance
+	self.Type = entityType or "Generic"
+	self.Components = {}
+
+	-- Lifecycle
+	self.Active = true
+	self.CreatedAt = tick()
+
+	-- Referências opcionais (preenchidas por CharacterComponent)
+	self.Character = nil
+	self.Root = nil
+	self.Humanoid = nil
+
+	return self
+end
+
+--=============================================================================
+--  COMPONENT MANAGEMENT
+--=============================================================================
+
+--[[
+Adiciona um componente à entidade
+@param componentName - Nome do componente registrado STRING
+@param config - Configurações iniciais do componente TABLE
+@return instância do componente adicionado ANY
+]]
+function EntityCore:AddComponent(componentName : string, config : {[string]: any}?)
+	if self.Components[componentName] then
+		warn("[EntityCore] Componente já existe:", componentName)
+		return self.Components[componentName]
+	end
+
+	if not ComponentRegistry[componentName] then
+		warn("[EntityCore] Componente não registrado:", componentName)
+		return nil
+	end
+
+	-- Cria instância do componente e armazena no ComponentRegistry
+	local component = ComponentRegistry[componentName].new(self, config or {})
+	self.Components[componentName] = component
+
+	-- Expõe API do componente diretamente na entidade
+	if ComponentRegistry[componentName].ExposeAPI then
+		for methodName, method in pairs(ComponentRegistry[componentName].ExposeAPI) do
+			if not self[methodName] then -- Não sobrescreve métodos existentes
+				self[methodName] = function(...)
+					return method(component, ...)
+				end
+			end
+		end
+	end
+
+	-- Callback de inicialização (se existir)
+	if component.OnAdded then
+		component:OnAdded()
+	end
+
+	return component
+end
+
+--[[
+Retorna um componente da entidade
+@param componentName - Nome do componente STRING
+@return instância do componente ANY
+]]
+function EntityCore:GetComponent(componentName : string) : Instance?
+	return self.Components[componentName]
+end
+
+--[[
+Retorna se a entidade possui um componente específico
+@param componentName - Nome do componente STRING
+@return possui componente BOOLEAN
+]]
+function EntityCore:HasComponent(componentName : string) : boolean
+	return self.Components[componentName] ~= nil
+end
+
+--[[
+Remove um componente da entidade
+@param componentName - Nome do componente STRING
+]]
+function EntityCore:RemoveComponent(componentName : string)
+	local component = self.Components[componentName]
+	if not component then return end
+
+	-- Callback de remoção
+	if component.OnRemoved then
+		component:OnRemoved()
+	end
+
+	if component.Destroy then
+		component:Destroy()
+	end
+
+	self.Components[componentName] = nil
+end
+
+--=============================================================================
+--  LIFECYCLE
+--=============================================================================
+
+--[[
+Destrói a entidade, removendo todos os componentes e limpando referências
+]]
+function EntityCore:Destroy()
+	if not self.Active then return end
+
+	-- Destroi todos os componentes
+	for name, component in pairs(self.Components) do
+		if component.Destroy then
+			component:Destroy()
+		end
+	end
+
+	self.Active = false
+	self.Components = {}
+	self.Instance = nil
+end
+
+--=============================================================================
+--  UTILITY
+--=============================================================================
+
+--[[
+Retorna se a entidade é um Player
+@return é player BOOLEAN
+]]
+function EntityCore:IsPlayer() : boolean
+	return self.Type == "Player"
+end
+
+--[[
+Retorna se a entidade é um NPC
+@return é NPC BOOLEAN
+]]
+function EntityCore:IsNPC() : boolean
+	return self.Type == "NPC"
+end
+
+--[[
+Retorna a idade da entidade em segundos
+@return idade em segundos NUMBER
+]]
+function EntityCore:GetAge() : number
+	return tick() - self.CreatedAt
+end
+
+--=============================================================================
+--  COMPONENT REGISTRATION
+--=============================================================================
+
+--[[
+Registra um componente globalmente para uso em entidades
+@param name - Nome do componente STRING
+@param componentModule - Módulo do componente TABLE
+]]
+function EntityCore.RegisterComponent(name : string, componentModule : {[string]: any})
+	if ComponentRegistry[name] then
+		warn("[EntityCore] Componente já registrado:", name)
+		return
+	end
+
+	ComponentRegistry[name] = {
+		new = componentModule.new,
+		ExposeAPI = componentModule.ExposeAPI
+	}
+
+	print("[EntityCore] Componente registrado:", name)
+end
+
+--[[
+Retorna a lista de nomes de componentes registrados
+@return lista de nomes de componentes TABLE {STRING, STRING, ...}
+]]
+function EntityCore.GetRegisteredComponents() : {string}
+	local names = {}
+	for name in pairs(ComponentRegistry) do
+		table.insert(names, name)
+	end
+	return names
+end
+
+--=============================================================================
+--  DEBUG
+--=============================================================================
+
+--[[
+Função de debug, printa: ID, Type, Active, Components
+]]
+function EntityCore:PrintComponents()
+	print("=== EntityCore:", self.ID, "===")
+	print("Type:", self.Type)
+	print("Active:", self.Active)
+	print("Components:")
+	for name, component in pairs(self.Components) do
+		print("  -", name)
+	end
+	print("==================")
+end
+
+--=============================================================================
+--  AUTO-REGISTER COMPONENTS
+--=============================================================================
+
+--[[
+Registra componentes automaticamente quando o módulo carrega
+]]
+local function AutoRegisterComponents()
+	local componentsFolder = script.Parent:FindFirstChild("Components")
+	if not componentsFolder then
+		warn("[EntityCore] Pasta Components não encontrada")
+		return
+	end
+
+	for _, componentModule in ipairs(componentsFolder:GetChildren()) do
+		if componentModule:IsA("ModuleScript") then
+			local success, component = pcall(require, componentModule)
+			if success then
+				local name = componentModule.Name:gsub("Component", "")
+				EntityCore.RegisterComponent(name, component)
+			else
+				warn("[EntityCore] Erro ao carregar componente:", componentModule.Name)
+			end
+		end
+	end
+end
+
+-- Chama auto-registro
+task.defer(AutoRegisterComponents)
+
+return EntityCore
