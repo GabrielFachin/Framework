@@ -44,6 +44,10 @@ end
 --  FOLDER LOADING
 --=============================================================================
 
+--[[
+Carrega as pastas de dados do personagem
+@return sucesso BOOLEAN
+]]
 function CharacterComponent:_LoadFolders() : boolean
 	local combatComp = self.Entity:GetComponent("Combat")
 	if not combatComp then

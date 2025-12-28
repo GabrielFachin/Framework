@@ -120,7 +120,14 @@ function WeaponComponent:EquipWeapon(weaponName : string) : boolean
 	return true
 end
 
-function WeaponComponent:_GetAttachPoint(weaponModel, charComp)
+--[[
+Retorna o ponto de attach para a arma seguindo a prioridade:
+Arma > Personagem > fallback default (right arm)
+@param weaponModel - modelo da arma
+@param charComp - componente de personagem
+@return nome do ponto de attach STRING
+]]
+function WeaponComponent:_GetAttachPoint(weaponModel : Instance, charComp) : string
 	-- Prioridade: Arma > Personagem > Padrão
 
 	-- 1. Busca na arma
@@ -139,6 +146,9 @@ function WeaponComponent:_GetAttachPoint(weaponModel, charComp)
 	return "Right Arm"
 end
 
+--[[
+Desequipar a arma atual
+]]
 function WeaponComponent:UnequipWeapon()
 	if self.Weapon then
 		self.Weapon:Destroy()
@@ -154,22 +164,39 @@ end
 --  GETTERS
 --=============================================================================
 
+--[[
+Retorna o modelo da arma equipada
+]]
 function WeaponComponent:GetWeapon()
 	return self.Weapon
 end
 
+--[[
+Retorna o nome da arma equipada
+]]
 function WeaponComponent:GetWeaponName()
 	return self.WeaponName
 end
 
+
+--[[
+Retorna a origem do hitbox da arma equipada
+]]
 function WeaponComponent:GetHitOrigin()
 	return self.HitOrigin
 end
 
+--[[
+Retorna o hitbox da arma equipada
+]]
 function WeaponComponent:GetHitbox()
 	return self.Hitbox
 end
 
+--[[
+Verifica se a entidade possui uma arma equipada
+@return possui arma BOOLEAN
+]]
 function WeaponComponent:HasWeapon()
 	return self.Weapon ~= nil
 end
@@ -178,11 +205,19 @@ end
 --  UTILITY
 --=============================================================================
 
-function WeaponComponent:GetWeaponPosition()
+--[[
+Retorna a posição da arma equipada
+@return posição VECTOR3
+]]
+function WeaponComponent:GetWeaponPosition() : Vector3
 	return self.Weapon and self.Weapon:GetPivot().Position or Vector3.zero
 end
 
-function WeaponComponent:GetWeaponCFrame()
+--[[
+Retorna o CFrame da arma equipada
+@return CFrame
+]]
+function WeaponComponent:GetWeaponCFrame() : CFrame
 	return self.Weapon and self.Weapon:GetPivot() or CFrame.identity
 end
 
@@ -190,6 +225,9 @@ end
 --  LIFECYCLE
 --=============================================================================
 
+--[[
+Destrói o componente de armas, removendo a arma equipada e limpando referências
+]]
 function WeaponComponent:Destroy()
 	self:UnequipWeapon()
 	self.Entity = nil
