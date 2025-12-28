@@ -2,7 +2,6 @@
 HitboxWrapper.__index = HitboxWrapper
 
 local ShapecastModule = require(script.Parent.ShapecastHitbox)
-local DataManager = require(game.ServerScriptService.EntityData.DataManager)
 
 -- Pool global
 local hitboxPool = {}
@@ -56,6 +55,8 @@ function HitboxWrapper.new(Entity,excludeSelf : boolean?)
 
 	-- Descobre hitboxes
 	self:_discoverHitboxes()
+
+		self.DataManager = require(game.ServerScriptService.EntityData.DataManager)
 
 	return self
 end
@@ -255,7 +256,7 @@ function HitboxWrapper:_getTargetEntity(hitInstance: Instance)
 			if humanoid then
 				local player = game.Players:GetPlayerFromCharacter(current)
 				if player then
-					return DataManager.Get(player)
+					return self.DataManager.Get(player)
 				end
 				return nil
 			end

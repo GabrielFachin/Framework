@@ -15,15 +15,32 @@ Caso Player, passar o Player inteiro, caso NPC, passar o modelo da entidade
 @param Entity - Player ou entidade genérica
 @return void
 ]]
-function DataManager.Create(Entity,components)
+function DataManager.Create(Entity,components : {})
+
+	if not Entity then
+		warn("[DataManager] Entidade não recebida, func Create")
+		return nil
+	end
+	if not components then
+		warn("[DataManager] Componentes não recebidos, func Create")
+		return nil
+	end
+
 
 	--Gera um ID único pra entidade
 	local id,entityType = DataManager.CreateID(Entity)
 	
-	print(id)
+	warn(entityType,"Registrado, ID:",id)
 
 	--Salva esse ID no mapa de entidades
 	local core = EntityCore.new(Entity,entityType,id)
+
+	--Adiciona os componentes recebidos como argumento
+	for _,comp in pairs(components) do
+		core:AddComponent(comp)
+		print("[DataManager] Componente adicionado:", comp)
+	end
+	core:ComponentsLoaded()
 
 	--Salva o EntityCore no mapa correto
 	if Entity:IsA("Player") then
@@ -31,12 +48,12 @@ function DataManager.Create(Entity,components)
 
 		-- Se o personagem já estiver carregado, setta o player
 		if Entity.Character then
-		core:setPlayer(Entity.Character)
+		core:SetCharacter(Entity.Character)
 		end
 
 		-- Monitorar respawn
 		Entity.CharacterAdded:Connect(function(char)
-			core:setPlayer(char)
+			core:SetCharacter(char)
 		end)
 		
 	elseif Entity:IsA("Model") then
@@ -55,7 +72,10 @@ function DataManager.Create(Entity,components)
 end
 
 
---Recupera o EntityCore do jogador
+--[[
+Retorna o EntityCore da entidade
+@param Entity - Player ou entidade
+]]
 function DataManager.Get(Entity)
 
 	if Entity:IsA("Player") then
@@ -72,27 +92,33 @@ function DataManager.Get(Entity)
 
 end
 
---Remove o EntityCore do jogador
+--[[
+Remove o EntityCore da entidade
+@param Entity - Player ou entidade
+]]
 function DataManager.Remove(Entity)
 	
 		if Entity:IsA("Player") then
+			entityMap.players[Entity.ID.Value].destroy()
 			entityMap.players[Entity.ID.Value] = nil
 		else
+			entityMap.NPCs[Entity.ID.Value].destroy()
 			entityMap.NPCs[Entity.ID.Value] = nil
 		end
 end
+
 
 
 --Monitorar fluxo de jogadores, removendo e adicionando EntityCore conforme necessário
 Players.PlayerAdded:Connect(function(player)
 	task.delay(0.1, function()
 		local ED = DataManager.Get(player)
-		if not ED then
+			if not ED then
 			warn("[Main] ED nil:", player.Name)
 			return
 		end
 		print("[Main] ED gerado:", ED.Entity)
-		ED:setPlayer(player.Character) 
+		--ED:setPlayer(player.Character) 
 		print("Table: ", ED)
 	end)
 end)

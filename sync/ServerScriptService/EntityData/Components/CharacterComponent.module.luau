@@ -33,9 +33,6 @@ function CharacterComponent.new(entity, config)
 	self.charFolder = nil
 	self._formFolder = nil
 
-	-- Carrega folders
-	self:_LoadFolders()
-
 	return self
 end
 
@@ -50,19 +47,19 @@ Carrega as pastas de dados do personagem
 function CharacterComponent:_LoadFolders() : boolean
 	local combatComp = self.Entity:GetComponent("Combat")
 	if not combatComp then
-		warn("[CharacterComponent] entidade não tem componente de skill:", self.Entity)
+		warn("[CharacterComponent] entidade não tem componente de combate:", self.Entity)
 		return false
 	end
 
-	local charFolder = ServerStorage.Modules.CharData:FindFirstChild(combatComp.chosenChar)
+	local charFolder = ServerStorage.Modules.CharData:FindFirstChild(combatComp.ChosenChar)
 	if not charFolder then
-		warn("[CharacterComponent] Personagem não encontrado:", combatComp.chosenChar)
+		warn("[CharacterComponent] Personagem não encontrado:", combatComp.ChosenChar)
 		return false
 	end
 
-	local formFolder = charFolder:FindFirstChild(combatComp.mode)
+	local formFolder = charFolder:FindFirstChild(combatComp.Mode)
 	if not formFolder then
-		warn("[CharacterComponent] Forma não encontrada:", combatComp.mode)
+		warn("[CharacterComponent] Forma não encontrada:", combatComp.Mode)
 		return false
 	end
 
@@ -112,6 +109,7 @@ Setta o characterModel humanoid da entidade
 function CharacterComponent:SetCharacter(characterModel) : boolean
 	if not characterModel then return false end
 
+	print(characterModel)
 	self.Character = characterModel
 	self.Root = characterModel:FindFirstChild("HumanoidRootPart")
 		or characterModel.PrimaryPart
@@ -307,6 +305,13 @@ function CharacterComponent:Destroy()
 	self.Humanoid = nil
 	self.charFolder = nil
 	self._formFolder = nil
+end
+
+
+--[[
+Função de inicialização do componente, carrega folders automaticamente]]
+function CharacterComponent:OnAdded()
+	self:_LoadFolders()
 end
 
 --=============================================================================

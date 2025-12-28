@@ -47,16 +47,11 @@ Inicializa a pasta de skills, carrega dados e inicializa cooldowns
 @return sucesso BOOLEAN
 ]]
 function CombatComponent:LoadSkillsData() : boolean
-	local charComp = self.Entity:GetComponent("Character")
-	if not charComp then
-		warn("[CombatComponent] Entidade não tem componente de Character!")
-		return false
-	end
 
-	local charFolder = ServerStorage.Modules.CharData:FindFirstChild(charComp.ChosenChar)
+	local charFolder = ServerStorage.Modules.CharData:FindFirstChild(self.ChosenChar)
 	if not charFolder then return false end
 
-	local formFolder = charFolder:FindFirstChild(charComp.Mode)
+	local formFolder = charFolder:FindFirstChild(self.Mode)
 	if not formFolder then return false end
 
 	local skillsModule = formFolder:FindFirstChild("Skills")
@@ -357,9 +352,7 @@ Função de inicialização do componente, tenta carregar skills automaticamente
 ]]
 function CombatComponent:OnAdded()
 	-- Tenta carregar skills automaticamente
-	task.defer(function()
 		self:LoadSkillsData()
-	end)
 end
 
 

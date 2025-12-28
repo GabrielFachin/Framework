@@ -1,9 +1,5 @@
 --[[
-	EntityCore - Sistema base para qualquer entidade
-	USO:
-	local player = EntityCore.new(playerInstance, "Player")
-	player:AddComponent("Health", {MaxHP = 100})
-	player:AddComponent("Status")
+	EntityCore - Núcleo de toda entidade, componentizado, passar os componentes antes de criar a entidade.)
 ]]
 
 local EntityCore = {}
@@ -81,12 +77,19 @@ function EntityCore:AddComponent(componentName : string, config : {[string]: any
 		end
 	end
 
-	-- Callback de inicialização do componente
-	if component.OnAdded then
-		component:OnAdded()
-	end
-
 	return component
+end
+
+--[[
+Função chamada após todos os componentes serem carregados, evita raceConditions.
+]]
+function EntityCore:ComponentsLoaded()
+	-- Chama OnAdded em todos os componentes
+	for name, component in pairs(self.Components) do
+		if component.OnAdded then
+			component:OnAdded()
+		end
+	end
 end
 
 --[[
@@ -252,15 +255,15 @@ local function AutoRegisterComponents()
 				local name = componentModule.Name:gsub("Component", "")		--Pega o nome do componente sem o sufixo "Component" (gsub substitui a string)
 				EntityCore.RegisterComponent(name, component)				--Registra o componente no EntityCore
 				EntityCore.Components[name] = name							--Adiciona o nome do componente no enum  EntityCore.Components
-				EntityCore.Components = table.freeze(EntityCore.Components) --Freeze o enum pra eviltar alterações em runtime
 			else
 				warn("[EntityCore] Erro ao carregar componente:", componentModule.Name)
 			end
 		end
 	end
+	EntityCore.Components = table.freeze(EntityCore.Components)				--Freeze o enum pra eviltar alterações em runtime
 end
 
 -- Chama auto-registro
-task.defer(AutoRegisterComponents)
+AutoRegisterComponents()
 
 return EntityCore

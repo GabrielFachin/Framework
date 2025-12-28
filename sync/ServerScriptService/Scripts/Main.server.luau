@@ -5,13 +5,22 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local StateTable = require(ServerStorage.Modules.Combat.StateTable)
 local DataManager = require(ServerScriptService.EntityData.DataManager)
 local Handler = ServerScriptService.Scripts.SkillHandler
-
-
-local Players = game:GetService("Players")
+local StatusHandler = require(ServerScriptService.Modules.StatusHandler)
+local StatusTable = require(ServerStorage.Modules.Combat.StateTable)
 local EntityDataManager = require(game.ServerScriptService.EntityData.DataManager)
+local component = require(ServerScriptService.EntityData.ComponentsExport)
+
+local PlayerComponents = {
+	Character = component.Character,
+	Combat = component.Combat,
+	Health = component.Health,
+	Weapon = component.Weapon,
+	Movement = component.Movement,
+	Status = component.Status,
+}
 
 Players.PlayerAdded:Connect(function(player)
-	EntityDataManager.Create(player)
+	EntityDataManager.Create(player,PlayerComponents)
 end)
 
 Players.PlayerRemoving:Connect(function(player)
@@ -19,15 +28,6 @@ Players.PlayerRemoving:Connect(function(player)
 end)
 
 
-local Players = game:GetService("Players")
-local ServerStorage = game:GetService("ServerStorage")
-local ServerScriptService = game:GetService("ServerScriptService")
-
-local StateTable = require(ServerStorage.Modules.Combat.StateTable)
-local DataManager = require(ServerScriptService.EntityData.DataManager)
-local HandlerScript = ServerScriptService.Scripts.SkillHandler
-
-local StatusHandler = require(ServerScriptService.Modules.StatusHandler)
 
 Players.PlayerAdded:Connect(function(player)
 	
@@ -55,12 +55,6 @@ Players.PlayerAdded:Connect(function(player)
 	end)
 	
 end)
-
-
-
-local StatusTable = require(ServerStorage.Modules.Combat.StateTable)
-local Players = game:GetService("Players")
-local DataManager = require(ServerScriptService.EntityData.DataManager)
 
 local function toggleMoveBlock(player)
 	local ED = DataManager.Get(player)
