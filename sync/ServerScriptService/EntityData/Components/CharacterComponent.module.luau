@@ -106,11 +106,9 @@ Setta o characterModel humanoid da entidade
 @param characterModel - modelo do personagem MODEL
 @return sucesso BOOLEAN
 ]]
-function CharacterComponent:SetCharacter(characterModel) : boolean
-	if not characterModel then return false end
+function CharacterComponent:SetCharacter() : boolean
 
-	print(characterModel)
-	self.Character = characterModel
+	local characterModel = self.Entity.Instance.Character
 	self.Root = characterModel:FindFirstChild("HumanoidRootPart")
 		or characterModel.PrimaryPart
 		or characterModel:FindFirstChildWhichIsA("BasePart")

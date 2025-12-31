@@ -7,7 +7,7 @@ local DataManager = require(ServerScriptService.EntityData.DataManager)
 local Handler = ServerScriptService.Scripts.SkillHandler
 local StatusHandler = require(ServerScriptService.Modules.StatusHandler)
 local StatusTable = require(ServerStorage.Modules.Combat.StateTable)
-local EntityDataManager = require(game.ServerScriptService.EntityData.DataManager)
+local DataManager = require(game.ServerScriptService.EntityData.DataManager)
 local component = require(ServerScriptService.EntityData.ComponentsExport)
 
 local PlayerComponents = {
@@ -19,16 +19,31 @@ local PlayerComponents = {
 	Status = component.Status,
 }
 
+
 Players.PlayerAdded:Connect(function(player)
-	EntityDataManager.Create(player,PlayerComponents)
+
+    local function onCharacterAdded(character)
+        DataManager.Create({
+            Model = character,
+            Player = player,
+        }, PlayerComponents)
+    end
+
+    -- primeiro spawn
+    if player.Character then
+        onCharacterAdded(player.Character)
+    end
+
+    -- respawns
+    player.CharacterAdded:Connect(onCharacterAdded)
 end)
 
 Players.PlayerRemoving:Connect(function(player)
-	EntityDataManager.Remove(player)
+    DataManager.Remove(player)
 end)
 
 
-
+--[[
 Players.PlayerAdded:Connect(function(player)
 	
 

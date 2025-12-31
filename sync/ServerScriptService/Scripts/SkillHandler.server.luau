@@ -1,6 +1,5 @@
 local Handler = {}
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Storage = game:GetService("ServerStorage")
 local Server = game:GetService("ServerScriptService")
 
 
@@ -40,13 +39,9 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 
 
-	local skillData = require(skillScript) -- Pega os dados do script/módulo para alteração
-
 	local skillName = tempData:getSkillName(skillIndex) -- Pega o nome da skill pra checagem de multiplos requests
 
 	local activeRunners = tempData.ActiveSkills[skillName] or {} --Busca instâncias ativas da skill no ED
-
-	local SkillCount = #activeRunners --Conta quantas instâncias ativas existem
 
 	local max = skill.maxInstances--Guarda a quantidade máximas de instâncias permitida daquela skill
 

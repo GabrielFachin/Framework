@@ -5176,6 +5176,13 @@
               ]
             },
             {
+              "name": "ComponentsExport",
+              "className": "ModuleScript",
+              "filePaths": [
+                "sync/ServerScriptService/EntityData/ComponentsExport.module.luau"
+              ]
+            },
+            {
               "name": "Components",
               "className": "Folder",
               "children": [
@@ -5221,13 +5228,6 @@
                     "sync/ServerScriptService/EntityData/Components/MovementComponent.module.luau"
                   ]
                 }
-              ]
-            },
-            {
-              "name": "ComponentsExport",
-              "className": "ModuleScript",
-              "filePaths": [
-                "sync/ServerScriptService/EntityData/ComponentsExport.module.luau"
               ]
             }
           ]
