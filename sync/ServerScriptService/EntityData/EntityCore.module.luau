@@ -33,11 +33,6 @@ function EntityCore.new(instance : Instance, entityType : string, entityID : str
 	self.Active = true
 	self.CreatedAt = tick()
 
-	-- Referências opcionais (preenchidas por CharacterComponent)
-	self.Character = nil
-	self.Root = nil
-	self.Humanoid = nil
-
 	return self
 end
 

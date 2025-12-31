@@ -6,6 +6,7 @@
 ]]
 
 local ServerStorage = game:GetService("ServerStorage")
+local EntityWrapper = require(ServerStorage.Modules.EntityWrapper)
 
 local CharacterComponent = {}
 CharacterComponent.__index = CharacterComponent
@@ -19,19 +20,14 @@ function CharacterComponent.new(entity, config)
 	local self = setmetatable({}, CharacterComponent)
 
 	self.Entity = entity
+	self.Instance = entity.Instance
 
-	-- Referências ao modelo do Roblox (futuramente irá ser integrado com um wrapper de humanoid/npc custom)
-	self.Character = nil
-	self.Root = nil
-	self.Humanoid = nil
-
-	-- Stats base
-	self.BaseSpeed = 16
-	self.BaseJump = 50
+	self.CharacterWrap = nil
 
 	-- Caminhos de dados (cache)
 	self.charFolder = nil
 	self._formFolder = nil
+
 
 	return self
 end
@@ -92,7 +88,11 @@ function CharacterComponent:GetStats() : {}
 	return charData
 end
 
-function CharacterComponent:GetStat(statName, default)
+--[[
+Retorna um status especifico do char sendo usado
+@param statName STRING
+]]
+function CharacterComponent:GetStat(statName : string, default)
 	local stats = self:GetStats()
 	return stats[statName] or default
 end
@@ -108,34 +108,26 @@ Setta o characterModel humanoid da entidade
 ]]
 function CharacterComponent:SetCharacter() : boolean
 
-	local characterModel = self.Entity.Instance.Character
-	self.Root = characterModel:FindFirstChild("HumanoidRootPart")
-		or characterModel.PrimaryPart
-		or characterModel:FindFirstChildWhichIsA("BasePart")
+	if self.CharacterWrap then return false end
 
-	self.Humanoid = characterModel:FindFirstChildWhichIsA("Humanoid")
+	local model 
 
-	-- Atualiza referências no Entity também
-	self.Entity.Character = characterModel
-	self.Entity.Root = self.Root
-	self.Entity.Humanoid = self.Humanoid
-
-	-- Carrega stats e aplica
-	local stats = self:GetStats()
-	self.BaseSpeed = stats.Speed or 16
-	self.BaseJump = stats.JumpPower or 50
-
-	if self.Humanoid then
-		self.Humanoid.WalkSpeed = self.BaseSpeed
-		self.Humanoid.JumpPower = self.BaseJump
+	if self.Entity.Instance:IsA("Model") then
+		model = self.Entity.Instance
+	else
+		model = self.Entity.Instance.Model
 	end
 
-	-- Atualiza HP do HealthComponent
-	local health = self.Entity:GetComponent("Health")
-	if health and stats.MaxHP then
-		health.MaxHP = stats.MaxHP
-		health:SetHP(stats.MaxHP)
-	end
+	local root = model:FindFirstChild("HumanoidRootPart")
+	or model.PrimaryPart
+	or model:FindFirstChildWichIsA("BasePart")
+
+	local humanoid = model:FindFirstChildWichIsA("Humanoid") or nil
+
+		self.CharacterWrap = EntityWrapper.CreateCharacter({
+		humanoid,
+		root,
+		})
 
 	return true
 end
@@ -145,7 +137,15 @@ Retorna o modelo do personagem da entidade
 @return modelo do personagem MODEL
 ]]
 function CharacterComponent:GetCharacter()
-	return self.Character
+	return self.entity.Instance
+end
+
+--[[
+Retorna o wrapper de dados de char da entidade
+@return Wrapper, tabela de funcs, TABLE
+]]
+function CharacterComponent:GetWrapper()
+	return self.CharacterWrap
 end
 
 
@@ -153,111 +153,17 @@ end
 Retorna o root part da entidade
 ]]
 function CharacterComponent:GetRoot()
-	return self.Root
+	return self.CharacterWrap and self.CharacterWrap:GetRoot()
+
 end
 
 --[[
 Retorna o Humanoid da entidade
 ]]
 function CharacterComponent:GetHumanoid()
-	return self.Humanoid
+	return self.CharacterWrap and self.CharacterWrap.GetHumanoid and self.CharacterWrap:GetHumanoid()
 end
 
---=============================================================================
---  FORM CHANGE
---=============================================================================
-
---[[
-Altera a forma (mode) do personagem
-@param newMode - nova forma STRING
-]]
-function CharacterComponent:ChangeForm(newMode : string) : boolean
-	if self.Mode == newMode then return false end
-
-	self.Mode = newMode
-
-	-- Recarrega folders
-	if not self:_LoadFolders() then
-		return false
-	end
-
-	-- Recarrega skills se tiver CombatComponent
-	local combatComp = self.Entity:GetComponent("Combat")
-	if combatComp then
-		combatComp:LoadSkillsData()
-	end
-
-	-- Atualiza stats
-	local stats = self:GetStats()
-	self.BaseSpeed = stats.Speed or 16
-	self.BaseJump = stats.JumpPower or 50
-
-	if self.Humanoid then
-		self.Humanoid.WalkSpeed = self.BaseSpeed
-		self.Humanoid.JumpPower = self.BaseJump
-	end
-
-	-- Atualiza HP
-	local health = self.Entity:GetComponent("Health")
-	if health and stats.MaxHP then
-		local ratio = health:GetHealthRatio()
-		health.MaxHP = stats.MaxHP
-		health:SetHP(stats.MaxHP * ratio) -- Mantém proporção
-	end
-
-	return true
-end
-
---=============================================================================
---  VELOCITY 
---=============================================================================
---[[
-Define a velocidade de caminhada da entidade
-@param speed - nova velocidade NUMBER
-]]
-function CharacterComponent:SetWalkSpeed(speed : number)
-	if self.Humanoid then
-		self.baseSpeed = speed
-		self.Humanoid.WalkSpeed = speed
-	end
-end
-
-
---[[
-Retorna a velocidade de caminhada do humanoid
-@return velocidade de caminhada NUMBER
-]]
-function CharacterComponent:GetWalkSpeed() : number
-	return self.Humanoid and self.Humanoid.WalkSpeed or self.BaseSpeed
-end
-
---[[
-Define o poder de pulo da entidade
-]]
-function CharacterComponent:SetJumpPower(power : number)
-	if self.Humanoid then
-		self.JumpPower = power
-		self.Humanoid.JumpPower = power
-	end
-end
-
---[[
-Retorna o poder de pulo da entidade
-@return poder de pulo NUMBER
-]]
-function CharacterComponent:GetJumpPower() : number
-	return self.Humanoid and self.Humanoid.JumpPower or self.BaseJump
-end
-
---[[
-Reseta as velocidades do humanoid para os valores padrão
-]]
-function CharacterComponent:ResetVelocities()
-	if self.Humanoid then
-		self.Humanoid.WalkSpeed = self.BaseSpeed
-		self.Humanoid.JumpPower = self.BaseJump
-	end
-end
 
 --=============================================================================
 --  UTILITY
@@ -330,17 +236,12 @@ local ExposeAPI = {
 	-- Form
 	ChangeForm = function(component, ...) return component:ChangeForm(...) end,
 
-	-- Velocity
-	SetWalkSpeed = function(component, ...) return component:SetWalkSpeed(...) end,
-	GetWalkSpeed = function(component) return component:GetWalkSpeed() end,
-	SetJumpPower = function(component, ...) return component:SetJumpPower(...) end,
-	GetJumpPower = function(component) return component:GetJumpPower() end,
-	ResetVelocities = function(component) return component:ResetVelocities() end,
 
 	-- Utility
 	GetPosition = function(component) return component:GetPosition() end,
 	GetCFrame = function(component) return component:GetCFrame() end,
 	Teleport = function(component, ...) return component:Teleport(...) end,
+	GetWrapper = function(component, ...) return component:GetWrapper(...) end
 }
 
 return {

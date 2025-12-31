@@ -5,6 +5,7 @@
 
 local Storage = game:GetService("ServerStorage")
 local MovementController = require(Storage.Modules.MovementController)
+local EntityWrapper = require(Storage.Modules.EntityWrapper)
 
 local MovementComponent = {}
 MovementComponent.__index = MovementComponent
@@ -23,6 +24,8 @@ function MovementComponent.new(entity, config)
 	-- Direção
 	self.Direction = Vector3.zero
 	self.LastDirection = Vector3.zero
+
+	self.MovementWrap = nil
 
 	-- Tracking
 	self._tracked = false
@@ -110,12 +113,24 @@ Retorna a velocidade de movimento base da entidade
 ]]
 
 function MovementComponent:GetSpeed()
-	local charComp = self.Entity:GetComponent("Character")
-	if charComp then
-		return charComp:GetWalkSpeed()
-	end
-	return 16
+
 end
+
+
+function MovementComponent:SetSpeed(speed)
+
+end
+
+
+function MovementComponent:GetJumpForce()
+
+end
+
+
+function MovementComponent:SetJumpForce(jumpForce)
+
+end
+
 
 --=============================================================================
 --  LIFECYCLE
@@ -125,10 +140,21 @@ end
 Função de inicialização do componente, inicia tracking pro MovementController automaticamente
 ]]
 function MovementComponent:OnAdded()
-	-- Inicia tracking automaticamente
-	task.defer(function()
-		self:StartTracking()
-	end)
+	--[[
+		if self.MovementWrap then return false end 
+
+		local wrapper = self.Entity:GetWrapper()
+		local speed = self.Entity:GetStat("Speed")
+		local jumpForce = self.Entity:GetStat("JumpForce")
+
+		self.CharacterWrap = EntityWrapper.CreateMovement({
+		wrapper,
+		speed,
+		jumpForce
+		})
+
+	return true
+	]]
 end
 
 --[[

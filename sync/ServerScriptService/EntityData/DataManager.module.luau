@@ -1,4 +1,3 @@
-local Players = game:GetService("Players")
 local EntityCore = require(script.Parent.EntityCore)
 
 local DataManager = {}
@@ -72,8 +71,6 @@ Retorna o EntityCore da entidade
 @param Entity - Player ou entidade
 ]]
 function DataManager.Get(Entity)
-	
-	print(Entity)
 
 	if Entity.Player then
 	   return entityMap.players[Entity.ID.Value]
