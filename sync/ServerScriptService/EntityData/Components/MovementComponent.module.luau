@@ -140,21 +140,23 @@ end
 Função de inicialização do componente, inicia tracking pro MovementController automaticamente
 ]]
 function MovementComponent:OnAdded()
-	--[[
-		if self.MovementWrap then return false end 
 
+end
+
+
+function MovementComponent:SetMovement()
+
+	if self.MovementWrap then return false end 
 		local wrapper = self.Entity:GetWrapper()
 		local speed = self.Entity:GetStat("Speed")
 		local jumpForce = self.Entity:GetStat("JumpForce")
-
 		self.CharacterWrap = EntityWrapper.CreateMovement({
 		wrapper,
 		speed,
 		jumpForce
-		})
+	})
 
 	return true
-	]]
 end
 
 --[[

@@ -203,11 +203,11 @@ CreateCharacter, Função de criação de um novo wrapper de referências a part
 ]]
 EntityWrapper.CreateCharacter = function(params)
 	if params.humanoid then
-		print("WRAPPER DE CHARACTER HUMANOIDE INSTANCIADO")
+		warn("WRAPPER DE CHARACTER HUMANOIDE INSTANCIADO")
 		return HumanoidCharacter.new(params.humanoid,params.root)
 	else
 		-- NPC sem Humanoid
-		print("WRAPPER DE CHARACTER NPC INSTANCIADO")
+		warn("WRAPPER DE CHARACTER NPC INSTANCIADO")
 		return NPChar.new(params.root)
 	end
 end
@@ -222,11 +222,11 @@ CreateMovement, Função de criação de um novo wrapper de movimentação
 ]]
 EntityWrapper.CreateMovement = function(params)
 	if params.characterWrapper:GetHumanoid() then 
-		print("WRAPPER DE MOVIMENTAÇÃO HUMANOIDE INSTANCIADO")
+		warn("WRAPPER DE MOVIMENTAÇÃO HUMANOIDE INSTANCIADO")
 		return HumanoidMovement.new(params.characterWrapper,params.baseSpeed,params.baseJump)
 
 	else
-		print("WRAPPER DE MOVIMENTAÇÃO NPC INSTANCIADO")
+		warn("WRAPPER DE MOVIMENTAÇÃO NPC INSTANCIADO")
 		return NPCMovement.new(params.characterWrapper,params.baseSpeed,params.baseJump)
 	end
 end

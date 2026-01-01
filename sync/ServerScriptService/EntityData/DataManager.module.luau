@@ -38,25 +38,27 @@ function DataManager.Create(Entity,components : {})
 	--Adiciona os componentes recebidos como argumento
 	for _,comp in pairs(components) do
 		core:AddComponent(comp)
-		print("[DataManager] Componente adicionado:", comp)
+		local compList = {}
+		compList[#compList + 1] = comp
+		print("[DataManager] Componentes adicionados:", compList)
 	end
 	core:ComponentsLoaded()
 
 	--Salva o EntityCore no mapa correto
 	if Entity.Player then
 		entityMap.players[id] = core
-
-		
 	elseif Entity:IsA("Model") then
 		entityMap.NPCs[id] = core
-
-		--guarda o modelo/character da entidade.
-		core:SetCharacter(Entity)
-
 	else
 		warn("[DataManager] Entidade inválida, func Create")
 		return nil
 	end
+
+	-- inicializa o wrapper e guarda o modelo/character da entidade
+	core:SetCharacter(Entity)
+
+	--inicializa o wrapper de movimentação
+	core:SetMovement()
 
 	Instance.new("StringValue", Entity.Model).Name = "ID"
 	Entity.Model.ID.Value = id
