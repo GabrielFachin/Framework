@@ -118,7 +118,7 @@ function HumanoidMovement.new(characterWrapper, speed, jump)
 	local humanoid = self._character:GetHumanoid()
 		if humanoid then 
 			humanoid.WalkSpeed = self._speed
-			humanoid.JumpPower = self._jump
+			humanoid.JumpHeight = self._jump
 		end
 
 	return self

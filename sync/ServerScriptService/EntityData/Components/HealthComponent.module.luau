@@ -270,7 +270,6 @@ end
 Destroi o componente, limpando referências e parando processos
 ]]
 function HealthComponent:Destroy()
-	self:StopRegen()
 	self.Entity = nil
 	self.OnDamage = nil
 	self.OnHeal = nil

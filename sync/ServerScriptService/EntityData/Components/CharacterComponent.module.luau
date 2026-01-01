@@ -105,18 +105,23 @@ Setta o characterModel humanoid da entidade
 @param characterModel - modelo do personagem MODEL
 @return sucesso BOOLEAN
 ]]
-function CharacterComponent:SetCharacter() : boolean
+function CharacterComponent:SetCharacter(Entity) : boolean
 
 	if self.CharacterWrap then return false end
 
-	local model = self.Entity.Instance.Model
-	or self.Entity.Instance
+	local model 
+	local root
+	local humanoid
 
-	local root = model:FindFirstChild("HumanoidRootPart")
-	or model.PrimaryPart
-	or model:FindFirstChildWichIsA("BasePart")
-
-	local humanoid = model.Humanoid or nil
+	if typeof(Entity) == "table"  then
+		model = Entity.Model
+		humanoid = model.Humanoid
+		root = model:FindFirstChild("HumanoidRootPart") or Entity
+	else
+		root = model.PrimaryPart
+		humanoid = nil
+		or model:FindFirstChildWichIsA("BasePart")
+	end
 
 	self.CharacterWrap = EntityWrapper.CreateCharacter({
 	humanoid,
