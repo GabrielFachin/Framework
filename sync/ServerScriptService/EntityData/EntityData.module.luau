@@ -64,9 +64,9 @@ function Entity.new(entity,ID)
 
 
 		if self.CombatData then
-			local stats = self:getCharStats()
+			local Stats = self:getCharStats()
 			local HealthController = require(game.ServerStorage.Modules.Combat.HealthController)
-		self.CombatData:SetHealthController(HealthController.new(stats.MaxHP or 100))
+		self.CombatData:SetHealthController(HealthController.new(Stats.MaxHP or 100))
 		end
 
 	return self
@@ -218,13 +218,13 @@ function Entity:setPlayer(character)
 	self.Root = character:FindFirstChild("HumanoidRootPart") or character.PrimaryPart or character:FindFirstChildWhichIsA("BasePart")
 	self.Humanoid = character:FindFirstChildWhichIsA("Humanoid")
 
-	local stats = self:getCharStats()
+	local Stats = self:getCharStats()
 	
 
-	self.BaseWalkSpeed = stats.Speed or 16
-	self.BaseJumpPower = stats.JumpPower or 50
+	self.BaseWalkSpeed = Stats.Speed or 16
+	self.BaseJumpPower = Stats.JumpPower or 50
 	
-	self.Weapon = stats.weapon
+	self.Weapon = Stats.weapon
 
 --Envia a string de nome da arma declarada no modulo 'data.base' (se tiver alguma)
 if self.Weapon then
@@ -240,7 +240,7 @@ end
 		self.Humanoid.WalkSpeed = self.BaseWalkSpeed
 		self.Humanoid.JumpPower = self.BaseJumpPower
 		local control = self.CombatData:GetHealthController()
-		control:SetHP(stats.MaxHP)
+		control:SetHP(Stats.MaxHP)
 	end
 	
 	self.CombatData.Character = character

@@ -46,26 +46,29 @@ function DataManager.Create(Entity,components : {})
 		compList[#compList + 1] = comp
 	end
 	warn("[DataManager] Componentes adicionados:", compList)
+
+	-- inicializa o wrapper e guarda o modelo/character da entidade
+	core:SetCharacter(Entity)
+
 	core:ComponentsLoaded()
 
 	--Salva o EntityCore no mapa correto
-	if Entity.Player then
+	if Entity.Player ~= nil then
 		entityMap.players[id] = core
+		Entity.Model:SetAttribute("EntityID",id)
 	elseif Entity:IsA("Model") then
 		entityMap.NPCs[id] = core
+		Entity.Model:SetAttribute("EntityID",id)
+		
 	else
 		warn("[DataManager] Entidade inválida, func Create")
 		return nil
 	end
 
-	-- inicializa o wrapper e guarda o modelo/character da entidade
-	core:SetCharacter(Entity)
+
 
 	--inicializa o wrapper de movimentação
 	core:SetMovement()
-
-	Instance.new("StringValue", Entity.Model).Name = "ID"
-	Entity.Model.ID.Value = id
 
 	warn("===========VITALS END========")
 	
@@ -80,7 +83,7 @@ Retorna o EntityCore da entidade
 ]]
 function DataManager.Get(Entity)
 
-	if Entity.Player then
+	if Entity.Player ~= nil then
 	   return entityMap.players[Entity.ID.Value]
 	end
 
@@ -100,7 +103,7 @@ Remove o EntityCore da entidade
 ]]
 function DataManager.Remove(Entity)
 	
-		if Entity.Player then
+		if Entity.Player ~= nil then
 			entityMap.players[Entity.ID.Value].destroy()
 			entityMap.players[Entity.ID.Value] = nil
 		else
@@ -116,7 +119,7 @@ function DataManager.CreateID(Entity)
 	if not Entity then return nil end
 
 	--Se a entidade for um player, então:
-	if Entity.Player then
+	if Entity.Player ~= nil  then
 
 		--Gera um ID baseado no UserID do Player
 		local id = "Player_" .. Entity.Player.UserId

@@ -147,9 +147,9 @@ end
 function MovementComponent:SetMovement()
 
 	if self.MovementWrap then return false end 
-		local wrapper = self.Entity:GetCharacterWrapper()
-		local speed = self.Entity:GetStat("Speed")
-		local jumpForce = self.Entity:GetStat("JumpForce")
+		local wrapper = self.Entity.GetCharacterWrapper()
+		local speed = self.Entity.GetStat("Speed")
+		local jumpForce = self.Entity.GetStat("JumpForce")
 		self.CharacterWrap = EntityWrapper.CreateMovement({
 		wrapper,
 		speed,

@@ -213,9 +213,6 @@ EntityWrapper.CreateCharacter = function(params)
 	2 -- Root
 	]]
 
-	print("PARAMS CREATE CHAR:",params)
-
-
 	if params[1] ~= nil then
 		warn("WRAPPER DE CHARACTER HUMANOIDE INSTANCIADO")
 		return HumanoidCharacter.new(params[1],params[2])
@@ -242,7 +239,6 @@ EntityWrapper.CreateMovement = function(params)
 	3 -- JumpForce
 	]]
 
-	print("PARAMS CREATE MOV:",params)
 	if params[1]:GetHumanoid() then 
 		warn("WRAPPER DE MOVIMENTAÇÃO HUMANOIDE INSTANCIADO")
 		return HumanoidMovement.new(params[1],params[2],params[3])

@@ -5229,13 +5229,6 @@
               "filePaths": [
                 "sync/ServerScriptService/EntityData/EntityData.module.luau"
               ]
-            },
-            {
-              "name": "EntityFactory",
-              "className": "ModuleScript",
-              "filePaths": [
-                "sync/ServerScriptService/EntityData/EntityFactory.module.luau"
-              ]
             }
           ]
         }

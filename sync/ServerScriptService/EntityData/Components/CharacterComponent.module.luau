@@ -70,8 +70,8 @@ end
 --=============================================================================
 
 --[[
-Retorna a tabela de stats do personagem
-@return tabela de stats TABLE
+Retorna a tabela de Stats do personagem
+@return tabela de Stats TABLE
 ]]
 function CharacterComponent:GetStats() : {}
 	if not self._formFolder then return {} end
@@ -93,13 +93,9 @@ Retorna um status especifico do char sendo usado
 @param statName STRING
 ]]
 function CharacterComponent:GetStat(statName : string, default)
-	local stats = self:GetStats()
-	print(stats)
-	print(statName,stats[statName])
-	print(typeof(stats[statName]))
-	return stats[statName] or default
+	local Stats = self:GetStats()
+	return Stats[statName] or default
 end
-
 --=============================================================================
 --  CHARACTER MODEL
 --=============================================================================

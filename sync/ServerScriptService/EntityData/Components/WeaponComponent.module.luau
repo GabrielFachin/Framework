@@ -137,9 +137,9 @@ function WeaponComponent:_GetAttachPoint(weaponModel : Instance, charComp) : str
 	end
 
 	-- 2. Busca no personagem
-	local stats = charComp:GetStats()
-	if stats.attachTo then
-		return stats.attachTo
+	local Stats = charComp:GetStats()
+	if Stats.attachTo then
+		return Stats.attachTo
 	end
 
 	-- 3. Padrão

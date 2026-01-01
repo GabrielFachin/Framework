@@ -305,17 +305,17 @@ function HitboxWrapper.ClearPool()
 end
 -- Debug
 function HitboxWrapper.GetPoolStats()
-	local stats = {
+	local Stats = {
 		totalPools = 0,
 		totalHitboxes = 0,
 		byType = {}
 	}
 	for poolKey, pool in pairs(hitboxPool) do
-		stats.totalPools += 1
-		stats.totalHitboxes += #pool
-		stats.byType[poolKey] = #pool
+		Stats.totalPools += 1
+		Stats.totalHitboxes += #pool
+		Stats.byType[poolKey] = #pool
 	end
 
-	return stats
+	return Stats
 end
 return HitboxWrapper
