@@ -4104,6 +4104,78 @@
               "className": "Part"
             }
           ]
+        },
+        {
+          "name": "martelo",
+          "className": "Model",
+          "children": [
+            {
+              "name": "Value",
+              "className": "CFrameValue"
+            },
+            {
+              "name": "AttachTo",
+              "className": "StringValue"
+            },
+            {
+              "name": "Hitbox",
+              "className": "Folder",
+              "children": [
+                {
+                  "name": "Handle",
+                  "className": "Part",
+                  "children": [
+                    {
+                      "name": "WeldConstraint",
+                      "className": "WeldConstraint"
+                    },
+                    {
+                      "name": "DmgPoint",
+                      "className": "Attachment"
+                    }
+                  ]
+                },
+                {
+                  "name": "Blade",
+                  "className": "Part",
+                  "children": [
+                    {
+                      "name": "WeldConstraint",
+                      "className": "WeldConstraint"
+                    },
+                    {
+                      "name": "DmgPoint",
+                      "className": "Attachment"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Martelo",
+              "className": "MeshPart"
+            },
+            {
+              "name": "Handle",
+              "className": "Part",
+              "children": [
+                {
+                  "name": "WeldConstraint",
+                  "className": "WeldConstraint"
+                }
+              ]
+            },
+            {
+              "name": "hitOrigin",
+              "className": "Part",
+              "children": [
+                {
+                  "name": "WeldConstraint",
+                  "className": "WeldConstraint"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -5219,6 +5291,13 @@
                   "className": "ModuleScript",
                   "filePaths": [
                     "sync/ServerScriptService/EntityData/Components/MovementComponent.module.luau"
+                  ]
+                },
+                {
+                  "name": "AnimationComponent",
+                  "className": "ModuleScript",
+                  "filePaths": [
+                    "sync/ServerScriptService/EntityData/Components/AnimationComponent.module.luau"
                   ]
                 }
               ]

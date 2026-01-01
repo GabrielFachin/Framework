@@ -15,28 +15,51 @@ local STATES = {  				--Breakpoints do ciclo de vida da skill
 }
 
 
-function SkillRunner.new(skillData,ED,name,type) --Instancia o SkillRunner como um objeto responsável de criar a habilidade junto do EntityData para as skills utilizarem
+function SkillRunner.new(skillData,EC,name,type) --Instancia o SkillRunner como um objeto responsável de criar a habilidade junto do EntityData para as skills utilizarem
+
+	--================VÁRIAVEIS(FACILITAÇÃO DE ACESSO)===================--
+
 	local self = setmetatable({}, SkillRunner)
-	self.lib = require(Storage.Modules.Animation.AnimationLib) --Prepara a lib de animações
+
+
+	--======REQUIRES======--
+	self.lib = require(Storage.Modules.Animation.AnimationLib) 					--Prepara a lib de animações
+	self.connection = require(Storage.Modules.SkillScheduler) 					--Heartbeat global
+	self.statusTable = require(Storage.Modules.Combat.StateTable) 				--Facilita acesso a aplicação de estados pelas skills
+	self.weaponHitboxModule = require(Storage.Modules.Combat.ShapecastHitbox)   --Prepara o modulo do shapecast para facil acesso e criação de hitboxes
 	
-	self.skillData = skillData -- Informações extras da skill que vai rodar
-	self.ED = ED --Tabela de dados do player que usou a habilidade
-	self.cd = self.ED.CombatData --Separa o CombatData pra fácil acesso pelas skills
-	self.state = STATES.Idle --Estado do lifetime skill
-	self.skillName = name   --Guarda o nome da skill pra controle de runners ativos
-	self.elapsedTime = 0    --Tempo de vida atual da skill
-	self.counter = 1      --Pode ser utilizado por skills e/ou status pra manter controle de dados de runtime internos, como número de balas, stage, ou stacks aplicados
-	self.connection = require(Storage.Modules.SkillScheduler) --Heartbeat global
-	self.stop = false --cancelada/parar a força?
-	self.statusTable = require(Storage.Modules.Combat.StateTable) --Facilita acesso a aplicação de estados pelas skills
-	self.anim = self.cd.Anim  --Fácil acesso ao controlador de animações
-	self.charLib = self.lib.character[self.ED.ChosenChar]
-	self.hitPoint = self.ED.hitPoint --Prepara a origen das hitboxes da arma
-	self.weaponHitboxModule = require(Storage.Modules.Combat.ShapecastHitbox) --Prepara o modulo do shapecast para facil acesso e criação de hitboxes
-	self.weaponHitboxFolder = Storage.Assets.Hitboxes:FindFirstChild(self.ED.ChosenChar) --Busca a pasta de hitboxes do personagem escolhido
-	self.weaponHitbox = self.ED.Hitbox --Facilita acesso ao wrapper da hitbox
-	self.weapon = self.ED.weapon --Pega a arma sendo utilizada pelo player
-	self.type = type
+
+
+	--=====DADOS VITAIS=====--
+
+	self.skillData = skillData   --Informações extras da skill que vai rodar
+	self.EC = EC				 --Tabela de dados do player que usou a habilidade
+
+
+
+	--=====INICIALIZAÇÃO SR=====--
+
+	self.state = STATES.Idle 	 --Estado do lifetime skill
+	self.elapsedTime = 0    	 --Tempo de vida atual da skill
+	self.counter = 1      		 --Pode ser utilizado por skills e/ou status pra manter controle de dados de runtime internos, como número de balas, stage, ou stacks aplicados
+	self.stop = false 			 --Cancelada/parar a força?
+	self.type = type			 --Tipo de SR, Skill, Status
+	self.skillName = name  		 --Guarda o nome da skill pra controle de runners ativos
+
+
+
+	--=====FACILITADORES DE ACESSO=====--
+
+	self.anim = self.EC.Anim  									--Fácil acesso ao controlador de animações
+	self.charLib = self.lib.character[self.ED.ChosenChar] 		--Biblioteca de animações do char escolhido
+	self.weaponHitbox = self.EC.GetHitbox()						--Facilita acesso ao wrapper da hitbox
+	self.hitPoint = self.EC.GetHitOrigin() 						--Origem de hitboxes criadas em runtime pela arma
+	self.weapon = self.EC.GetWeapon()						    --Arma sendo utilizada pelo player
+
+
+
+	self.weaponHitboxFolder = Storage.Assets.Hitboxes:FindFirstChild(self.EC) --Busca a pasta de hitboxes do personagem escolhido
+
 	
 	-- Facilita o acesso aos dados da skill.
 	self.data      = skillData.data
@@ -44,7 +67,7 @@ function SkillRunner.new(skillData,ED,name,type) --Instancia o SkillRunner como 
 	self.utils     = skillData.utils or {}
 	
 	
-	assert(ED and ED.addSkill, "SkillRunner recebeu ED inválido")
+	assert(EC and EC.AddActiveSkill, "SkillRunner recebeu EC inválido")
 	
 	return self
 end

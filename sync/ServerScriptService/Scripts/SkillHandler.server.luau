@@ -33,7 +33,7 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 	--Futuramente precisamos fazer um debounce aqui, checando o delay entre o ultimo envio do cliente e o atual, evitando spam e cheats (ambos pro input de movimento e skills)
 
-	local skillScript = entityCore:GetSkillScript(skillIndex) --Pega o script da skill
+	local skillScript = entityCore.GetSkillScript(skillIndex) --Pega o script da skill
 	if not skillScript then  warn("Skill não encontrada") 
 	return false end
 
@@ -44,7 +44,7 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 	local skillName = entityCore.GetSkillName(skillIndex) -- Pega o nome da skill pra checagem de multiplos requests
 
-	local activeRunners = entityCore.GetActiveSkills --Busca instâncias ativas da skill no ED
+	local activeRunners = entityCore.GetActiveSkills() --Busca instâncias ativas da skill no ED
 
 	local max = skill.maxInstances--Guarda a quantidade máximas de instâncias permitida daquela skill
 
@@ -92,7 +92,7 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 		
 		
 
-		local maxCooldown = entityCore.getCooldown(skillName) --Pega o cooldown restante da skill
+		local maxCooldown = entityCore.GetCooldown(skillName) --Pega o cooldown restante da skill
 		
 		RemoteEventSkillFired:FireClient(player,skillName,maxCooldown)
 

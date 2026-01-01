@@ -318,29 +318,80 @@ function CombatComponent:StopAllActiveSkills(cancel : boolean?)
 	table.clear(self.ActiveSkills)
 end
 
+
+
 --=============================================================================
---  VALIDATION
+--  CHARACTER E FORMAS
 --=============================================================================
 
+function CombatComponent:SetChoosenChar(Char)
+ if self.ChoosenChar == Char then return false end
 
---[[
-Verifica se a skill pode ser castada
-@param skillName - nome da skill STRING
-@return pode ser castada BOOLEAN, motivo STRING (se não puder)
-]]
-function CombatComponent:CanCastSkill(skillName : string) : (boolean, string?)
-	-- Checa cooldown
-	if self:HasCooldown(skillName) then
-		return false, "cooldown"
-	end
+    self.ChoosenChar = Char
 
-	-- Checa se pode castar (via StatusComponent)
-	local status = self.Entity:GetComponent("Status")
-	if status and not status:CanPerformAction("Cast") then
-		return false, "silenced"
-	end
+    -- Recarrega folders
+    if not self.Entity:_loadFolders() then
+        return false
+    end
 
-	return true
+    self:LoadSkillsData()
+
+    -- Atualiza stats
+    local stats = self.Entity.GetStats()
+    self.Entity.SetSpeed(stats.Speed or 16)
+    self.Entity.SetJumpForce(stats.JumpPower or 50)
+
+    -- Atualiza HP
+    local health = self.Entity:GetComponent("Health")
+    if health and stats.MaxHP then
+        local ratio = health:GetHealthRatio()
+        health.MaxHP = stats.MaxHP
+        health:SetHP(stats.MaxHP * ratio) -- Mantém proporção
+    end
+
+    return true
+end
+
+
+
+function CombatComponent:GetChoosenChar()
+	return self.ChoosenChar
+end
+
+
+function CombatComponent:SetCharMode(Mode)
+
+    if self.Mode == Mode then return false end
+
+    self.Mode = Mode
+
+    -- Recarrega folders
+    if not self.Entity:_loadFolders() then
+        return false
+    end
+
+    self:LoadSkillsData()
+
+    -- Atualiza stats
+    local stats = self.Entity.GetStats()
+    self.Entity.SetSpeed(stats.Speed or 16)
+    self.Entity.SetJumpForce(stats.JumpPower or 50)
+
+    -- Atualiza HP
+    local health = self.Entity:GetComponent("Health")
+    if health and stats.MaxHP then
+        local ratio = health:GetHealthRatio()
+        health.MaxHP = stats.MaxHP
+        health:SetHP(stats.MaxHP * ratio) -- Mantém proporção
+    end
+
+    return true
+end
+
+
+
+function CombatComponent:GetCharMode()
+	return self.Mode
 end
 
 --=============================================================================
@@ -395,8 +446,11 @@ local ExposeAPI = {
 	HasActiveSkill = function(component, ...) return component:HasActiveSkill(...) end,
 	StopAllActiveSkills = function(component, ...) return component:StopAllActiveSkills(...) end,
 
-	-- Validation
-	CanCastSkill = function(component, ...) return component:CanCastSkill(...) end,
+	--Personagem/modo
+	GetChoosenChar = function(component,...) return component:GetChoosenChar(...) end,
+	SetChoosenChar = function(component,...) return component:SetChoosenChar(...) end,
+	GetCharMode = function(component,...) return component:GetCharMode(...) end,
+	SetCharMode = function(component,...) return component:SetCharMode(...) end,
 }
 
 return {
