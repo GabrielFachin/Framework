@@ -49,13 +49,16 @@ function HumanoidCharacter:GetRoot()
 	return self._root
 end
 
+
 function HumanoidCharacter:SetRoot(root)
 	self._root = root
 end
 
+
 function HumanoidCharacter:SetHumanoid(humanoid)
 	self._humanoid = humanoid
 end
+
 
 function HumanoidCharacter:GetHumanoid()
 	return self._humanoid
@@ -70,6 +73,8 @@ NPChar.__index = NPChar
 
 function NPChar.new(root)
 	local self = setmetatable({}, NPChar)
+
+	self._humanoid = nil
 
 	self._root = root
 
@@ -198,17 +203,26 @@ end
 
 --[[
 CreateCharacter, Função de criação de um novo wrapper de referências a partes essenciais da entidade
-@params tabela de dados {humanoid,root} TABLE
+@params tabela de dados {humanoid[1],root[2]} TABLE
 @return tabela de funções.
 ]]
 EntityWrapper.CreateCharacter = function(params)
-	if params.humanoid then
+	--[[
+	PARAMS
+	1 - Humanoid
+	2 -- Root
+	]]
+
+	print("PARAMS CREATE CHAR:",params)
+
+
+	if params[1] ~= nil then
 		warn("WRAPPER DE CHARACTER HUMANOIDE INSTANCIADO")
-		return HumanoidCharacter.new(params.humanoid,params.root)
+		return HumanoidCharacter.new(params[1],params[2])
 	else
 		-- NPC sem Humanoid
 		warn("WRAPPER DE CHARACTER NPC INSTANCIADO")
-		return NPChar.new(params.root)
+		return NPChar.new(params[2])
 	end
 end
 
@@ -217,17 +231,25 @@ end
 
 --[[
 CreateMovement, Função de criação de um novo wrapper de movimentação
-@params tabela de dados {humanoid, baseSpeed : Number, baseJump : number} TABLE
+@params tabela de dados {CharacterWrapper, baseSpeed : Number, baseJump : number} TABLE
 @return tabela de funções.
 ]]
 EntityWrapper.CreateMovement = function(params)
-	if params.characterWrapper:GetHumanoid() then 
+	--[[
+	PARAMS
+	1 - CharacterWrapper
+	2 -- Speed
+	3 -- JumpForce
+	]]
+
+	print("PARAMS CREATE MOV:",params)
+	if params[1]:GetHumanoid() then 
 		warn("WRAPPER DE MOVIMENTAÇÃO HUMANOIDE INSTANCIADO")
-		return HumanoidMovement.new(params.characterWrapper,params.baseSpeed,params.baseJump)
+		return HumanoidMovement.new(params[1],params[2],params[3])
 
 	else
 		warn("WRAPPER DE MOVIMENTAÇÃO NPC INSTANCIADO")
-		return NPCMovement.new(params.characterWrapper,params.baseSpeed,params.baseJump)
+		return NPCMovement.new(params[1],params[2],params[3])
 	end
 end
 

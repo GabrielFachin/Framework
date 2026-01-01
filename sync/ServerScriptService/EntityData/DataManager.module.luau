@@ -17,6 +17,8 @@ Caso Player, passar o Player Character (modelo do player), caso NPC, passar o mo
 ]]
 function DataManager.Create(Entity,components : {})
 
+	warn("===========VITALS============")
+
 	if not Entity then
 		warn("[DataManager] Entidade não recebida, func Create")
 		return nil
@@ -35,13 +37,15 @@ function DataManager.Create(Entity,components : {})
 	local core = EntityCore.new(Entity,entityType,id)
 
 
+	--DEBUG
+	local compList = {}
+
 	--Adiciona os componentes recebidos como argumento
 	for _,comp in pairs(components) do
 		core:AddComponent(comp)
-		local compList = {}
 		compList[#compList + 1] = comp
-		print("[DataManager] Componentes adicionados:", compList)
 	end
+	warn("[DataManager] Componentes adicionados:", compList)
 	core:ComponentsLoaded()
 
 	--Salva o EntityCore no mapa correto
@@ -62,6 +66,8 @@ function DataManager.Create(Entity,components : {})
 
 	Instance.new("StringValue", Entity.Model).Name = "ID"
 	Entity.Model.ID.Value = id
+
+	warn("===========VITALS END========")
 	
 	return core
 
@@ -110,7 +116,7 @@ function DataManager.CreateID(Entity)
 	if not Entity then return nil end
 
 	--Se a entidade for um player, então:
-	if Entity.Player:IsA("Player") then
+	if Entity.Player then
 
 		--Gera um ID baseado no UserID do Player
 		local id = "Player_" .. Entity.Player.UserId

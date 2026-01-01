@@ -190,9 +190,10 @@ function EntityCore.RegisterComponent(name : string, componentModule : {[string]
 		return
 	end
 
+
 	ComponentRegistry[name] = {
 		new = componentModule.new,
-		ExposeAPI = componentModule.ExposeAPI
+		ExposeAPI = componentModule.ExposeAPI,
 	}
 
 	print("[EntityCore] Componente registrado:", name)

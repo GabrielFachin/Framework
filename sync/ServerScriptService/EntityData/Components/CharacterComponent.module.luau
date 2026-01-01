@@ -94,6 +94,9 @@ Retorna um status especifico do char sendo usado
 ]]
 function CharacterComponent:GetStat(statName : string, default)
 	local stats = self:GetStats()
+	print(stats)
+	print(statName,stats[statName])
+	print(typeof(stats[statName]))
 	return stats[statName] or default
 end
 
@@ -110,24 +113,19 @@ function CharacterComponent:SetCharacter() : boolean
 
 	if self.CharacterWrap then return false end
 
-	local model 
-
-	if self.Entity.Instance:IsA("Model") then
-		model = self.Entity.Instance
-	else
-		model = self.Entity.Instance.Model
-	end
+	local model = self.Entity.Instance.Model
+	or self.Entity.Instance
 
 	local root = model:FindFirstChild("HumanoidRootPart")
 	or model.PrimaryPart
 	or model:FindFirstChildWichIsA("BasePart")
 
-	local humanoid = model:FindFirstChildWichIsA("Humanoid") or nil
+	local humanoid = model.Humanoid or nil
 
-		self.CharacterWrap = EntityWrapper.CreateCharacter({
-		humanoid,
-		root,
-		})
+	self.CharacterWrap = EntityWrapper.CreateCharacter({
+	humanoid,
+	root,
+	})
 
 	return true
 end
@@ -144,7 +142,7 @@ end
 Retorna o wrapper de dados de char da entidade
 @return Wrapper, tabela de funcs, TABLE
 ]]
-function CharacterComponent:GetWrapper()
+function CharacterComponent:GetCharacterWrapper()
 	return self.CharacterWrap
 end
 
@@ -229,7 +227,7 @@ local ExposeAPI = {
 
 	-- Character Model
 	SetCharacter = function(component, ...) return component:SetCharacter(...) end,
-	GetCharacter = function(component) return component:GetCharacter() end,
+	GetCharacterWrapper = function(component, ...) return component:GetCharacterWrapper(...) end,
 	GetRoot = function(component) return component:GetRoot() end,
 	GetHumanoid = function(component) return component:GetHumanoid() end,
 
@@ -241,7 +239,6 @@ local ExposeAPI = {
 	GetPosition = function(component) return component:GetPosition() end,
 	GetCFrame = function(component) return component:GetCFrame() end,
 	Teleport = function(component, ...) return component:Teleport(...) end,
-	GetWrapper = function(component, ...) return component:GetWrapper(...) end
 }
 
 return {

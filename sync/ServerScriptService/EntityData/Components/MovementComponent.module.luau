@@ -147,7 +147,7 @@ end
 function MovementComponent:SetMovement()
 
 	if self.MovementWrap then return false end 
-		local wrapper = self.Entity:GetWrapper()
+		local wrapper = self.Entity:GetCharacterWrapper()
 		local speed = self.Entity:GetStat("Speed")
 		local jumpForce = self.Entity:GetStat("JumpForce")
 		self.CharacterWrap = EntityWrapper.CreateMovement({
@@ -157,6 +157,10 @@ function MovementComponent:SetMovement()
 	})
 
 	return true
+end
+
+function MovementComponent:GetMovementWrapper()
+	return self.MovementWrapper
 end
 
 --[[
@@ -177,6 +181,8 @@ local ExposeAPI = {
 	IsMoving = function(component) return component:IsMoving() end,
 	CanMove = function(component) return component:CanMove() end,
 	GetSpeed = function(component) return component:GetSpeed() end,
+	SetMovement = function(component) return component:SetMovement() end,
+	GetMovementWrapper = function(component) return component:GetMovementWrapper() end
 }
 
 return {
