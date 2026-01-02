@@ -51,14 +51,10 @@ function SkillRunner.new(skillData,EC,name,type) --Instancia o SkillRunner como 
 	--=====FACILITADORES DE ACESSO=====--
 
 	self.anim = self.EC.Anim  									--Fácil acesso ao controlador de animações
-	self.charLib = self.lib.character[self.ED.ChosenChar] 		--Biblioteca de animações do char escolhido
+	self.charLib = self.lib.character[self.EC.GetChoosenChar()] --Biblioteca de animações do char escolhido
 	self.weaponHitbox = self.EC.GetHitbox()						--Facilita acesso ao wrapper da hitbox
 	self.hitPoint = self.EC.GetHitOrigin() 						--Origem de hitboxes criadas em runtime pela arma
 	self.weapon = self.EC.GetWeapon()						    --Arma sendo utilizada pelo player
-
-
-
-	self.weaponHitboxFolder = Storage.Assets.Hitboxes:FindFirstChild(self.EC) --Busca a pasta de hitboxes do personagem escolhido
 
 	
 	-- Facilita o acesso aos dados da skill.
