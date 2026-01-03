@@ -42,10 +42,10 @@ Aplica um status à entidade
 @param sourceSkill - SkillRunner responsável pela skill que aplicou o status ANY (opcional)
 @param ID - ID único do status STRING (opcional)
 @return ID do status STRING ou nil se não aplicado]]
-function StatusComponent:Apply(statusData : {}, duration : number?, sourceSkill : any?, ID : string?) : string?
+function StatusComponent:ApplyStatus(statusData : {}, duration : number?, sourceSkill : any?, ID : string?) : string?
 	-- Gera ID único se não fornecido
 	if not ID then
-		ID = self:generateUniqueId(sourceSkill and sourceSkill.skillName or "Generic")
+		ID = self:GenerateUniqueEffectID(sourceSkill and sourceSkill.skillName or "Generic")
 	end
 	
 	-- Prepara dados
@@ -130,7 +130,7 @@ function StatusComponent:Apply(statusData : {}, duration : number?, sourceSkill 
 		for name, entry in pairs(group) do
 			local entryMeta = entry.data and entry.data.data
 			if entryMeta and entryMeta.category == meta.category then
-				self:Remove(name)
+				self:RemoveStatus(name)
 			end
 		end
 	end
@@ -181,10 +181,10 @@ end
 --=============================================================================
 
 --[[
-Remove um status completamente pelo nome
+RemoveStatus um status completamente pelo nome
 @param name - Nome do status STRING
 ]]
-function StatusComponent:Remove(name : string)
+function StatusComponent:RemoveStatus(name : string)
 	for _, group in pairs(self.Statuses) do
 		local entry = group[name]
 		if not entry then continue end
@@ -211,7 +211,7 @@ end
 RemoveAmount
 @param name - Nome do status
 @param amount - Quantidade de instâncias a serem removidas
-Remove uma quantidade específica de instâncias de um status por nome
+RemoveStatus uma quantidade específica de instâncias de um status por nome
 ]]
 
 function StatusComponent:RemoveAmount(name: string, amount: number): boolean
@@ -263,19 +263,19 @@ function StatusComponent:RemoveAmount(name: string, amount: number): boolean
 end
 
 --[[
-RemoveByID
+RemoveStatusByID
 @param id - ID único do status/estado STRING
 @return sucesso BOOLEAN
-Remove um status/estado completamente pelo ID único
+RemoveStatus um status/estado completamente pelo ID único
 ]]
-function StatusComponent:RemoveByID(id : string) : boolean
+function StatusComponent:RemoveStatusByID(id : string) : boolean
 	local removed = false
 	
 	for groupName, group in pairs(self.Statuses) do
 		if groupName == "state" then
 			for name, entry in pairs(group) do
 				if entry.ID == id then
-					self:Remove(name)
+					self:RemoveStatus(name)
 					removed = true
 				end
 			end
@@ -283,7 +283,7 @@ function StatusComponent:RemoveByID(id : string) : boolean
 			for name, list in pairs(group) do
 				-- single entry
 				if list.ID == id then
-					self:Remove(name)
+					self:RemoveStatus(name)
 					removed = true
 
 				-- multiple entries (array-only)
@@ -326,7 +326,7 @@ function StatusComponent:_OnRunnerFinished(name : string, runner)
 	
 	-- Single runner
 	if list.runner then
-		self:Remove(name)
+		self:RemoveStatus(name)
 		return
 	end
 	
@@ -549,7 +549,7 @@ Retorna o contador de stacks de um status por nome
 @param name - Nome do status STRING
 @return contador - NUMBER
 ]]
-function StatusComponent:GetCounter(name : string) : number
+function StatusComponent:GetStatusCounter(name : string) : number
 	local list = self:GetStatus(name)
 	if not list then return 0 end
 	
@@ -566,7 +566,7 @@ Gera um ID único para um status
 @param sourceName - Nome da fonte STRING (opcional)
 @return ID único STRING
 ]]
-function StatusComponent:generateUniqueId(sourceName : string) : string
+function StatusComponent:GenerateUniqueEffectID(sourceName : string) : string
 	sourceName = sourceName or "Generic"
 	return sourceName .. "_" .. tostring(tick()):gsub("%.", "") .. "_" .. math.random(1000, 999999)
 end
@@ -583,7 +583,7 @@ function StatusComponent:ClearAll() : number
 	local removed = 0
 	for _, group in pairs(self.Statuses) do
 		for name in pairs(group) do
-			self:Remove(name)
+			self:RemoveStatus(name)
 			removed += 1
 		end
 	end
@@ -605,14 +605,14 @@ end
 --=============================================================================
 
 local ExposeAPI = {
-	Apply = function(component, ...) return component:Apply(...) end,
-	Remove = function(component, ...) return component:Remove(...) end,
-	RemoveByID = function(component, ...) return component:RemoveByID(...) end,
+	ApplyStatus = function(component, ...) return component:ApplyStatus(...) end,
+	RemoveStatus = function(component, ...) return component:RemoveStatus(...) end,
+	RemoveStatusByID = function(component, ...) return component:RemoveStatusByID(...) end,
 	GetStatus = function(component, ...) return component:GetStatus(...) end,
 	GetActiveTags = function(component) return component:GetActiveTags() end,               
 	ValidateHit = function(component, ...) return component:ValidateHit(...) end,           --??
-	GetCounter = function(component, ...) return component:GetCounter(...) end,
-	generateUniqueId = function(component, ...) return component:generateUniqueId(...) end,
+	GetStatusCounter = function(component, ...) return component:GetStatusCounter(...) end,
+	GenerateUniqueEffectID = function(component, ...) return component:GenerateUniqueEffectID(...) end,
 	CanContinue = function(component) return component:CanContinue() end,                  --??????
 	TrySelfCancel = function(component) return component:TrySelfCancel() end,              --?????
 }

@@ -140,7 +140,6 @@ end
 
 --Inicia a hitbox (caso ainda não ativa)
 function HitboxWrapper:StartHitbox(duration)
-	warn("LABUBU")
 	
 	if self.isActive then return false end
 	if next(self.hitboxConfigs) == nil then

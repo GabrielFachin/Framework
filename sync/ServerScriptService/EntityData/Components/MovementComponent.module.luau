@@ -25,7 +25,7 @@ function MovementComponent.new(entity, config)
 	self.Direction = Vector3.zero
 	self.LastDirection = Vector3.zero
 
-	self.MovementWrap = nil
+	self.MovementWrapper = nil
 
 	-- Tracking
 	self._tracked = false
@@ -96,13 +96,33 @@ Se desinscreve do controller de movimento
 function MovementComponent:StopTracking()
 	if not self._tracked then return end
 
-	local Storage = game:GetService("ServerStorage")
-	local MovementController = require(Storage.Modules.MovementController)
-
 	MovementController.Untrack(self.Entity)
 	self._tracked = false
 end
 
+--=============================================================================
+--  Wrapper
+--=============================================================================
+
+function MovementComponent:GetSpeed()
+	return self.MovementWrapper and self.MovementWrapper:GetSpeed()
+end
+
+function MovementComponent:SetSpeed(speed)
+	if self.MovementWrapper then
+		self.MovementWrapper:SetSpeed(speed)
+	end
+end
+
+function MovementComponent:GetJumpForce()
+	return self.MovementWrapper and self.MovementWrapper:GetJumpForce()
+end
+
+function MovementComponent:SetJumpForce(jump)
+	if self.MovementWrapper then
+		self.MovementWrapper:SetJumpForce(jump)
+	end
+end
 
 --=============================================================================
 --  LIFECYCLE
@@ -118,7 +138,7 @@ end
 
 function MovementComponent:SetMovement()
 
-	if self.MovementWrap then return false end 
+	if self.MovementWrapper then return false end 
 		local wrapper = self.Entity.GetCharacterWrapper()
 		local speed = self.Entity.GetStat("Speed")
 		local jumpForce = self.Entity.GetStat("JumpForce")
@@ -153,6 +173,9 @@ local ExposeAPI = {
 	IsMoving = function(component) return component:IsMoving() end,
 	CanMove = function(component) return component:CanMove() end,
 	GetSpeed = function(component) return component:GetSpeed() end,
+	SetSpeed = function(component) return component:GetSpeed() end,
+	GetJumpForce = function(component) return component:GetJumpForce() end,
+	SetJumpForce = function(component) return component:SetJumpForce() end,
 	SetMovement = function(component) return component:SetMovement() end,
 	GetMovementWrapper = function(component) return component:GetMovementWrapper() end
 }

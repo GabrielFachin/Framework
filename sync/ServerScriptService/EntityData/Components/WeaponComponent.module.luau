@@ -194,6 +194,33 @@ function WeaponComponent:HasWeapon()
 end
 
 --=============================================================================
+--  HITBOX PROXY
+--=============================================================================
+
+function WeaponComponent:StartHitbox(...)
+	return self.Hitbox and self.Hitbox:StartHitbox(...)
+end
+
+function WeaponComponent:StopHitbox()
+	if self.Hitbox then
+		self.Hitbox:StopHitbox()
+	end
+end
+
+function WeaponComponent:AddHitboxOwner(owner)
+	return self.Hitbox and self.Hitbox:AddOwner(owner)
+end
+
+function WeaponComponent:RemoveHitboxOwner(owner)
+	return self.Hitbox and self.Hitbox:RemoveOwner(owner)
+end
+
+function WeaponComponent:IsHitboxActive()
+	return self.Hitbox and self.Hitbox:IsHitboxActive()
+end
+
+
+--=============================================================================
 --  UTILITY
 --=============================================================================
 
@@ -234,14 +261,30 @@ end
 --=============================================================================
 
 local ExposeAPI = {
-	EquipWeapon = function(component, ...) return component:EquipWeapon(...) end,
+	-- Weapon 
+	EquipWeapon   = function(component, ...) return component:EquipWeapon(...) end,
 	UnequipWeapon = function(component) return component:UnequipWeapon() end,
-	GetWeapon = function(component) return component:GetWeapon() end,
+	GetWeapon     = function(component) return component:GetWeapon() end,
 	GetWeaponName = function(component) return component:GetWeaponName() end,
-	GetHitOrigin = function(component) return component:GetHitOrigin() end,
-	GetHitbox = function(component) return component:GetHitbox() end,
-	HasWeapon = function(component) return component:HasWeapon() end,
+	GetHitOrigin  = function(component) return component:GetHitOrigin() end,
+	GetHitbox     = function(component) return component:GetHitbox() end,
+	HasWeapon     = function(component) return component:HasWeapon() end,
+
+	-- Utility 
+	GetWeaponPosition = function(component) return component:GetWeaponPosition() end,
+	GetWeaponCFrame   = function(component) return component:GetWeaponCFrame() end,
+
+	-- Hitbox proxy 
+	StartHitbox        = function(component, ...) return component:StartHitbox(...) end,
+	StopHitbox         = function(component) return component:StopHitbox() end,
+	DestroyHitbox      = function(component) return component:DestroyHitbox() end,
+	AddHitboxOwner     = function(component, owner) return component:AddHitboxOwner(owner) end,
+	RemoveHitboxOwner  = function(component, owner) return component:RemoveHitboxOwner(owner) end,
+	IsHitboxActive     = function(component) return component:IsHitboxActive() end,
+	GetActiveHitboxes  = function(component) return component:GetActiveHitboxes() end,
+	GetHitboxConfigs   = function(component) return component:GetHitboxConfigs() end,
 }
+
 
 return {
 	new = WeaponComponent.new,

@@ -394,6 +394,8 @@ function CombatComponent:GetCharMode()
 	return self.Mode
 end
 
+
+
 --=============================================================================
 --  LIFECYCLE
 --=============================================================================
@@ -404,9 +406,6 @@ Função de inicialização do componente, tenta carregar skills automaticamente
 function CombatComponent:OnAdded()
 	-- Tenta carregar skills automaticamente
 		self:LoadSkillsData()
-		warn("ABACAXI ANTES")
-		self.Entity.SetSpeed(16)
-		warn("ABACAXI DEPOIS")
 end
 
 

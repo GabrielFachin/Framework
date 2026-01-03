@@ -50,10 +50,11 @@ function SkillRunner.new(skillData,Entity,name,type) --Instancia o SkillRunner c
 
 	--=====FACILITADORES DE ACESSO=====--
 
-	self.charLib = self.lib.character[self.Entity.GetChosenChar()] --Biblioteca de animações do char escolhido
-	self.weaponHitbox = self.Entity.GetHitbox()						--Facilita acesso ao wrapper da hitbox
+	if self.Entity then 
+	self.charLib = self.lib.character[self.Entity.GetChosenChar()]  --Biblioteca de animações do char escolhido
 	self.hitPoint = self.Entity.GetHitOrigin() 						--Origem de hitboxes criadas em runtime pela arma
 	self.weapon = self.Entity.GetWeapon()						    --Arma sendo utilizada pelo player
+	end
 
 	
 	-- Facilita o acesso aos dados da skill.
@@ -62,7 +63,6 @@ function SkillRunner.new(skillData,Entity,name,type) --Instancia o SkillRunner c
 	self.utils     = skillData.utils or {}
 	
 	
-	assert(Entity and Entity.AddActiveSkill, "SkillRunner recebeu Entity inválido")
 	
 	return self
 end
@@ -78,9 +78,14 @@ function SkillRunner:start()
 	
 	self.state = STATES.Casting --Estado de inicialização da skill
 
-	self.Entity:AddOwner(self) --Informa que o dono da skill é esse skillRunner, permitindo que o wrapper chame o onHit direto por aqui
-	
-	self.Entity:AddActiveSkill(self.skillName,self)
+
+	if self.Entity then
+	self.Entity:AddActiveSkill(self.skillName,self)	
+		 if self.Entity:HasComponent(self.Entity.ComponentKey.Weapon) then
+			self.Entity:AddHitboxOwner(self) --Informa que o dono da skill é esse skillRunner, permitindo que o wrapper chame o onHit direto por aqui
+		end
+	end
+
 	
 	--Confere se existe onStart na skill, se sim, roda
 	if self.skillData.callbacks.onStart then
@@ -173,9 +178,12 @@ function SkillRunner:endSkill(cancel)
 		self.connection = nil
 	end
 	
-	self.weaponHitbox:RemoveOwner(self) --Limpa a hitbox
-
-	self.Entity:RemoveActiveSkill(self.skillName, self)
+	if self.Entity then
+		self.Entity:RemoveActiveSkill(self.skillName, self)
+		if self.Entity:HasComponent(self.Entity.ComponentKey.Weapon) then
+			self.Entity:RemoveHitboxOwner(self) --Limpa a hitbox
+	end
+end
 
 
 	if cancel then

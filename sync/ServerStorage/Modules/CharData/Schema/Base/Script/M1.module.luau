@@ -32,20 +32,17 @@ local Skill = {
 			
 			self.Entity.PlayAnimation(self.M1Start)
 			
-			--local statsTable = self.statusTable
+			local statsTable = self.statusTable
 
-			--self.control = statsTable.States.noControl
+			self.control = statsTable.States.noControl
 
-			--self.state = statsTable.PlayerStates.Out.cast
+			self.state = statsTable.PlayerStates.Out.cast
 			 
 
 			--Gera o primeiro ID do pacote de estados (usado pra controle), esse ID  será usado como parametro no resto dos estados de controle pra serem removidos juntos ao fim do m1!
-			--self.stateID = self.Entity.ApplyStatus(self.state,self.Entity, 9999, self)
+			self.stateID = self.Entity.ApplyStatus(self.state,self.Entity, 9999, self)
 
-			--self.Entity.ApplyStatus(self.control,self.Entity,5,self,self.stateID)
-
-			print(self.Entity)
-			
+			self.Entity.ApplyStatus(self.control,self.Entity,5,self,self.stateID)			
 			
 			self.Entity.StartHitbox(self.data.duration)
 			
@@ -73,7 +70,7 @@ local Skill = {
 			local signal = self.Entity.WaitForMarker(self.M1Start,"End")
 			if signal then
 				self.Entity.StopAnimation(self.M1Start,0.2)
-				--self.Entity.RemoveID(stateID)
+				self.Entity.RemoveID(self.stateID)
 				self.Entity.StopHitbox()
 				
 				end
@@ -83,7 +80,7 @@ local Skill = {
 				local signal = self.Entity.WaitForMarker(self.M1S2,"End")
 				if signal then
 						self.Entity.StopAnimation(false)
-						--self.Entity:RemoveID(self.stateID)
+						self.Entity:RemoveID(self.stateID)
 						self.Entity:StopHitbox()
 				end
 
@@ -102,9 +99,9 @@ local Skill = {
 				
 				warn("ESTAGIO 2!")
 				
-				--self.Entity.ApplyStatus(self.state,self.ED, 9999, self,self.stateID)
+				self.Entity.ApplyStatus(self.state,self.ED, 9999, self,self.stateID)
 
-				--self.Entity.ApplyStatus(self.control,self.ED,5,self,self.stateID)
+				self.Entity.ApplyStatus(self.control,self.ED,5,self,self.stateID)
 				
 				self.Entity.StartHitbox(self.data.duration,function(hitResult) self:onHit(hitResult.target, hitResult)end)
 				
