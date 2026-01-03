@@ -55,8 +55,6 @@ function WeaponComponent:EquipWeapon(weaponName : string) : boolean
 
 	local char = self.Entity.Instance
 	local chosenChar = self.Entity:GetChosenChar()
-	print(char)
-	print(chosenChar)
 
 	-- Busca arma na pasta de assets
 	local weaponFolder = RS.Assets.Weapons:FindFirstChild(chosenChar)

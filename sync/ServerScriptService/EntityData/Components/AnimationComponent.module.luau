@@ -176,7 +176,7 @@ Carrega e toca uma animação
 @param speed - Velocidade de playback NUMBER (opcional, padrão 1)
 @return AnimationTrack ou nil
 ]]
-function AnimationComponent:Play(
+function AnimationComponent:PlayAnimation(
 	animId : string | number,
 	key : string?,
 	fadeTime : number?,
@@ -194,7 +194,7 @@ function AnimationComponent:Play(
 	
 	-- Para animação anterior nessa key
 	if self.Tracks[key] then
-		self:Stop(key, fadeTime)
+		self:StopAnimation(key, fadeTime)
 	end
 	
 	-- Carrega animação
@@ -208,7 +208,7 @@ function AnimationComponent:Play(
 	track:AdjustSpeed(speed)
 	
 	-- Toca
-	track:Play(fadeTime)
+	track:PlayAnimation(fadeTime)
 	
 	-- Armazena
 	self.Tracks[key] = track
@@ -227,12 +227,12 @@ Para uma animação específica
 @param key - Chave da track STRING
 @param fadeTime - Tempo de fade out NUMBER (opcional, padrão 0.1)
 ]]
-function AnimationComponent:Stop(key : string, fadeTime : number?)
+function AnimationComponent:StopAnimation(key : string, fadeTime : number?)
 	local track = self.Tracks[key]
 	if not track then return end
 	
 	fadeTime = fadeTime or 0.1
-	track:Stop(fadeTime)
+	track:StopAnimation(fadeTime)
 	
 	self.Tracks[key] = nil
 end
@@ -241,12 +241,12 @@ end
 Para todas as animações ativas
 @param fadeTime - Tempo de fade out NUMBER (opcional, padrão 0.1)
 ]]
-function AnimationComponent:StopAll(fadeTime : number?)
+function AnimationComponent:StopAllAnimations(fadeTime : number?)
 	fadeTime = fadeTime or 0.1
 	
 	for key, track in pairs(self.Tracks) do
 		if track and track.IsPlaying then
-			track:Stop(fadeTime)
+			track:StopAnimation(fadeTime)
 		end
 	end
 	
@@ -294,7 +294,7 @@ function AnimationComponent:PlaySequence(sequence: {SequenceStep}, index: number
 	
 	if not step then return end
 	
-	local track = self:Play(
+	local track = self:PlayAnimation(
 		step.id,
 		step.key,
 		step.fade,
@@ -440,7 +440,7 @@ function AnimationComponent:PlayFromLib(
 	
 	key = key or (categoryName .. "_" .. animName)
 	
-	return self:Play(animId, key, fadeTime)
+	return self:PlayAnimation(animId, key, fadeTime)
 end
 
 --[[
@@ -535,7 +535,7 @@ Destrói o componente, limpando todas as animações e conexões
 ]]
 function AnimationComponent:Destroy()
 	-- Para todas as animações
-	self:StopAll(0)
+	self:StopAllAnimations(0)
 	
 	-- Desconecta todos os sinais
 	for _, connection in ipairs(self._connections) do
@@ -563,9 +563,9 @@ end
 
 local ExposeAPI = {
 	-- Core
-	Play = function(component, ...) return component:Play(...) end,
-	Stop = function(component, ...) return component:Stop(...) end,
-	StopAll = function(component, ...) return component:StopAll(...) end,
+	PlayAnimation = function(component, ...) return component:PlayAnimation(...) end,
+	StopAnimation = function(component, ...) return component:StopAnimation(...) end,
+	StopAllAnimations = function(component, ...) return component:StopAllAnimations(...) end,
 	AdjustSpeed = function(component, ...) return component:AdjustSpeed(...) end,
 	AdjustWeight = function(component, ...) return component:AdjustWeight(...) end,
 	

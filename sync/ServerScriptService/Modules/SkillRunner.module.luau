@@ -15,7 +15,7 @@ local STATES = {  				--Breakpoints do ciclo de vida da skill
 }
 
 
-function SkillRunner.new(skillData,EC,name,type) --Instancia o SkillRunner como um objeto responsável de criar a habilidade junto do EntityData para as skills utilizarem
+function SkillRunner.new(skillData,Entity,name,type) --Instancia o SkillRunner como um objeto responsável de criar a habilidade junto do EntityData para as skills utilizarem
 
 	--================VÁRIAVEIS(FACILITAÇÃO DE ACESSO)===================--
 
@@ -33,7 +33,7 @@ function SkillRunner.new(skillData,EC,name,type) --Instancia o SkillRunner como 
 	--=====DADOS VITAIS=====--
 
 	self.skillData = skillData   --Informações extras da skill que vai rodar
-	self.EC = EC				 --Tabela de dados do player que usou a habilidade
+	self.Entity = Entity				 --Tabela de dados do player que usou a habilidade
 
 
 
@@ -50,10 +50,10 @@ function SkillRunner.new(skillData,EC,name,type) --Instancia o SkillRunner como 
 
 	--=====FACILITADORES DE ACESSO=====--
 
-	self.charLib = self.lib.character[self.EC.GetChosenChar()] --Biblioteca de animações do char escolhido
-	self.weaponHitbox = self.EC.GetHitbox()						--Facilita acesso ao wrapper da hitbox
-	self.hitPoint = self.EC.GetHitOrigin() 						--Origem de hitboxes criadas em runtime pela arma
-	self.weapon = self.EC.GetWeapon()						    --Arma sendo utilizada pelo player
+	self.charLib = self.lib.character[self.Entity.GetChosenChar()] --Biblioteca de animações do char escolhido
+	self.weaponHitbox = self.Entity.GetHitbox()						--Facilita acesso ao wrapper da hitbox
+	self.hitPoint = self.Entity.GetHitOrigin() 						--Origem de hitboxes criadas em runtime pela arma
+	self.weapon = self.Entity.GetWeapon()						    --Arma sendo utilizada pelo player
 
 	
 	-- Facilita o acesso aos dados da skill.
@@ -62,7 +62,7 @@ function SkillRunner.new(skillData,EC,name,type) --Instancia o SkillRunner como 
 	self.utils     = skillData.utils or {}
 	
 	
-	assert(EC and EC.AddActiveSkill, "SkillRunner recebeu EC inválido")
+	assert(Entity and Entity.AddActiveSkill, "SkillRunner recebeu Entity inválido")
 	
 	return self
 end
@@ -175,7 +175,7 @@ function SkillRunner:endSkill(cancel)
 	
 	self.weaponHitbox:RemoveOwner(self) --Limpa a hitbox
 
-	self.Entity:removeSkill(self.skillName, self)
+	self.Entity:RemoveActiveSkill(self.skillName, self)
 
 
 	if cancel then

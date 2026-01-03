@@ -13,8 +13,8 @@ local Skill = {
 --		# Local Utils
 
 		clearControl = function(runner,stateID)
-			runner.anim:StopAll(0.2)
-			runner.cd:RemoveID(stateID)
+			runner.Entity:StopAllAnimations(0.2)
+			runner.Entity:RemoveID(stateID)
 		end,
 		
 		
@@ -29,8 +29,8 @@ local Skill = {
 			M1Start = self.charLib.M1.M1Start
 			M1S2 = self.charLib.M1.M1S2
 			
-			
-			self.anim:Play(M1Start)
+			local keyM1 = tostring(M1Start)
+			self.Entity:PlayAnimation(M1Start)
 			
 			local statsTable = self.statusTable
 
@@ -40,12 +40,12 @@ local Skill = {
 			 
 
 			--Gera o primeiro ID do pacote de estados (usado pra controle), esse ID  será usado como parametro no resto dos estados de controle pra serem removidos juntos ao fim do m1!
-			stateID = self.cd:ApplyStatus(state,self.ED, 9999, self)
+			stateID = self.Entity:ApplyStatus(state,self.Entity, 9999, self)
 
-			self.cd:ApplyStatus(control,self.ED,5,self,stateID)
+			self.Entity:ApplyStatus(control,self.Entity,5,self,stateID)
 			
 			
-			self.weaponHitbox:Start(self.data.duration)
+			self.Entity:StartHitbox(self.data.duration)
 			
 			
 		end,
@@ -53,16 +53,14 @@ local Skill = {
 		
 		onHit = function(self,hitResult)
 			
-			local targetED = hitResult.target
+			local targetEntity = hitResult.target
 			
 			print(self)
 
-			print(targetED)
+			print(targetEntity)
 
-			print(self.cd)
-
-			if self.cd:TryHit(targetED,{}) then
-			targetED.CombatData:ApplyDamage(damage,self)
+			if self.Entity:TryHit(targetEntity,{}) then
+			targetEntity:ApplyDamage(damage,self)
 			end
 
 		end,
@@ -71,22 +69,22 @@ local Skill = {
 		onStep = function(self, dt)
 			
 			if self.counter == 1 then
-			local signal = self.anim:GetAnimMark(M1Start,"End")
+			local signal = self.Entity:GetMarkerSignal(M1Start,"End")
 			if signal then signal:Once(function()
-						self.anim:Stop(M1Start,0.2)
-						self.cd:RemoveID(stateID)
-						self.weaponHitbox:Stop()
+						self.Entity:StopAnimation(M1Start,0.2)
+						self.Entity:RemoveID(stateID)
+						self.Entity:StopHitbox()
 				
 				end)
 			end
 			elseif self.counter == 2 then
 				
 				
-				local signal = self.anim:GetAnimMark(M1S2,"End")
+				local signal = self.Entity:GetMarkerSignal(M1S2,"End")
 				if signal then signal:Once(function()
-						self:Stop(false)
+						self:StopAnimation(false)
 						self.cd:RemoveID(stateID)
-						self.weaponHitbox:Stop()
+						self.weaponHitbox:StopHitbox()
 
 					end)
 				end
@@ -102,15 +100,15 @@ local Skill = {
 		onRecast = function(self)
 			self.counter += 1
 			if self.counter == 2 then
-				self.anim:Play(M1S2)
+				self.Entity:PlayAnimation(M1S2)
 				
 				warn("ESTAGIO 2!")
 				
-				self.cd:ApplyStatus(state,self.ED, 9999, self,stateID)
+				self.Entity:ApplyStatus(state,self.ED, 9999, self,stateID)
 
-				self.cd:ApplyStatus(control,self.ED,5,self,stateID)
+				self.Entity:ApplyStatus(control,self.ED,5,self,stateID)
 				
-				self.weaponHitbox:Start(self.data.duration,function(hitResult) self:onHit(hitResult.target, hitResult)end)
+				self.Entity:StartHitbox(self.data.duration,function(hitResult) self:onHit(hitResult.target, hitResult)end)
 				
 				damage = 3
 				

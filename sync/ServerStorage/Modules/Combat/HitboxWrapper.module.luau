@@ -1,13 +1,13 @@
 local IHitbox = {}
 
-function IHitbox:Start(duration: number) end
-function IHitbox:Stop() end
+function IHitbox:StartHitbox(duration: number) end
+function IHitbox:StopHitbox() end
 
 function IHitbox:AddOwner(owner: any) end
 function IHitbox:RemoveOwner(owner: any) end
 
-function IHitbox:IsActive() end
-function IHitbox:Destroy() end
+function IHitbox:IsHitboxActive() end
+function IHitbox:DestroyHitbox() end
  
  local HitboxWrapper = {}
 HitboxWrapper.__index = HitboxWrapper
@@ -139,7 +139,7 @@ end
 
 
 --Inicia a hitbox (caso ainda não ativa)
-function HitboxWrapper:Start(duration)
+function HitboxWrapper:StartHitbox(duration)
 	
 	if self.isActive then return false end
 	if next(self.hitboxConfigs) == nil then
@@ -214,7 +214,7 @@ function HitboxWrapper:_returnHitbox(name: string, hitbox)
 		hitbox:HitStop()
 		table.insert(hitboxPool[poolKey], hitbox)
 	else
-		hitbox:Destroy()
+		hitbox:DestroyHitbox()
 	end
 
 	self.activeHitboxes[name] = nil
@@ -279,7 +279,7 @@ function HitboxWrapper:_getTargetEntity(hitInstance: Instance)
 end
 
 --Desativa a hitbox
-function HitboxWrapper:Stop()
+function HitboxWrapper:StopHitbox()
 	if not self.isActive then return end
 
 	for name, hitbox in pairs(self.activeHitboxes) do
@@ -294,8 +294,8 @@ end
 
 
 --Destrói a hitbox
-function HitboxWrapper:Destroy()
-	self:Stop()
+function HitboxWrapper:DestroyHitbox()
+	self:StopHitbox()
 	self.Entity = nil
 	self.weapon = nil
 	self.raycastParams = nil
@@ -306,7 +306,7 @@ function HitboxWrapper.ClearPool()
 	local totalDestroyEntity = 0
 	for poolKey, pool in pairs(hitboxPool) do
 		for _, hitbox in ipairs(pool) do
-			hitbox:Destroy()
+			hitbox:DestroyHitbox()
 			totalDestroyEntity += 1
 		end
 	end
@@ -333,16 +333,16 @@ end
 local ExposeAPI = {
 
 	-- Lifecycle
-	Start = function(component, ...) return component:Start(...) end,
-	Stop = function(component) return component:Stop() end,
-	Destroy = function(component) return component:Destroy() end,
+	StartHitbox = function(component, ...) return component:StartHitbox(...) end,
+	StopHitbox = function(component) return component:StopHitbox() end,
+	DestroyHitbox = function(component) return component:DestroyHitbox() end,
 
 	-- Owner (referência pra callback onHit da skill que inicializou a hitbox)
 	AddOwner = function(component, owner) return component:AddOwner(owner) end,
 	RemoveOwner = function(component, owner) return component:RemoveOwner(owner) end,
 
 	-- State
-	IsActive = function(component) return component.isActive == true end,
+	IsHitboxActive = function(component) return component.isActive == true end,
 
 	-- Debug / Utils
 	GetActiveHitboxes = function(component) return component.activeHitboxes end,
