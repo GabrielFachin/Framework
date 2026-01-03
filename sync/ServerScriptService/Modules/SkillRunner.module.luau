@@ -73,21 +73,20 @@ end
 
 function SkillRunner:start()
 	
-	
 	--Conecta com o heartbeat global para rodar o onStep
 	self.connection.Register(self,self.type)
 	
 	self.state = STATES.Casting --Estado de inicialização da skill
 
-	self.weaponHitbox:AddOwner(self) --Informa que o dono da skill é esse skillRunner, permitindo que o wrapper chame o onHit direto por aqui
+	self.Entity:AddOwner(self) --Informa que o dono da skill é esse skillRunner, permitindo que o wrapper chame o onHit direto por aqui
+	
+	self.Entity:AddActiveSkill(self.skillName,self)
 	
 	--Confere se existe onStart na skill, se sim, roda
 	if self.skillData.callbacks.onStart then
 		self.skillData.callbacks.onStart(self) --Executa onStart tendo acesso aos dados do SkillRuner, útil pra alterações e intarções durante Runtime
 	end
 	
-	
-	self.Entity:addSkill(self.skillName,self)
 end
 
 
@@ -162,6 +161,7 @@ end
 
 --Finaliza a skill
 function SkillRunner:endSkill(cancel)
+	warn("ENCERRANDO SKILL")
 	
 	if self.state == STATES.Ended then return end
 	self.state = STATES.Ended

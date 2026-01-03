@@ -53,9 +53,8 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 		
 		if not entityCore.CanContinue() then --Testa se a skill poderia cancelar a anterior (caso tenha uma ativa e o player tenha um estado)
 			warn("Skill não pode rodar")
-			return
+			return false
 		end
-		
 		
 		
 		--Se já tiver uma instância ativa dessa skill
@@ -75,9 +74,9 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 					if handled then --Se um recast for encontrado, então:
 						entityCore.CombatData:TrySelfCancel() --tenta cancelar a skill atual
 						runner:Recast() --Roda o recast
-						return end
+						return false end
 				end
-				return
+				return false
 			end
 		end
 			

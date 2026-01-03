@@ -176,13 +176,7 @@ Carrega e toca uma animação
 @param speed - Velocidade de playback NUMBER (opcional, padrão 1)
 @return AnimationTrack ou nil
 ]]
-function AnimationComponent:PlayAnimation(
-	animId : string | number,
-	key : string?,
-	fadeTime : number?,
-	weight : number?,
-	speed : number?
-) : AnimationTrack?
+function AnimationComponent:PlayAnimation(animId : string | number, key : string?, fadeTime : number?, weight : number?, speed : number?) : AnimationTrack?
 	if not self.Animator then
 		warn("[AnimationComponent] Animator não inicializado")
 		return nil
@@ -208,7 +202,7 @@ function AnimationComponent:PlayAnimation(
 	track:AdjustSpeed(speed)
 	
 	-- Toca
-	track:PlayAnimation(fadeTime)
+	track:Play(fadeTime)
 	
 	-- Armazena
 	self.Tracks[key] = track
@@ -232,7 +226,7 @@ function AnimationComponent:StopAnimation(key : string, fadeTime : number?)
 	if not track then return end
 	
 	fadeTime = fadeTime or 0.1
-	track:StopAnimation(fadeTime)
+	track:Stop(fadeTime)
 	
 	self.Tracks[key] = nil
 end
@@ -246,7 +240,7 @@ function AnimationComponent:StopAllAnimations(fadeTime : number?)
 	
 	for key, track in pairs(self.Tracks) do
 		if track and track.IsPlaying then
-			track:StopAnimation(fadeTime)
+			track:Stop(fadeTime)
 		end
 	end
 	
@@ -429,12 +423,7 @@ Toca animação da biblioteca
 Exemplo:
 PlayFromLib("M1", "M1Start", nil, 0.1)
 ]]
-function AnimationComponent:PlayFromLib(
-	categoryName : string,
-	animName : string,
-	key : string?,
-	fadeTime : number?
-) : AnimationTrack?
+function AnimationComponent:PlayFromLib( categoryName : string, animName : string, key : string?, fadeTime : number?) : AnimationTrack?
 	local animId = self:GetLibAnimId(categoryName, animName)
 	if not animId then return nil end
 	
