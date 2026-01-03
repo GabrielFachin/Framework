@@ -58,7 +58,7 @@ function HealthComponent:TakeDamage(amount : number, source : any, flags : {[str
 	end
 	
 	-- Se tem StatusComponent, valida o hit e aplica modificadores
-	local statusComp = self.Entity:GetComponent("Status")
+	local statusComp = self.Entity:GetComponent(self.Entity.ComponentKey.Status)
 	if statusComp then
 		local canHit, reason = statusComp:ValidateHit(source, flags)
 		if not canHit then

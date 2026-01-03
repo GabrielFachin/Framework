@@ -3,7 +3,7 @@
 ]]
 
 local EntityCore = {}
-EntityCore.Components = {}
+EntityCore.ComponentKey = {}
 EntityCore.__index = EntityCore
 
 -- Registry de componentes
@@ -250,13 +250,13 @@ local function AutoRegisterComponents()
 			if success then													--Se conseguiu
 				local name = componentModule.Name:gsub("Component", "")		--Pega o nome do componente sem o sufixo "Component" (gsub substitui a string)
 				EntityCore.RegisterComponent(name, component)				--Registra o componente no EntityCore
-				EntityCore.Components[name] = name							--Adiciona o nome do componente no enum  EntityCore.Components
+				EntityCore.ComponentKey[name] = name							--Adiciona o nome do componente no enum  EntityCore.Components
 			else
 				warn("[EntityCore] Erro ao carregar componente:", componentModule.Name)
 			end
 		end
 	end
-	EntityCore.Components = table.freeze(EntityCore.Components)				--Freeze o enum pra eviltar alterações em runtime
+	EntityCore.ComponentKey = table.freeze(EntityCore.ComponentKey)				--Freeze o enum pra eviltar alterações em runtime
 end
 
 -- Chama auto-registro

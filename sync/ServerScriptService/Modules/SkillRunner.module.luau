@@ -50,8 +50,7 @@ function SkillRunner.new(skillData,EC,name,type) --Instancia o SkillRunner como 
 
 	--=====FACILITADORES DE ACESSO=====--
 
-	self.anim = self.EC.Anim  									--Fácil acesso ao controlador de animações
-	self.charLib = self.lib.character[self.EC.GetChoosenChar()] --Biblioteca de animações do char escolhido
+	self.charLib = self.lib.character[self.EC.GetChosenChar()] --Biblioteca de animações do char escolhido
 	self.weaponHitbox = self.EC.GetHitbox()						--Facilita acesso ao wrapper da hitbox
 	self.hitPoint = self.EC.GetHitOrigin() 						--Origem de hitboxes criadas em runtime pela arma
 	self.weapon = self.EC.GetWeapon()						    --Arma sendo utilizada pelo player
@@ -88,7 +87,7 @@ function SkillRunner:start()
 	end
 	
 	
-	self.ED:addSkill(self.skillName,self)
+	self.Entity:addSkill(self.skillName,self)
 end
 
 
@@ -176,7 +175,7 @@ function SkillRunner:endSkill(cancel)
 	
 	self.weaponHitbox:RemoveOwner(self) --Limpa a hitbox
 
-	self.ED:removeSkill(self.skillName, self)
+	self.Entity:removeSkill(self.skillName, self)
 
 
 	if cancel then

@@ -41,7 +41,7 @@ Carrega as pastas de dados do personagem
 @return sucesso BOOLEAN
 ]]
 function CharacterComponent:_LoadFolders() : boolean
-	local combatComp = self.Entity:GetComponent("Combat")
+	local combatComp = self.Entity:GetComponent(self.Entity.ComponentKey.Combat)
 	if not combatComp then
 		warn("[CharacterComponent] entidade não tem componente de combate:", self.Entity)
 		return false
@@ -120,7 +120,7 @@ function CharacterComponent:SetCharacter(Entity) : boolean
 	else
 		root = model.PrimaryPart
 		humanoid = nil
-		or model:FindFirstChildWichIsA("BasePart")
+		or model:FindFirstChildWhichIsA("BasePart")
 	end
 
 	self.CharacterWrap = EntityWrapper.CreateCharacter({

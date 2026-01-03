@@ -4072,40 +4072,6 @@
           ]
         },
         {
-          "name": "Terrain",
-          "className": "Terrain"
-        },
-        {
-          "name": "SpawnLocation",
-          "className": "SpawnLocation",
-          "children": [
-            {
-              "name": "Decal",
-              "className": "Decal"
-            }
-          ]
-        },
-        {
-          "name": "Camera",
-          "className": "Camera",
-          "children": [
-            {
-              "name": "ShapecastHitboxHelper",
-              "className": "Folder",
-              "children": [
-                {
-                  "name": "CurrentObject",
-                  "className": "ObjectValue"
-                }
-              ]
-            },
-            {
-              "name": "ShapecastSelector",
-              "className": "Part"
-            }
-          ]
-        },
-        {
           "name": "martelo",
           "className": "Model",
           "children": [
@@ -4174,6 +4140,40 @@
                   "className": "WeldConstraint"
                 }
               ]
+            }
+          ]
+        },
+        {
+          "name": "Terrain",
+          "className": "Terrain"
+        },
+        {
+          "name": "SpawnLocation",
+          "className": "SpawnLocation",
+          "children": [
+            {
+              "name": "Decal",
+              "className": "Decal"
+            }
+          ]
+        },
+        {
+          "name": "Camera",
+          "className": "Camera",
+          "children": [
+            {
+              "name": "ShapecastHitboxHelper",
+              "className": "Folder",
+              "children": [
+                {
+                  "name": "CurrentObject",
+                  "className": "ObjectValue"
+                }
+              ]
+            },
+            {
+              "name": "ShapecastSelector",
+              "className": "Part"
             }
           ]
         }
@@ -5213,6 +5213,13 @@
           "className": "Folder",
           "children": [
             {
+              "name": "EntityData",
+              "className": "ModuleScript",
+              "filePaths": [
+                "sync/ServerScriptService/EntityData/EntityData.module.luau"
+              ]
+            },
+            {
               "name": "DataManager",
               "className": "ModuleScript",
               "filePaths": [
@@ -5300,13 +5307,6 @@
                     "sync/ServerScriptService/EntityData/Components/AnimationComponent.module.luau"
                   ]
                 }
-              ]
-            },
-            {
-              "name": "EntityData",
-              "className": "ModuleScript",
-              "filePaths": [
-                "sync/ServerScriptService/EntityData/EntityData.module.luau"
               ]
             }
           ]

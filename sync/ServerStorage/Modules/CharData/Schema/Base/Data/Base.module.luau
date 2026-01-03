@@ -3,7 +3,7 @@ local CharData = {
 	MaxHP = 10,
 	Speed = 200,
 	JumpForce = 5000,	
-	weapon = "martelo",
+	Weapon = "martelo",
 	attachTo = "Right Arm"
 	
 }

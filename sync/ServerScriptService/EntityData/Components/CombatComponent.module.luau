@@ -96,7 +96,7 @@ Devevolve o script (não requirido) da skill no índice fornecido
 @param name - nome da skill STRING (opcional, se fornecido, ignora index)
 ]]
 function CombatComponent:GetSkillScript(index : number?, name : string?) : Instance?
-	local charComp = self.Entity:GetComponent("Character")
+	local charComp = self.Entity:GetComponent(self.Entity.ComponentKey.Character)
 	if not charComp then return nil end
 
 		local skillName = name or self:GetSkillName(index)
@@ -119,7 +119,7 @@ Devevolve o módulo (requirido) da skill pelo nome ou index
 @return módulo da skill TABLE ou nil se não encontrado
 ]]
 function CombatComponent:GetSkillData(skillName : string, index : number?) : any?
-	local charComp = self.Entity:GetComponent("Character")
+	local charComp = self.Entity:GetComponent(self.Entity.ComponentKey.Character)
 	if not charComp or not charComp._formFolder then return nil end
 
 	skillName = skillName or self:GetSkillName(index)
@@ -324,10 +324,10 @@ end
 --  CHARACTER E FORMAS
 --=============================================================================
 
-function CombatComponent:SetChoosenChar(Char)
- if self.ChoosenChar == Char then return false end
+function CombatComponent:SetChosenChar(Char)
+ if self.ChosenChar == Char then return false end
 
-    self.ChoosenChar = Char
+    self.ChosenChar = Char
 
     -- Recarrega folders
     if not self.Entity:_loadFolders() then
@@ -342,7 +342,7 @@ function CombatComponent:SetChoosenChar(Char)
     self.Entity.SetJumpForce(stats.JumpPower or 50)
 
     -- Atualiza HP
-    local health = self.Entity:GetComponent("Health")
+    local health = self.Entity:GetComponent(self.Entity.ComponentKey.Health)
     if health and stats.MaxHP then
         local ratio = health:GetHealthRatio()
         health.MaxHP = stats.MaxHP
@@ -354,8 +354,8 @@ end
 
 
 
-function CombatComponent:GetChoosenChar()
-	return self.ChoosenChar
+function CombatComponent:GetChosenChar()
+	return self.ChosenChar
 end
 
 
@@ -378,7 +378,7 @@ function CombatComponent:SetCharMode(Mode)
     self.Entity.SetJumpForce(stats.JumpPower or 50)
 
     -- Atualiza HP
-    local health = self.Entity:GetComponent("Health")
+    local health = self.Entity:GetComponent(self.Entity.ComponentKey.Health)
     if health and stats.MaxHP then
         local ratio = health:GetHealthRatio()
         health.MaxHP = stats.MaxHP
@@ -447,8 +447,8 @@ local ExposeAPI = {
 	StopAllActiveSkills = function(component, ...) return component:StopAllActiveSkills(...) end,
 
 	--Personagem/modo
-	GetChoosenChar = function(component,...) return component:GetChoosenChar(...) end,
-	SetChoosenChar = function(component,...) return component:SetChoosenChar(...) end,
+	GetChosenChar = function(component,...) return component:GetChosenChar(...) end,
+	SetChosenChar = function(component,...) return component:SetChosenChar(...) end,
 	GetCharMode = function(component,...) return component:GetCharMode(...) end,
 	SetCharMode = function(component,...) return component:SetCharMode(...) end,
 }

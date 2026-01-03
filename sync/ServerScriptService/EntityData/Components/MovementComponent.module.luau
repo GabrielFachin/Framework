@@ -103,34 +103,6 @@ function MovementComponent:StopTracking()
 	self._tracked = false
 end
 
---=============================================================================
---  UTILITY
---=============================================================================
-
---[[
-Retorna a velocidade de movimento base da entidade
-@return velocidade de movimento NUMBER
-]]
-
-function MovementComponent:GetSpeed()
-
-end
-
-
-function MovementComponent:SetSpeed(speed)
-
-end
-
-
-function MovementComponent:GetJumpForce()
-
-end
-
-
-function MovementComponent:SetJumpForce(jumpForce)
-
-end
-
 
 --=============================================================================
 --  LIFECYCLE
@@ -140,7 +112,7 @@ end
 Função de inicialização do componente, inicia tracking pro MovementController automaticamente
 ]]
 function MovementComponent:OnAdded()
-
+ --
 end
 
 

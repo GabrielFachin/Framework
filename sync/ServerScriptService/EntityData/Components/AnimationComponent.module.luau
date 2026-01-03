@@ -78,7 +78,7 @@ Inicializa o sistema de animação baseado no tipo de entidade
 @return sucesso BOOLEAN
 ]]
 function AnimationComponent:_Initialize() : boolean
-	local charComp = self.Entity:GetComponent("Character")
+	local charComp = self.Entity:GetComponent(self.Entity.ComponentKey.Character)
 	if not charComp then
 		warn("[AnimationComponent] Entidade sem CharacterComponent")
 		return false
@@ -130,7 +130,7 @@ end
 Carrega a biblioteca de animações do personagem
 ]]
 function AnimationComponent:_LoadAnimLib()
-	local combatComp = self.Entity:GetComponent("Combat")
+	local combatComp = self.Entity:GetComponent(self.Entity.ComponentKey.Combat)
 	if not combatComp then return end
 	
 	local charName = combatComp.ChosenChar
@@ -285,23 +285,8 @@ end
 --[[
 Toca uma sequência de animações
 @param sequence - Lista de steps da sequência TABLE
-@param index - Índice interno (não usar) NUMBER
+@param index - Índice interno NUMBER
 @param loopInfo - Informações de loop TABLE (opcional)
-
-Exemplo de sequência:
-{
-	{ id = 123, key = "anim1", fade = 0.1, weight = 1, speed = 1 },
-	{ id = 456, key = "anim2", marker = "Hit" },
-	{ id = 789, key = "anim3", delay = 0.5 }
-}
-
-Exemplo de loopInfo:
-{
-	from = 2,
-	to = 3,
-	count = 3,
-	counter = 0
-}
 ]]
 function AnimationComponent:PlaySequence(sequence: {SequenceStep}, index: number, loopInfo: LoopInfo?)
 	index = index or 1

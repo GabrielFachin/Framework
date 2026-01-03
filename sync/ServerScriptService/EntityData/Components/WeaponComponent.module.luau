@@ -53,15 +53,10 @@ function WeaponComponent:EquipWeapon(weaponName : string) : boolean
 	-- Remove arma antiga
 	self:UnequipWeapon()
 
-	-- Busca personagem
-	local charComp = self.Entity:GetComponent("Character")
-	if not charComp or not charComp.Character then
-		warn("[WeaponComponent] entidade sem CharacterModule, EquipWeapon falhou")
-		return false
-	end
-
-	local char = charComp.Character
-	local chosenChar = charComp.ChosenChar
+	local char = self.Entity.Instance
+	local chosenChar = self.Entity:GetChosenChar()
+	print(char)
+	print(chosenChar)
 
 	-- Busca arma na pasta de assets
 	local weaponFolder = RS.Assets.Weapons:FindFirstChild(chosenChar)
@@ -89,7 +84,7 @@ function WeaponComponent:EquipWeapon(weaponName : string) : boolean
 	end
 
 	-- Determina ponto de attach
-	local attachTo = self:_GetAttachPoint(weaponModel, charComp)
+	local attachTo = self:_GetAttachPoint(weaponModel)
 	local charAttach = char:FindFirstChild(attachTo)
 
 	if not charAttach then
@@ -124,10 +119,9 @@ end
 Retorna o ponto de attach para a arma seguindo a prioridade:
 Arma > Personagem > fallback default (right arm)
 @param weaponModel - modelo da arma
-@param charComp - componente de personagem
 @return nome do ponto de attach STRING
 ]]
-function WeaponComponent:_GetAttachPoint(weaponModel : Instance, charComp) : string
+function WeaponComponent:_GetAttachPoint(weaponModel : Instance) : string
 	-- Prioridade: Arma > Personagem > Padrão
 
 	-- 1. Busca na arma
@@ -137,7 +131,7 @@ function WeaponComponent:_GetAttachPoint(weaponModel : Instance, charComp) : str
 	end
 
 	-- 2. Busca no personagem
-	local Stats = charComp:GetStats()
+	local Stats = self.Entity:GetStats()
 	if Stats.attachTo then
 		return Stats.attachTo
 	end
@@ -231,6 +225,10 @@ Destrói o componente de armas, removendo a arma equipada e limpando referência
 function WeaponComponent:Destroy()
 	self:UnequipWeapon()
 	self.Entity = nil
+end
+
+function WeaponComponent:OnAdded()
+	self:EquipWeapon(self.Entity.GetStat("Weapon"))
 end
 
 --=============================================================================

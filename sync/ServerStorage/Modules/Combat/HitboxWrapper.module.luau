@@ -1,3 +1,14 @@
+local IHitbox = {}
+
+function IHitbox:Start(duration: number) end
+function IHitbox:Stop() end
+
+function IHitbox:AddOwner(owner: any) end
+function IHitbox:RemoveOwner(owner: any) end
+
+function IHitbox:IsActive() end
+function IHitbox:Destroy() end
+ 
  local HitboxWrapper = {}
 HitboxWrapper.__index = HitboxWrapper
 
@@ -39,8 +50,8 @@ function HitboxWrapper.new(Entity,excludeSelf : boolean?)
 	local self = setmetatable({}, HitboxWrapper)
 	self.Entity = Entity
 	
-	if Entity:HasComponent(Entity.Components.Weapon) then --Se tem o componente de arma, pega a arma atual
-	self.weapon = Entity:GetComponent(Entity.Components.Weapon) end
+
+	self.weapon = Entity:GetWeapon()
 	self.activeHitboxes = {}
 	self.hitboxConfigs = {}
 	self.isActive = false
@@ -51,7 +62,7 @@ function HitboxWrapper.new(Entity,excludeSelf : boolean?)
 	-- RaycastParams, inicia a configuração de exclusão
 	self.raycastParams = RaycastParams.new()
 	self.raycastParams.FilterType = Enum.RaycastFilterType.Exclude
-	self.raycastParams.FilterDescendantsInstances = {Entity.Character, self.weapon}
+	self.raycastParams.FilterDescendantsInstances = {Entity.Instance, self.weapon}
 
 	-- Descobre hitboxes
 	self:_discoverHitboxes()
@@ -318,4 +329,28 @@ function HitboxWrapper.GetPoolStats()
 
 	return Stats
 end
-return HitboxWrapper
+
+local ExposeAPI = {
+
+	-- Lifecycle
+	Start = function(component, ...) return component:Start(...) end,
+	Stop = function(component) return component:Stop() end,
+	Destroy = function(component) return component:Destroy() end,
+
+	-- Owner (referência pra callback onHit da skill que inicializou a hitbox)
+	AddOwner = function(component, owner) return component:AddOwner(owner) end,
+	RemoveOwner = function(component, owner) return component:RemoveOwner(owner) end,
+
+	-- State
+	IsActive = function(component) return component.isActive == true end,
+
+	-- Debug / Utils
+	GetActiveHitboxes = function(component) return component.activeHitboxes end,
+	GetHitboxConfigs = function(component) return component.hitboxConfigs end,
+}
+
+return {
+	new = HitboxWrapper.new,
+	ExposeAPI = ExposeAPI,
+	IHitbox = IHitbox,
+}

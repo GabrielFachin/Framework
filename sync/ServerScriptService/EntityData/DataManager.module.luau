@@ -48,9 +48,10 @@ function DataManager.Create(Entity,components : {})
 	end
 	warn("[DataManager] Componentes adicionados:", compList)
 
-	-- inicializa o wrapper e guarda o modelo/character da entidade
+	--Setta o wrapper no componente Character (vital)
 	core.SetCharacter(Entity)
 
+	-- inicializa o wrapper e guarda o modelo/character da entidade
 	core:ComponentsLoaded()
 
 	--Salva o EntityCore no mapa correto
@@ -68,7 +69,6 @@ function DataManager.Create(Entity,components : {})
 		warn("[DataManager] Entidade inválida, func Create")
 		return nil
 	end
-
 
 
 	--inicializa o wrapper de movimentação
