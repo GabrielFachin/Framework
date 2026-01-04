@@ -228,7 +228,9 @@ function AnimationComponent:StopAnimation(key : string, fadeTime : number?)
 	fadeTime = fadeTime or 0.1
 	track:Stop(fadeTime)
 	
+	print(self.Tracks)
 	self.Tracks[key] = nil
+	print(self.Tracks)
 end
 
 --[[

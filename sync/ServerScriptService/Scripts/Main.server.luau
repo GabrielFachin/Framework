@@ -5,7 +5,6 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local StateTable = require(ServerStorage.Modules.Combat.StateTable)
 local DataManager = require(ServerScriptService.EntityData.DataManager)
 local Handler = ServerScriptService.Scripts.SkillHandler
-local StatusHandler = require(ServerScriptService.Modules.StatusHandler)
 local StatusTable = require(ServerStorage.Modules.Combat.StateTable)
 local DataManager = require(game.ServerScriptService.EntityData.DataManager)
 local component = require(ServerScriptService.EntityData.ComponentsExport)

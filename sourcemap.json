@@ -5198,13 +5198,6 @@
               "filePaths": [
                 "sync/ServerScriptService/Modules/SkillFactory.module.luau"
               ]
-            },
-            {
-              "name": "StatusHandler",
-              "className": "ModuleScript",
-              "filePaths": [
-                "sync/ServerScriptService/Modules/StatusHandler.module.luau"
-              ]
             }
           ]
         },
@@ -5213,24 +5206,10 @@
           "className": "Folder",
           "children": [
             {
-              "name": "EntityData",
-              "className": "ModuleScript",
-              "filePaths": [
-                "sync/ServerScriptService/EntityData/EntityData.module.luau"
-              ]
-            },
-            {
               "name": "DataManager",
               "className": "ModuleScript",
               "filePaths": [
                 "sync/ServerScriptService/EntityData/DataManager.module.luau"
-              ]
-            },
-            {
-              "name": "CombatData",
-              "className": "ModuleScript",
-              "filePaths": [
-                "sync/ServerScriptService/EntityData/CombatData.module.luau"
               ]
             },
             {
@@ -5667,20 +5646,6 @@
                   "className": "ModuleScript",
                   "filePaths": [
                     "sync/ServerStorage/Modules/Combat/StateTable.module.luau"
-                  ]
-                },
-                {
-                  "name": "StatusController",
-                  "className": "ModuleScript",
-                  "filePaths": [
-                    "sync/ServerStorage/Modules/Combat/StatusController.module.luau"
-                  ]
-                },
-                {
-                  "name": "HealthController",
-                  "className": "ModuleScript",
-                  "filePaths": [
-                    "sync/ServerStorage/Modules/Combat/HealthController.module.luau"
                   ]
                 },
                 {

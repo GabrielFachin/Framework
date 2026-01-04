@@ -14,7 +14,7 @@ local Skill = {
 
 		clearControl = function(runner,stateID)
 			runner.Entity.StopAllAnimations(0.2)
-			runner.Entity.RemoveID(stateID)
+			runner.Entity.RemoveStatusByID(stateID)
 		end,
 			
 
@@ -36,13 +36,13 @@ local Skill = {
 
 			self.control = statsTable.States.noControl
 
-			self.state = statsTable.PlayerStates.Out.cast
+			self.PlayerState = statsTable.PlayerStates.Out.cast
 			 
 
 			--Gera o primeiro ID do pacote de estados (usado pra controle), esse ID  será usado como parametro no resto dos estados de controle pra serem removidos juntos ao fim do m1!
-			self.stateID = self.Entity.ApplyStatus(self.state,self.Entity, 9999, self)
+			self.stateID = self.Entity.ApplyStatus(self.PlayerState, 9999, self)
 
-			self.Entity.ApplyStatus(self.control,self.Entity,5,self,self.stateID)			
+			self.Entity.ApplyStatus(self.control,9999,self,self.stateID)			
 			
 			self.Entity.StartHitbox(self.data.duration)
 			
@@ -70,9 +70,9 @@ local Skill = {
 			local signal = self.Entity.WaitForMarker(self.M1Start,"End")
 			if signal then
 				self.Entity.StopAnimation(self.M1Start,0.2)
-				self.Entity.RemoveID(self.stateID)
+				self.Entity.RemoveStatusByID(self.stateID)
 				self.Entity.StopHitbox()
-				
+				signal = nil
 				end
 			elseif self.counter == 2 then
 				
@@ -80,8 +80,8 @@ local Skill = {
 				local signal = self.Entity.WaitForMarker(self.M1S2,"End")
 				if signal then
 						self.Entity.StopAnimation(false)
-						self.Entity:RemoveID(self.stateID)
-						self.Entity:StopHitbox()
+						self.Entity.RemoveStatusByID(self.stateID)
+						self.Entity.StopHitbox()
 				end
 
 			end
@@ -99,9 +99,9 @@ local Skill = {
 				
 				warn("ESTAGIO 2!")
 				
-				self.Entity.ApplyStatus(self.state,self.ED, 9999, self,self.stateID)
+				self.Entity.ApplyStatus(self.PlayerState, 9999, self, self.stateID)
 
-				self.Entity.ApplyStatus(self.control,self.ED,5,self,self.stateID)
+				self.Entity.ApplyStatus(self.control, 9999, self, self.stateID)
 				
 				self.Entity.StartHitbox(self.data.duration,function(hitResult) self:onHit(hitResult.target, hitResult)end)
 				

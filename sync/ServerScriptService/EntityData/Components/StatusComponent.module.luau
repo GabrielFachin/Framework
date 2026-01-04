@@ -6,6 +6,7 @@
 
 local ServerStorage = game:GetService("ServerStorage")
 local StateTable = require(ServerStorage.Modules.Combat.StateTable)
+local SkillRunner = require(game.ServerScriptService.Modules.SkillRunner)
 
 local StatusComponent = {}
 StatusComponent.__index = StatusComponent
@@ -156,13 +157,13 @@ Cria um SkillRunner para o status
 @return SkillRunner criado SkillRunner
 ]]
 function StatusComponent:_CreateRunner(data : {[string]: any}, name : string, duration : number?)
-	local SkillRunner = require(game.ServerScriptService.Modules.SkillRunner)
 	
 	-- Injeta duração se fornecida
 	if duration then
-		data.data.duration = duration
+		data.runtimeDuration = duration
 	end
 	
+
 	-- Cria runner (precisa de TPD/Entity - compatibilidade)
 	local targetEntity = self.Entity._core and self.Entity or self.Entity.Entity
 	local runner = SkillRunner.new(data, targetEntity, name)

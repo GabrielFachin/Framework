@@ -106,13 +106,14 @@ function SkillRunner:_internalUpdate(dt)
 	--Controle do timer da skill
 	 self.elapsedTime += dt
 
+
 	--Se estiver castando algo, confere se já terminou a duração do cast, se sim, mude o estado para "rodando"
 	if self.state == STATES.Casting  then
 		if self.skillData.data.castTime and self.elapsedTime >= self.skillData.data.castTime then
 			self.state  = STATES.Running 
 			self.elapsedTime = 0
 		end
-		
+
 	--Se estiver running:
 	elseif self.state == STATES.Running then
 		if self.skillData.callbacks.onStep then  --confere  se o skillData tem onStep para rodar scripts em frames/tempos especificos, se tiver, rode o onStep do frame atual
@@ -122,8 +123,11 @@ function SkillRunner:_internalUpdate(dt)
 	end
 	
 	
+
+	local duration = self.skillData.runtimeDuration or self.skillData.data.duration
+
 	--Se a skill tiver zerado sua duração, então: 
-	if self.skillData.data.duration and self.elapsedTime >= self.skillData.data.duration then
+	if duration and self.elapsedTime >= duration then
 		self:endSkill(false)
 	end
 	
@@ -166,7 +170,7 @@ end
 
 --Finaliza a skill
 function SkillRunner:endSkill(cancel)
-	warn("ENCERRANDO SKILL")
+	warn("ENCERRANDO RUNNER:", self.skillName)
 	
 	if self.state == STATES.Ended then return end
 	self.state = STATES.Ended
