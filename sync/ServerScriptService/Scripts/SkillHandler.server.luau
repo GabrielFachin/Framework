@@ -49,19 +49,14 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 	local max = skill.maxInstances--Guarda a quantidade máximas de instâncias permitida daquela skill
 
 	if not entityCore.HasCooldown(skillName) then --Se não estiver em cooldown, então roda
-		warn("CHECK 1, FORA DE CD")
-		
+
 		if not entityCore.CanContinue() then --Testa se a skill poderia cancelar a anterior (caso tenha uma ativa e o player tenha um estado)
 			warn("Skill não pode rodar")
 			return false
 		end
 		
-		warn("CHECK 2, CanContinue")
-		
 		--Se já tiver uma instância ativa dessa skill
 		if #activeRunners > 0 then
-
-			warn("CHECK 3, MAIS DE UMA ISNTANCIA DESSA SKILL")
 
 			--Se o número de instâncias for maior do que o máximo
 			if #activeRunners >= max then 
@@ -78,7 +73,6 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 					if handled then --Se um recast for encontrado, então:
 						entityCore:TrySelfCancel() --tenta cancelar a skill atual
 						runner:Recast() --Roda o recast
-						warn("CHECK 3, RECAST")
 						return false end
 				end
 				return false

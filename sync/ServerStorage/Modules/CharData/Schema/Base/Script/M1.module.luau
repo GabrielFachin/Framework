@@ -52,6 +52,8 @@ local Skill = {
 		
 		
 		onHit = function(self,hitResult)
+
+			local statsTable = self.statusTable
 			
 			local targetEntity = hitResult.target
 			
@@ -59,9 +61,8 @@ local Skill = {
 
 			print(targetEntity)
 
-			if self.Entity.TryHit(targetEntity,{}) then
 			targetEntity.TakeDamage(self.damage,self)
-			end
+			targetEntity.ApplyStatus(statsTable.Status.Bleed,9999,self)
 
 		end,
 		

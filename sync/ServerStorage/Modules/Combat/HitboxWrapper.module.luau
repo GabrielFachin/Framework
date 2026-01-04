@@ -232,7 +232,8 @@ function HitboxWrapper:_handleHit(result: RaycastResult, segment, config: Hitbox
 
 	-- Anti multi-hit
 	--Vale notar que, caso a skill seja feita pra ter multi hit é necessário desligar a hitbox a cada hit e reativar depois do cooldown/ticks entre hits!
-	local targetId = targetEntity.Entity.UserId
+	local targetId = targetEntity.ID
+	print(targetEntity.ID)
 	if self.hitTargets[targetId] then return end
 	self.hitTargets[targetId] = true
 
@@ -260,17 +261,12 @@ end
 function HitboxWrapper:_getTargetEntity(hitInstance: Instance)
 	local current = hitInstance
 
-	--Se atingir uma parte, busca o humanoid e o player (precisa ser alterado futuramente pra suportar NPCs)
+	--Se atingir uma parte, busca o ID da entidade atingida
 	while current and current ~= workspace do
 		if current:IsA("Model") then
-			local humanoid = current:FindFirstChildOfClass("Humanoid")
-			if humanoid then
-				local player = game.Players:GetPlayerFromCharacter(current)
-				if player then
-					return self.DataManager.Get(player)
-				end
-				return nil
-			end
+			local hitID = current:GetAttribute("EntityID")
+			return self.DataManager.Get(hitID)
+
 		end
 		current = current.Parent
 	end
