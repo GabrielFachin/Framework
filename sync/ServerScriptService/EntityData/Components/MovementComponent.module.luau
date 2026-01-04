@@ -132,7 +132,7 @@ end
 Função de inicialização do componente, inicia tracking pro MovementController automaticamente
 ]]
 function MovementComponent:OnAdded()
- --
+	MovementController.Track(self.Entity)
 end
 
 

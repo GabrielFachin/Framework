@@ -33,13 +33,11 @@ local Skill = {
 			self.track = self.Entity.PlayAnimation(self.M1Start)
 			self.track.Looped = false
 
-			
 			local statsTable = self.statusTable
 
 			self.control = statsTable.States.noControl
 
-			self.PlayerState = statsTable.PlayerStates.Out.cast
-			 
+			self.PlayerState = statsTable.PlayerStates.Out.cast			 
 
 			--Gera o primeiro ID do pacote de estados (usado pra controle), esse ID  será usado como parametro no resto dos estados de controle pra serem removidos juntos ao fim do m1!
 			self.stateID = self.Entity.ApplyStatus(self.PlayerState, 9999, self)
@@ -47,6 +45,8 @@ local Skill = {
 			self.Entity.ApplyStatus(self.control,9999,self,self.stateID)			
 			
 			self.Entity.StartHitbox(self.data.duration)
+
+			self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self,self)
 			
 		end,
 		
@@ -60,7 +60,7 @@ local Skill = {
 			print(targetEntity)
 
 			if self.Entity.TryHit(targetEntity,{}) then
-			targetEntity.ApplyDamage(self.damage,self)
+			targetEntity.TakeDamage(self.damage,self)
 			end
 
 		end,

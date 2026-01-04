@@ -9,6 +9,8 @@
 
 local ServerStorage = game:GetService("ServerStorage")
 local StateTable = require(ServerStorage.Modules.Combat.StateTable)
+local RS = game:GetService("ReplicatedStorage")
+local UpdateHPBar = RS.RemoteEvents:WaitForChild("UpdateHealthBar")
 
 local HealthComponent = {}
 HealthComponent.__index = HealthComponent
@@ -78,6 +80,7 @@ function HealthComponent:TakeDamage(amount : number, source : any, flags : {[str
 	-- Aplica dano
 	local lastHP = self.HP
 	self.HP = math.max(0, self.HP - amount)
+	UpdateHPBar:FireClient(self.Entity.Player,self.HP,self.MaxHP)
 	local actualDamage = lastHP - self.HP
 	
 	-- Registra no histórico

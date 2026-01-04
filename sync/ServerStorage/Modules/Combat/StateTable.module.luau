@@ -296,10 +296,9 @@ StateTable.Status = {
 				self._tickTimer += dt
 				if self._tickTimer >= (self.skillData.data.tickRate or 0) then
 					self._tickTimer = 0
-
+					
 					local damage = self.skillData.data.damage * self.counter
-
-					self.ED.CombatData:ApplyDamage(damage, self) -- Status se envia como parametro
+					self.Entity.TakeDamage(damage, self) -- Status se envia como parametro
 				end
 			end,
 

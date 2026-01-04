@@ -35,7 +35,7 @@ function DataManager.Create(Entity,components : {})
 	warn(entityType,"Registrado, ID:",id)
 
 	--Salva esse ID no mapa de entidades
-	local core = EntityCore.new(Entity.Model,entityType,id)
+	local core = EntityCore.new(Entity.Model,entityType,id,Entity.Player)
 
 
 	--DEBUG

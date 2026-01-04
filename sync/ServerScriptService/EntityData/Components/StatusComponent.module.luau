@@ -42,8 +42,9 @@ Aplica um status à entidade
 @param duration - Duração do status NUMBER (opcional, pode ser definido em statusData)
 @param sourceSkill - SkillRunner responsável pela skill que aplicou o status ANY (opcional)
 @param ID - ID único do status STRING (opcional)
-@return ID do status STRING ou nil se não aplicado]]
-function StatusComponent:ApplyStatus(statusData : {}, duration : number?, sourceSkill : any?, ID : string?) : string?
+@return ID do status STRING ou nil se não aplicado
+]]
+function StatusComponent:ApplyStatus(statusData : {}, duration : number?, sourceSkill : any?, ID : string?,targetEntity: {}?) : string?
 	-- Gera ID único se não fornecido
 	if not ID then
 		ID = self:GenerateUniqueEffectID(sourceSkill and sourceSkill.skillName or "Generic")
@@ -53,6 +54,7 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	local data = table.clone(statusData)
 	data.ID = ID
 	data.StatusComponent = self
+	data.data.castTime = 0
 	
 	local meta = data.data
 	if not meta or not meta.name then
@@ -82,7 +84,7 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 			if existing.counter >= (meta.maxStacks or math.huge) then
 				return ID -- Limite atingido
 			end
-			
+		
 			if existing.runner then
 				existing.runner.elapsedTime = 0 -- Reset timer
 				if existing.runner.Recast then
@@ -93,7 +95,7 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 		end
 		
 		-- Cria novo runner
-		local runner = self:_CreateRunner(data, meta.name, duration)
+		local runner = self:_CreateRunner(data, meta.name, duration,targetEntity)
 		group[meta.name] = {
 			data = data,
 			counter = 1,
@@ -113,7 +115,7 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 			return nil -- Limite atingido
 		end
 		
-		local runner = self:_CreateRunner(data, meta.name, duration)
+		local runner = self:_CreateRunner(data, meta.name, duration,targetEntity)
 		table.insert(list, {
 			data = data,
 			runner = runner,
@@ -137,7 +139,7 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	end
 	
 	-- ===== STATUS ÚNICO =====
-	local runner = self:_CreateRunner(data, meta.name, duration)
+	local runner = self:_CreateRunner(data, meta.name, duration,targetEntity)
 	group[meta.name] = {
 		data = data,
 		runner = runner,
@@ -156,7 +158,7 @@ Cria um SkillRunner para o status
 @param duration - Duração do status NUMBER (opcional)
 @return SkillRunner criado SkillRunner
 ]]
-function StatusComponent:_CreateRunner(data : {[string]: any}, name : string, duration : number?)
+function StatusComponent:_CreateRunner(data : {[string]: any}, name : string, duration : number?,target)
 	
 	-- Injeta duração se fornecida
 	if duration then
@@ -164,8 +166,7 @@ function StatusComponent:_CreateRunner(data : {[string]: any}, name : string, du
 	end
 	
 
-	-- Cria runner (precisa de TPD/Entity - compatibilidade)
-	local targetEntity = self.Entity._core and self.Entity or self.Entity.Entity
+	local targetEntity = target and target.Entity or self.Entity
 	local runner = SkillRunner.new(data, targetEntity, name)
 	
 	-- Callback de finalização

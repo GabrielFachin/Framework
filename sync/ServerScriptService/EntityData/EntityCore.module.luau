@@ -20,7 +20,7 @@ Instancia uma nova entidade
 @param entityID - ID único da entidade STRING 
 @return nova instância do EntityCore EntityCore
 ]]
-function EntityCore.new(instance : Instance, entityType : string, entityID : string?)
+function EntityCore.new(instance : Instance, entityType : string, entityID : string?,Player : any?)
 	local self = setmetatable({}, EntityCore)
 
 	-- Dados mínimos
@@ -28,6 +28,7 @@ function EntityCore.new(instance : Instance, entityType : string, entityID : str
 	self.Instance = instance
 	self.Type = entityType or "Generic"
 	self.Components = {}
+	self.Player = Player or nil
 
 	-- Lifecycle
 	self.Active = true

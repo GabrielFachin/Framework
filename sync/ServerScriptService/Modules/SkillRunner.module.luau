@@ -108,11 +108,13 @@ function SkillRunner:_internalUpdate(dt)
 
 
 	--Se estiver castando algo, confere se já terminou a duração do cast, se sim, mude o estado para "rodando"
-	if self.state == STATES.Casting  then
+	if self.state == STATES.Casting then
 		if self.skillData.data.castTime and self.elapsedTime >= self.skillData.data.castTime then
 			self.state  = STATES.Running 
 			self.elapsedTime = 0
 		end
+
+
 
 	--Se estiver running:
 	elseif self.state == STATES.Running then
@@ -134,7 +136,6 @@ function SkillRunner:_internalUpdate(dt)
 end
 
 
-
 function SkillRunner:onHit(data)
 	if self.skillData.callbacks.onHit then
 		self.skillData.callbacks.onHit(self,data)
@@ -142,7 +143,7 @@ function SkillRunner:onHit(data)
 	
 end
 
-
+--
 
 function SkillRunner:Recast(checkOnly)
 	
@@ -161,7 +162,6 @@ end
 
 --Permite que o objeto fale que a skill foi cancelada de forma externa (chamando essa função)
 function SkillRunner:Stop(cancel)
-		print(cancel)
 		self.stop = cancel
 		self:endSkill(cancel)
 end
