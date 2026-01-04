@@ -30,7 +30,9 @@ local Skill = {
 			self.M1Start = self.charLib.M1.M1Start
 			self.M1S2 = self.charLib.M1.M1S2
 			
-			self.Entity.PlayAnimation(self.M1Start)
+			self.track = self.Entity.PlayAnimation(self.M1Start)
+			self.track.Looped = false
+
 			
 			local statsTable = self.statusTable
 
@@ -65,24 +67,24 @@ local Skill = {
 		
 
 		onStep = function(self, dt)
-			
+
 			if self.counter == 1 then
-			local signal = self.Entity.WaitForMarker(self.M1Start,"End")
-			if signal then
+			self.track:GetMarkerReachedSignal("End"):Once(function()
+
 				self.Entity.StopAnimation(self.M1Start,0.2)
 				self.Entity.RemoveStatusByID(self.stateID)
 				self.Entity.StopHitbox()
-				signal = nil
-				end
+				end)
+
+			-------
+
 			elseif self.counter == 2 then
 				
-				
-				local signal = self.Entity.WaitForMarker(self.M1S2,"End")
-				if signal then
-						self.Entity.StopAnimation(false)
+				self.track:GetMarkerReachedSignal("End"):Once(function()
+						self:Stop(false)
 						self.Entity.RemoveStatusByID(self.stateID)
 						self.Entity.StopHitbox()
-				end
+				end)
 
 			end
 		
@@ -90,12 +92,10 @@ local Skill = {
 		end,
 		
 		
-		
-		
 		onRecast = function(self)
 			self.counter += 1
 			if self.counter == 2 then
-				self.Entity.PlayAnimation(self.M1S2)
+				self.track = self.Entity.PlayAnimation(self.M1S2)
 				
 				warn("ESTAGIO 2!")
 				

@@ -80,9 +80,9 @@ function SkillRunner:start()
 
 
 	if self.Entity then
-	self.Entity:AddActiveSkill(self.skillName,self)	
+	self.Entity.AddActiveSkill(self.skillName,self)	
 		 if self.Entity:HasComponent(self.Entity.ComponentKey.Weapon) then
-			self.Entity:AddHitboxOwner(self) --Informa que o dono da skill é esse skillRunner, permitindo que o wrapper chame o onHit direto por aqui
+			self.Entity.AddHitboxOwner(self) --Informa que o dono da skill é esse skillRunner, permitindo que o wrapper chame o onHit direto por aqui
 		end
 	end
 
@@ -161,6 +161,7 @@ end
 
 --Permite que o objeto fale que a skill foi cancelada de forma externa (chamando essa função)
 function SkillRunner:Stop(cancel)
+		print(cancel)
 		self.stop = cancel
 		self:endSkill(cancel)
 end
@@ -183,9 +184,9 @@ function SkillRunner:endSkill(cancel)
 	end
 	
 	if self.Entity then
-		self.Entity:RemoveActiveSkill(self.skillName, self)
+		self.Entity.RemoveActiveSkill(self.skillName, self)
 		if self.Entity:HasComponent(self.Entity.ComponentKey.Weapon) then
-			self.Entity:RemoveHitboxOwner(self) --Limpa a hitbox
+			self.Entity.RemoveHitboxOwner(self) --Limpa a hitbox
 	end
 end
 

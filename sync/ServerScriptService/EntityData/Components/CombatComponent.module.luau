@@ -241,6 +241,9 @@ Adiciona uma skill pra lista de habilidades ativas
 @param runner - instância do runner da skill TABLE
 ]]
 function CombatComponent:AddActiveSkill(skillName : string, runner)
+	
+assert(typeof(skillName) == "string","[CombatComponent] skillName precisa ser string, recebeu " .. typeof(skillName))
+
 	if not self.ActiveSkills[skillName] then
 		self.ActiveSkills[skillName] = {}
 	end
@@ -287,7 +290,9 @@ Retorna a quantidade de runners ativos para uma skill específica
 @return quantidade de runners NUMBER
 ]]
 function CombatComponent:GetActiveSkillCount(skillName : string) : number
+	print(skillName)
 	local list = self.ActiveSkills[skillName]
+	print(self.ActiveSkills)
 	return list and #list or 0
 end
 
@@ -445,8 +450,10 @@ local ExposeAPI = {
 	AddActiveSkill = function(component, ...) return component:AddActiveSkill(...) end,
 	RemoveActiveSkill = function(component, ...) return component:RemoveActiveSkill(...) end,
 	GetActiveSkills = function(component, ...) return component:GetActiveSkills(...) end,
+	GetActiveSkillCount = function(component,...) return component:GetActiveSkillCount(...) end,
 	HasActiveSkill = function(component, ...) return component:HasActiveSkill(...) end,
 	StopAllActiveSkills = function(component, ...) return component:StopAllActiveSkills(...) end,
+	
 
 	--Personagem/modo
 	GetChosenChar = function(component,...) return component:GetChosenChar(...) end,

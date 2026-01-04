@@ -41,14 +41,7 @@ function SkillScheduler.Register(runner, runnerType)
 		connection = RunService.Heartbeat:Connect(function(dt)
 			SkillScheduler._Update(dt)
 		end)
-		00:50:15.271  [SkillScheduler] Iniciado  -  Servidor - SkillScheduler:44
-		00:50:16.132   ▶ {...}  -  Servidor - AnimationComponent:231
-		00:50:16.133  {}  -  Servidor - AnimationComponent:233
-		00:50:16.133  ENCERRANDO RUNNER: Cast  -  Servidor - SkillRunner:173
-		00:50:16.133  ENCERRANDO RUNNER: noControl  -  Servidor - SkillRunner:173
-		00:50:16.134   ▶ [AnimationComponent] Track não encontrada: 109260837176213 (x237)  -  Servidor - AnimationComponent:361
-		00:50:20.338  ENCERRANDO RUNNER: M1  -  Servidor - SkillRunner:173
-		00:50:20.657  Disconnect from 127.0.0.1|50168  -  Studio		print("[SkillScheduler] Iniciado")
+	print("[SkillScheduler] Iniciado")
 	end
 
 	return true

@@ -44,21 +44,24 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 	local skillName = entityCore.GetSkillName(skillIndex) -- Pega o nome da skill pra checagem de multiplos requests
 
-	local activeRunners = entityCore.GetActiveSkills() --Busca instâncias ativas da skill no ED
+	local activeRunners = entityCore.GetActiveSkills(skillName) --Busca instâncias ativas da skill na entidade
 
 	local max = skill.maxInstances--Guarda a quantidade máximas de instâncias permitida daquela skill
 
 	if not entityCore.HasCooldown(skillName) then --Se não estiver em cooldown, então roda
-
+		warn("CHECK 1, FORA DE CD")
 		
 		if not entityCore.CanContinue() then --Testa se a skill poderia cancelar a anterior (caso tenha uma ativa e o player tenha um estado)
 			warn("Skill não pode rodar")
 			return false
 		end
 		
+		warn("CHECK 2, CanContinue")
 		
 		--Se já tiver uma instância ativa dessa skill
 		if #activeRunners > 0 then
+
+			warn("CHECK 3, MAIS DE UMA ISNTANCIA DESSA SKILL")
 
 			--Se o número de instâncias for maior do que o máximo
 			if #activeRunners >= max then 
@@ -68,12 +71,14 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 					--Pego o primeiro runner da lista
 					local runner = activeRunners[1]
+					
 
 					--Pede pro runner se ele encontrou um recast, e então retorna com uma flag
 					local handled = runner:Recast(true)
 					if handled then --Se um recast for encontrado, então:
-						entityCore.CombatData:TrySelfCancel() --tenta cancelar a skill atual
+						entityCore:TrySelfCancel() --tenta cancelar a skill atual
 						runner:Recast() --Roda o recast
+						warn("CHECK 3, RECAST")
 						return false end
 				end
 				return false
@@ -84,7 +89,6 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 		
 		if not cancel then --Cancela a skill anterior se ela for responsável por um state Self
 			return false end -- Se obtiver retorno false (estado encontrado mas não é Self), sai do código
-		end
 		
 
 		entityCore.SetCooldown(skillName)
@@ -97,6 +101,7 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 		local runner = SkillRunner.new(skill,entityCore,skillName,"skill") --lança skill(após checagem de cooldown,validação pelo EntityData e preparação de fallback pelo SkillFactory)
 		runner:start()
+	end
 
 	end)
 
