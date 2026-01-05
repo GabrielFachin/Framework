@@ -82,28 +82,33 @@ end
 
 
 --[[
-Retorna o EntityCore da entidade
-@param Entity - Player ou entidade
+Retorna o EntityCore da entidade,se possível, passe ID
+@param Entity - Modelo atingido ou ID da entidade.
 ]]
 function DataManager.Get(Entity)
 
 	local id 
 
 	if typeof(Entity) ~= "string" then
-		print(Entity)
 	id = Entity:GetAttribute("EntityID")
 	elseif typeof(Entity) == "string" then
 	id = Entity
 	end
 
+	
 	if typeof(id) ~= "string" then
 	warn("[DataManager] Entidade inválida, func Get")
 	return nil 
 	end
 
-	local mapCore = entityMap.NPCs[id] or entityMap.players[id]
-	return mapCore
 
+	if entityMap.NPCs[id] or entityMap.players[id] then
+		local mapCore = entityMap.NPCs[id] or entityMap.players[id]
+		return mapCore
+	else
+		warn("[DataManager] Recebido ID invalido,",id,"func get")
+		return nil
+	end
 
 end
 

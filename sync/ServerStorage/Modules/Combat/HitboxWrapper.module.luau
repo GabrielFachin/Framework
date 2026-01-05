@@ -261,18 +261,28 @@ end
 function HitboxWrapper:_getTargetEntity(hitInstance: Instance)
 	local current = hitInstance
 
-	--Se atingir uma parte, busca o ID da entidade atingida
+	--Se atingir uma parte, busca o ID da parte atingida
 	while current and current ~= workspace do
+
+		--Se for um modelo
 		if current:IsA("Model") then
+
+			--Busca o ID da entidade
 			print(current)
 			local hitID = current:GetAttribute("EntityID")
+
+			--Se encontrar, devolve a referência da entidade
 			if hitID then 
 			return self.DataManager.Get(hitID) end
+
+			--Retorna que atingiu algo sem ID, permite efeitos de atingir parede e afins.
+			else return false end
 
 		end
 		current = current.Parent
 	end
-
+	
+	--Se não for um modelo, retorne nil
 	return nil
 end
 
