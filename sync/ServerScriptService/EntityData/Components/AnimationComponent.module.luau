@@ -91,7 +91,7 @@ function AnimationComponent:_Initialize() : boolean
 	end
 	
 	-- Tenta obter Humanoid primeiro
-	local humanoid = wrapper:GetHumanoid()
+	local humanoid = self.Entity:GetHumanoid()
 	
 	if humanoid then
 		-- Sistema baseado em Humanoid
