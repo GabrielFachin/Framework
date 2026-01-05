@@ -4,7 +4,25 @@
 
 local EntityCore = {}
 EntityCore.ComponentKey = {}
-EntityCore.__index = EntityCore
+
+-- Intervém em chamada de função inexistente
+local function DummyFunc()
+	print("[EntityCore] Tentativa de interação com comp/método inexistente",key)
+    return nil 
+end
+
+
+function EntityCore:__index(key)
+
+	--Busca por métodos existentes na própia classe
+    local member = EntityCore[key]
+    if member then 
+        return member 
+    end
+
+	--Caso não encontrar nada, retorne a função dummy pra evitar que quem chamou quebre.
+    return DummyFunc
+end
 
 -- Registry de componentes
 local ComponentRegistry = {}
@@ -69,6 +87,7 @@ function EntityCore:AddComponent(componentName : string, config : {[string]: any
 				self[methodName] = function(...)
 					return method(component, ...)
 				end
+				warn("Método com nome duplicado!")
 			end
 		end
 	end
@@ -77,7 +96,7 @@ function EntityCore:AddComponent(componentName : string, config : {[string]: any
 end
 
 --[[
-Função chamada após todos os componentes serem carregados, evita raceConditions.
+Função chamada após todos os componentes serem carregados.
 ]]
 function EntityCore:ComponentsLoaded()
 	-- Chama OnAdded em todos os componentes

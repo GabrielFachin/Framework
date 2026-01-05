@@ -13,10 +13,10 @@ MovementController.__index = MovementController
 --=============================================================================
 
 -- Entidades rastreadas e seus objetos de física
--- Estrutura: [EntityCore] = { LinearVelocity, AngularVelocity, Attachment }
+-- Estrutura: [entityCore.ID] = { LinearVelocity, AngularVelocity, Attachment }
 local physicsCache = {} 
 
-local LAST_POSITIONS = {} -- [EntityCore] = {Pos = Vector3, Time = tick()}
+local LAST_POSITIONS = {} -- [entityCore.ID] = {Pos = Vector3, Time = tick()}
 local TOLERANCE_MULTIPLIER = 1.2 -- 20% de tolerância para lag
 
 local heartbeatConnection = nil
@@ -43,14 +43,14 @@ local function getOrCreatePhysicsObjects(root: BasePart)
 		att.Parent = root
 	end
 
-	-- LinearVelocity (Substituto moderno do BodyVelocity)
-	-- Usado para zerar o movimento (Freeze)
+	-- LinearVelocity 
+	-- Impede/zera movimento
 	local lv = root:FindFirstChild("FreezeLinearVelocity")
 	if not lv then
 		lv = Instance.new("LinearVelocity")
 		lv.Name = "FreezeLinearVelocity"
 		lv.VelocityConstraintMode = Enum.VelocityConstraintMode.Vector
-		lv.VectorVelocity = Vector3.zero -- Queremos parar o player
+		lv.VectorVelocity = Vector3.zero 
 		lv.MaxForce = INFINITE_FORCE
 		lv.RelativeTo = Enum.ActuatorRelativeTo.World
 		lv.Attachment0 = att
@@ -58,8 +58,8 @@ local function getOrCreatePhysicsObjects(root: BasePart)
 		lv.Parent = root
 	end
 
-	-- AngularVelocity (Substituto moderno do BodyAngularVelocity)
-	-- Usado para impedir rotação física indesejada
+	-- AngularVelocity 
+	-- Impede rotação
 	local av = root:FindFirstChild("FreezeAngularVelocity")
 	if not av then
 		av = Instance.new("AngularVelocity")
@@ -95,26 +95,26 @@ end
 --=============================================================================
 
 local function applyMovementRestrictions(entityCore, tags: {[string]: any})
-	local physicsObjs = physicsCache[entityCore]
+	local physicsObjs = physicsCache[entityCore.ID]
 	if not physicsObjs then return end
 
-	-- 1. Flags de controle
+	-- Flags de controle
 	local canMove = tags.canMove ~= false
 	local canControl = tags.canControl ~= false
 
-	-- 2. Wrappers
+	-- Wrappers (apenas pra validação de existênia de funções)
 	local characterWrapper = entityCore:GetCharacterWrapper()
 	local movementWrapper = entityCore:GetMovementWrapper()
 	
 	if not characterWrapper then return end
 	local humanoid = entityCore:GetHumanoid()
 
-	-- 3. Aplicação Lógica
+	-- Aplicação Lógica
 	if humanoid then
-		-- A. Controle de Rotação (AutoRotate do Humanoid é mais eficiente que física)
+		-- Controle de Rotação
 		humanoid.AutoRotate = canControl
 
-		-- B. Controle de Movimento
+		-- Controle de Movimento
 		if canMove then
 			-- LIBERA MOVIMENTO
 			if physicsObjs.LinearVelocity.Enabled then
@@ -122,7 +122,7 @@ local function applyMovementRestrictions(entityCore, tags: {[string]: any})
 				physicsObjs.AngularVelocity.Enabled = false
 				humanoid.PlatformStand = false
 				
-				-- Restaura valores originais via wrapper
+				-- Restaura valores originais
 				if movementWrapper then
 					local baseSpeed = entityCore:GetStat("Speed", 16)
 					local baseJump = entityCore:GetStat("JumpForce", 50)
@@ -131,21 +131,21 @@ local function applyMovementRestrictions(entityCore, tags: {[string]: any})
 				end
 			end
 		else
-			-- BLOQUEIA MOVIMENTO (STUN/ROOT)
+			-- BLOQUEIA MOVIMENTO
 			if not physicsObjs.LinearVelocity.Enabled then
-				-- Zera inputs do humanoid para evitar que ele tente lutar contra a física
+				-- Zera inputs
 				humanoid.WalkSpeed = 0
 				humanoid.JumpPower = 0
-				-- PlatformStand previne animações de "cair" ou física estranha de pulo
+				-- PlatformStand
 				humanoid.PlatformStand = true 
 				
-				-- Ativa as constraints para "ancorar" fisicamente no ar/chão sem usar Anchored=true
+				-- Ativa as constraints para ancorar artificialmente
 				physicsObjs.LinearVelocity.Enabled = true
 				physicsObjs.AngularVelocity.Enabled = true
 			end
 		end
 	else
-		-- Lógica para NPCs sem Humanoid (Custom Physics)
+		-- NPCS
 		if canMove then
 			physicsObjs.LinearVelocity.Enabled = false
 			physicsObjs.AngularVelocity.Enabled = false
@@ -164,40 +164,41 @@ end
 --  ANTI TP/SUPER SPEED
 --=============================================================================
 
-local function validateMovement(entityCore, root, dt)
-    local lastData = LAST_POSITIONS[entityCore]
+local function validateMovement(entityCore.ID, root, dt)
+    local lastData = LAST_POSITIONS[entityCore.ID]
     local currentPos = root.Position
     local currentTime = tick()
     
     if not lastData then
-        LAST_POSITIONS[entityCore] = {Pos = currentPos, Time = currentTime}
-        return true -- Primeiro frame, ignora
+        LAST_POSITIONS[entityCore.ID] = {Pos = currentPos, Time = currentTime}
+        return true -- ignora primeiro frame
     end
 
-    -- 1. Validação de Speed/Teleport
+
     local distanceTraveled = (currentPos - lastData.Pos).Magnitude
     local maxSpeed = entityCore:GetStat("Speed", 16)
     
-    -- Calcula a distância máxima teórica que ele poderia andar neste intervalo de tempo
+    -- Calcula a distância máxima que o player poderia andar nesse tempo
     local maxDistanceAllowed = (maxSpeed * (currentTime - lastData.Time)) * TOLERANCE_MULTIPLIER + 5 
     
-    -- Se ele andou muito mais do que o permitido
+    -- Se ele andou mais do que o permitido
     if distanceTraveled > maxDistanceAllowed then
-        -- É um dash legítimo? (Verifica se tem a tag de isDashing ou similar)
+        -- Tem tag de permissão? 
         local statusComp = entityCore:GetComponent(entityCore.ComponentKey.Status)
         local tags = statusComp and statusComp:GetActiveTags() or {}
         
-        if not tags.isDashing and not tags.wasKnockedBack then
-            warn("[AntiCheat] Speed/Teleport detectado em:", entityCore.ID)
+		--Se não tem tag, então:
+        if not tags.isDashing then
+            warn("[AntiCheat] Comportamento suspeito:", entityCore.ID)
             
-            -- Punição: Rubberband (volta pra posição anterior válida)
+        	--Rubberband
             root.CFrame = CFrame.new(lastData.Pos)
             return false
         end
     end
 
     -- Atualiza última posição válida
-    LAST_POSITIONS[entityCore] = {Pos = currentPos, Time = currentTime}
+    LAST_POSITIONS[entityCore.ID] = {Pos = currentPos, Time = currentTime}
     return true
 end
 
@@ -219,8 +220,6 @@ local function onHeartbeat()
 
 		local statusComp = entityCore:GetComponent(entityCore.ComponentKey.Status)
 		if statusComp then
-			-- Só recalcula se as tags mudaram (otimização sugerida)
-			-- Idealmente o StatusComponent avisaria quando mudou, mas por polling:
 			local tags = statusComp:GetActiveTags()
 			applyMovementRestrictions(entityCore, tags)
 		end
@@ -233,7 +232,7 @@ end
 --=============================================================================
 
 function MovementController.Track(entityCore)
-	if physicsCache[entityCore] then return end
+	if physicsCache[entityCore.ID] then return end
 
 	local wrapper = entityCore:GetCharacterWrapper()
 	if not wrapper then return end
@@ -241,8 +240,8 @@ function MovementController.Track(entityCore)
 	local root = wrapper:GetRoot()
 	if not root then return end
 
-	-- Cria/Cacheia os objetos físicos imediatamente ao rastrear
-	physicsCache[entityCore] = getOrCreatePhysicsObjects(root)
+	-- Armazena o ID ao iniciar tracker
+	physicsCache[entityCore.ID] = getOrCreatePhysicsObjects(root)
 
 	if not heartbeatConnection then
 		heartbeatConnection = RunService.Heartbeat:Connect(onHeartbeat)
@@ -251,12 +250,12 @@ function MovementController.Track(entityCore)
 end
 
 function MovementController.Untrack(entityCore)
-	if physicsCache[entityCore] then
-		destroyPhysicsObjects(physicsCache[entityCore])
-		physicsCache[entityCore] = nil
+	if physicsCache[entityCore.ID] then
+		destroyPhysicsObjects(physicsCache[entityCore.ID])
+		physicsCache[entityCore.ID] = nil
 	end
 
-	-- Desliga o loop se vazio para economizar recursos
+	-- Desliga o loop se não existem entidades para dar track
 	if next(physicsCache) == nil and heartbeatConnection then
 		heartbeatConnection:Disconnect()
 		heartbeatConnection = nil
@@ -272,7 +271,7 @@ end
 
 -- Limpeza automática ao sair
 Players.PlayerRemoving:Connect(function(player)
-	-- A lógica de remover via DataManager.Remove já deve chamar o Destroy do componente,
+	-- A lógica de remover via DataManager.Remove já chama o Destroy do componente,
 	-- que por sua vez deve chamar MovementController.Untrack.
 	-- Mantemos isso apenas como fallback de segurança.
 end)
