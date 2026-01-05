@@ -264,8 +264,10 @@ function HitboxWrapper:_getTargetEntity(hitInstance: Instance)
 	--Se atingir uma parte, busca o ID da entidade atingida
 	while current and current ~= workspace do
 		if current:IsA("Model") then
+			print(current)
 			local hitID = current:GetAttribute("EntityID")
-			return self.DataManager.Get(hitID)
+			if hitID then 
+			return self.DataManager.Get(hitID) end
 
 		end
 		current = current.Parent

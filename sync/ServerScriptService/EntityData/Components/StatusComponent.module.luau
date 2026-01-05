@@ -5,8 +5,10 @@
 
 
 local ServerStorage = game:GetService("ServerStorage")
+local ServerScript = game:GetService("ServerScriptService")
 local StateTable = require(ServerStorage.Modules.Combat.StateTable)
 local SkillRunner = require(game.ServerScriptService.Modules.SkillRunner)
+local SkillFactory = require(ServerScript.Modules.SkillFactory)
 
 local StatusComponent = {}
 StatusComponent.__index = StatusComponent
@@ -49,9 +51,11 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	if not ID then
 		ID = self:GenerateUniqueEffectID(sourceSkill and sourceSkill.skillName or "Generic")
 	end
+
+	local factoryData = SkillFactory.GetStatus(statusData)
 	
 	-- Prepara dados
-	local data = table.clone(statusData)
+	local data = table.clone(factoryData)
 	data.ID = ID
 	data.StatusComponent = self
 	data.data.castTime = 0
@@ -84,7 +88,10 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 			if existing.counter >= (meta.maxStacks or math.huge) then
 				return ID -- Limite atingido
 			end
-		
+
+			
+			existing.runner.counter += 1
+
 			if existing.runner then
 				existing.runner.elapsedTime = 0 -- Reset timer
 				if existing.runner.Recast then
@@ -110,10 +117,14 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	
 	-- ===== STACK EM INSTÂNCIAS DIFERENTES =====
 	if meta.stackable and not meta.stackOnSelf then
-		local list = group[meta.name] or {}
-		if #list >= (meta.maxStacks or math.huge) then
-			return nil -- Limite atingido
-		end
+   	 if not group[meta.name] then
+      	  group[meta.name] = {}
+    	end
+    
+    local list = group[meta.name]
+    if #list >= (meta.maxStacks or math.huge) then
+        return nil
+    end
 		
 		local runner = self:_CreateRunner(data, meta.name, duration,targetEntity)
 		table.insert(list, {
@@ -172,6 +183,7 @@ function StatusComponent:_CreateRunner(data : {[string]: any}, name : string, du
 	-- Callback de finalização
 	runner.onFinish = function()
 		self:_OnRunnerFinished(name, runner)
+		self:_MarkTagsDirty()
 	end
 	
 	runner:start()

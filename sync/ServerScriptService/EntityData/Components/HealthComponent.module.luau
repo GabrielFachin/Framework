@@ -269,6 +269,15 @@ end
 --  LIFECYCLE
 --=============================================================================
 
+
+--[[
+Registra os callbacks recebidos pro pub/sub de eventos de dano
+]]
+function HealthComponent:OnAdded()
+	--self:Subscribe()
+end
+
+
 --[[
 Destroi o componente, limpando referências e parando processos
 ]]
@@ -303,5 +312,6 @@ local ExposeAPI = {
 
 return {
 	new = HealthComponent.new,
-	ExposeAPI = ExposeAPI
+	ExposeAPI = ExposeAPI,
+	EventKey = {onDamage = "onDamage",onHeal = "onHeal",onDeath = "onDeath",onRevive = "onRevive"}
 }

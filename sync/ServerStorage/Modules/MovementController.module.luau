@@ -192,7 +192,6 @@ function MovementController.Track(entityCore)
 	-- Inicia Heartbeat se não estiver rodando
 	if not heartbeatConnection then
 		heartbeatConnection = RunService.Heartbeat:Connect(onHeartbeat)
-		print("[MovementController] Iniciado")
 	end
 end
 

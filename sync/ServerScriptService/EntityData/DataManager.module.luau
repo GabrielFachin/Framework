@@ -90,6 +90,7 @@ function DataManager.Get(Entity)
 	local id 
 
 	if typeof(Entity) ~= "string" then
+		print(Entity)
 	id = Entity:GetAttribute("EntityID")
 	elseif typeof(Entity) == "string" then
 	id = Entity

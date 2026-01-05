@@ -171,7 +171,6 @@ end
 
 --Finaliza a skill
 function SkillRunner:endSkill(cancel)
-	warn("ENCERRANDO RUNNER:", self.skillName)
 	
 	if self.state == STATES.Ended then return end
 	self.state = STATES.Ended

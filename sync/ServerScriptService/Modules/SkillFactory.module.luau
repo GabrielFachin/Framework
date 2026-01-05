@@ -75,14 +75,6 @@ function SkillFactory.GetStatus(data)
 		data.data.castTime = 0
 	end
 
-	-- Injeção específica de onRecast
-	if data.data.stackable and data.data.stackOnSelf then
-		data.callbacks.onRecast = function(self)
-			self.counter += 1
-		end
-	end
-	
-
 	data.callbacks.onEnd = function(selfRunner)
 		if data.StatusController then
 			data.StatusController:RemoveById(data.ID)

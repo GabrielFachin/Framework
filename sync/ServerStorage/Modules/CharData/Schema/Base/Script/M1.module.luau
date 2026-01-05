@@ -46,7 +46,7 @@ local Skill = {
 			
 			self.Entity.StartHitbox(self.data.duration)
 
-			self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self,self)
+			self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
 			
 		end,
 		
@@ -57,10 +57,6 @@ local Skill = {
 			
 			local targetEntity = hitResult.target
 			
-			print(self)
-
-			print(targetEntity)
-
 			targetEntity.TakeDamage(self.damage,self)
 			targetEntity.ApplyStatus(statsTable.Status.Bleed,9999,self)
 
@@ -98,7 +94,6 @@ local Skill = {
 			if self.counter == 2 then
 				self.track = self.Entity.PlayAnimation(self.M1S2)
 				
-				warn("ESTAGIO 2!")
 				
 				self.Entity.ApplyStatus(self.PlayerState, 9999, self, self.stateID)
 
