@@ -19,7 +19,7 @@ HealthComponent.__index = HealthComponent
 --[[
 Cria uma nova instância do HealthComponent
 @param entity - Entidade dona do componente Entity, enviar EntityData
-@param config - Configurações iniciais do componente TABLE { MaxHP: number, StartHP: number }
+@param config - Configurações iniciais do componente TABLE { MaxHP: number, StartHP: number Events:{OnDamage,OnHeal,onDeath,onRevive}}
 @return nova instância do HealthComponent HealthComponent]]
 function HealthComponent.new(entity, config)
 	local self = setmetatable({}, HealthComponent)
@@ -27,6 +27,7 @@ function HealthComponent.new(entity, config)
 	self.Entity = entity
 	self.MaxHP = config.MaxHP or 100
 	self.HP = config.StartHP or self.MaxHP
+	self.Subscription = config.Events or false
 	self.IsDead = false
 	self._lastDamageTime = 0
 	
@@ -36,9 +37,11 @@ function HealthComponent.new(entity, config)
 	self.OnDeath = self._Trigger(self, StateTable.reactTags.onDeath)
 	self.OnRevive = self._Trigger(self, StateTable.reactTags.onRevive)
 
+
 	-- Histórico de dano
 	self.DamageHistory = {}
 	self.MaxHistorySize = 10
+
 	
 	return self
 end
@@ -67,7 +70,6 @@ function HealthComponent:TakeDamage(amount : number, source : any, flags : {[str
 			return false, reason
 		end
 	
-
 			-- Alterações de dano pré-mitigação
 		if self.OnDamage then
 			local preMitigationAmount = task.spawn(self.OnDamage, self, amount, source)
@@ -271,10 +273,15 @@ end
 
 
 --[[
-Registra os callbacks recebidos pro pub/sub de eventos de dano
+Registra os callbacks recebidos pro pub/sub de eventos reativos
 ]]
 function HealthComponent:OnAdded()
-	--self:Subscribe()
+	if self.Subscription then
+		for key,callback in pairs(self.Subscription) do
+			self:Subscribe(key,callback)
+		end
+	end
+
 end
 
 

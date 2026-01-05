@@ -4,8 +4,9 @@
 
 local EntityCore = {}
 EntityCore.ComponentKey = {}
+EntityCore.Events = {}
 
--- Intervém em chamada de função inexistente
+-- Entra em caso de chamada p/ função inexistente
 local function DummyFunc()
 	print("[EntityCore] Tentativa de interação com comp/método inexistente",key)
     return nil 
@@ -19,12 +20,11 @@ function EntityCore:__index(key)
     if member then 
         return member 
     end
-
-	--Caso não encontrar nada, retorne a função dummy pra evitar que quem chamou quebre.
+	--Caso não encontre, retorne a função dummy.
     return DummyFunc
 end
 
--- Registry de componentes
+
 local ComponentRegistry = {}
 
 --=============================================================================
@@ -33,12 +33,13 @@ local ComponentRegistry = {}
 
 --[[
 Instancia uma nova entidade
-@param instance - Instância Roblox associada à entidade (model para NPCs Custom) Instance
+@param instance - Modelo da entidade MODEL.
 @param entityType - Tipo da entidade ("Player", "NPC") STRING
-@param entityID - ID único da entidade STRING 
+@param entityID - ID único da entidade STRING
+@param Player - Armazena a referencia ao player (OPCIONAL)
 @return nova instância do EntityCore EntityCore
 ]]
-function EntityCore.new(instance : Instance, entityType : string, entityID : string?,Player : any?)
+function EntityCore.new(instance : Model, entityType : string, entityID : string?,Player : any?)
 	local self = setmetatable({}, EntityCore)
 
 	-- Dados mínimos
@@ -266,17 +267,33 @@ local function AutoRegisterComponents()
 																			--Pra cada módulo na pasta de componentes, registra automaticamente
 	for _, componentModule in ipairs(componentsFolder:GetChildren()) do
 		if componentModule:IsA("ModuleScript") then                         --Se for um modulo
-			local success, component = pcall(require, componentModule)		--Tenta requerer o módulo
+			local success, component = pcall(require, componentModule)		--Tenta requisitar o módulo
 			if success then													--Se conseguiu
 				local name = componentModule.Name:gsub("Component", "")		--Pega o nome do componente sem o sufixo "Component" (gsub substitui a string)
 				EntityCore.RegisterComponent(name, component)				--Registra o componente no EntityCore
-				EntityCore.ComponentKey[name] = name							--Adiciona o nome do componente no enum  EntityCore.Components
+				EntityCore.ComponentKey[name] = name						--Adiciona o nome do componente no enum  EntityCore.Components
 			else
 				warn("[EntityCore] Erro ao carregar componente:", componentModule.Name)
 			end
 		end
 	end
-	EntityCore.ComponentKey = table.freeze(EntityCore.ComponentKey)				--Freeze o enum pra eviltar alterações em runtime
+
+	
+	--Eventos exportados por componentes
+	for name,componentClass in pairs(ComponentRegistry) do
+
+		--Se o componente exporta eventos, então:
+		if componentClass.EventKey then
+			
+			--Pra cada evento exportado, salve com a key (EntityCore.Events[onDamage] = "onDamage"
+			for key, event in pairs(componentClass.EventKey) do
+				EntityCore.Events[key] = event
+			end	
+		end
+	end
+
+	EntityCore.ComponentKey = table.freeze(EntityCore.ComponentKey)			--Freeze o enum pra eviltar alterações em runtime
+	
 end
 
 -- Chama auto-registro
