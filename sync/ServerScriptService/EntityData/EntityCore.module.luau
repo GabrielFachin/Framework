@@ -12,9 +12,18 @@ local function DummyFunc()
     return nil 
 end
 
+function EntityCore:__index(input)
+
+	--Busca por métodos existentes na própia classe
+    local member = EntityCore[input]
+    if member then 
+        return member 
+    end
+	--Caso não encontre, retorne a função dummy.
+    return DummyFunc
+end
 
 EntityCore.Components = {}
-EntityCore.__index = EntityCore
 
 
 local ComponentRegistry = {}

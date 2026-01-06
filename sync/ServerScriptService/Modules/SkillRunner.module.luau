@@ -42,7 +42,6 @@ function SkillRunner.new(skillData,Entity,name,type) --Instancia o SkillRunner c
 	self.state = STATES.Idle 	 --Estado do lifetime skill
 	self.elapsedTime = 0    	 --Tempo de vida atual da skill
 	self.counter = 1      		 --Pode ser utilizado por skills e/ou status pra manter controle de dados de runtime internos, como número de balas, stage, ou stacks aplicados
-	self.stop = false 			 --Cancelada/parar a força?
 	self.type = type			 --Tipo de SR, Skill, Status
 	self.skillName = name  		 --Guarda o nome da skill pra controle de runners ativos
 
@@ -70,6 +69,10 @@ end
 
 
 
+--================================================
+--				 LIFECYCLE
+--================================================
+
 
 function SkillRunner:start()
 	
@@ -95,8 +98,6 @@ function SkillRunner:start()
 end
 
 
-
-
 --[[
 Controla o tempo de execução do SkillRunner (atualizado pelo Heartbeat global)
 ]]
@@ -114,8 +115,6 @@ function SkillRunner:_internalUpdate(dt)
 			self.elapsedTime = 0
 		end
 
-
-
 	--Se estiver running:
 	elseif self.state == STATES.Running then
 		if self.skillData.callbacks.onStep then  --confere  se o skillData tem onStep para rodar scripts em frames/tempos especificos, se tiver, rode o onStep do frame atual
@@ -123,8 +122,6 @@ function SkillRunner:_internalUpdate(dt)
 		end
 	
 	end
-	
-	
 
 	local duration = self.skillData.runtimeDuration or self.skillData.data.duration
 
@@ -143,7 +140,7 @@ function SkillRunner:onHit(data)
 	
 end
 
---
+
 
 function SkillRunner:Recast(checkOnly)
 	
@@ -162,24 +159,29 @@ end
 
 --Permite que o objeto fale que a skill foi cancelada de forma externa (chamando essa função)
 function SkillRunner:Stop(cancel)
-		self.stop = cancel
 		self:endSkill(cancel)
 end
 
 
-
-
 --Finaliza a skill
 function SkillRunner:endSkill(cancel)
+
+	--Se foi cancelada externamente
+	if cancel then
+		if self.skillData.callbacks.onCancel then
+			local stop = self.skillData.callbacks.onCancel(self)   --Roda a ação da skill ao ser cancelada
+			warn("[SkillRunner] Skill cancelada:", self.skillName) 
+			if not stop then self.state == STATE.Running end	   --Permita que somente a ação ocorra sem parar a skill.
+		end
+	end	
 	
 	if self.state == STATES.Ended then return end
 	self.state = STATES.Ended
-	self.stop = cancel
 
 
-	if self.connection then
-		self.connection:Unregister(self,self.type) --Sai do heartbeat global
-		self.connection = nil
+	--Sequência de finalização padrão
+	if self.skillData.callbacks.onEnd then
+		self.skillData.callbacks.onEnd(self)
 	end
 	
 	if self.Entity then
@@ -190,15 +192,9 @@ function SkillRunner:endSkill(cancel)
 end
 
 
-	if cancel then
-		if self.skillData.callbacks.onCancel then
-			self.skillData.callbacks.onCancel(self)
-			warn("[SkillRunner] Cancelando", self.skillName)
-		end
-	else
-		if self.skillData.callbacks.onEnd then
-			self.skillData.callbacks.onEnd(self)
-		end
+	if self.connection then
+		self.connection:Unregister(self,self.type) --Sai do heartbeat global
+		self.connection = nil
 	end
 
 	-- Sempre limpar o runner e notificar
