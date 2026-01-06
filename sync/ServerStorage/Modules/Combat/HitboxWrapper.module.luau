@@ -233,7 +233,6 @@ function HitboxWrapper:_handleHit(result: RaycastResult, segment, config: Hitbox
 	-- Anti multi-hit
 	--Vale notar que, caso a skill seja feita pra ter multi hit é necessário desligar a hitbox a cada hit e reativar depois do cooldown/ticks entre hits!
 	local targetId = targetEntity.ID
-	print(targetEntity.ID)
 	if self.hitTargets[targetId] then return end
 	self.hitTargets[targetId] = true
 
@@ -261,7 +260,6 @@ end
 function HitboxWrapper:_getTargetEntity(hitInstance: Instance)
 	local current = hitInstance
 
-	print(current)
 	--Se atingir uma parte, busca o ID da parte atingida
 	while current and current ~= workspace do
 
@@ -269,23 +267,21 @@ function HitboxWrapper:_getTargetEntity(hitInstance: Instance)
 		if current:IsA("Model") then
 
 			--Busca o ID da entidade
-			print(current)
 			local hitID = current:GetAttribute("EntityID")
 
 			--Se encontrar, devolve a referência da entidade
 			if hitID then 
-			return self.DataManager.Get(hitID) end
+			return self.DataManager.Get(hitID) 
 
 			--Retorna que atingiu algo sem ID, permite efeitos de atingir parede e afins.
-			else return false end
+			else warn("bob") return false end
 
 		end
 		current = current.Parent
-		--Se não for um modelo, retorne nil
-		return nil
 	end
-	
 
+	return nil 
+end
 
 
 --Desativa a hitbox

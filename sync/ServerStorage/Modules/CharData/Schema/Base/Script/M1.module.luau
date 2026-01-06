@@ -53,7 +53,6 @@ local Skill = {
 		
 		onHit = function(self,hitResult)
 
-			print(hitResult)
 
 			local statsTable = self.statusTable
 			

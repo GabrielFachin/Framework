@@ -82,7 +82,8 @@ function HealthComponent:TakeDamage(amount : number, source : any, flags : {[str
 	-- Aplica dano
 	local lastHP = self.HP
 	self.HP = math.max(0, self.HP - amount)
-	UpdateHPBar:FireClient(self.Entity.Player,self.HP,self.MaxHP)
+	print(self.HP)
+	if self.Entity.IsPlayer() then UpdateHPBar:FireClient(self.Entity.Player,self.HP,self.MaxHP) end
 	local actualDamage = lastHP - self.HP
 	
 	-- Registra no histórico
@@ -95,8 +96,6 @@ function HealthComponent:TakeDamage(amount : number, source : any, flags : {[str
 	if self.HP <= 0 and not self.IsDead then
 		self:Die(source)
 	end
-
-	print(self.HP)
 	
 	return true, actualDamage
 end

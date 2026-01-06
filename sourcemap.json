@@ -7,6 +7,13 @@
       "className": "Workspace",
       "children": [
         {
+          "name": "Script",
+          "className": "Script",
+          "filePaths": [
+            "sync/Workspace/Script.server.luau"
+          ]
+        },
+        {
           "name": "Lighting",
           "className": "Folder",
           "children": [
@@ -4175,13 +4182,6 @@
               "name": "ShapecastSelector",
               "className": "Part"
             }
-          ]
-        },
-        {
-          "name": "Script",
-          "className": "Script",
-          "filePaths": [
-            "sync/Workspace/Script.server.luau"
           ]
         }
       ]
