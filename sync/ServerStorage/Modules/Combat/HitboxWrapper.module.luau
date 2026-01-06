@@ -261,6 +261,7 @@ end
 function HitboxWrapper:_getTargetEntity(hitInstance: Instance)
 	local current = hitInstance
 
+	print(current)
 	--Se atingir uma parte, busca o ID da parte atingida
 	while current and current ~= workspace do
 
@@ -280,11 +281,12 @@ function HitboxWrapper:_getTargetEntity(hitInstance: Instance)
 
 		end
 		current = current.Parent
+		--Se não for um modelo, retorne nil
+		return nil
 	end
 	
-	--Se não for um modelo, retorne nil
-	return nil
-end
+
+
 
 --Desativa a hitbox
 function HitboxWrapper:StopHitbox()

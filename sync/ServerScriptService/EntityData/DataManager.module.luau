@@ -33,10 +33,16 @@ function DataManager.Create(Entity,components : {})
 	local id,entityType = DataManager.CreateID(Entity)
 	
 	warn(entityType,"Registrado, ID:",id)
+	
+	local Model
+	local Player
 
 	--Salva esse ID no mapa de entidades
-	local core = EntityCore.new(Entity.Model,entityType,id,Entity.Player)
-
+	if typeof(Entity) == "table" then Model = Entity.Model Player = Entity.Player
+	else
+		Model = Entity Player = nil
+	end
+	local core = EntityCore.new(Model,entityType,id,Player)
 
 	--DEBUG
 	local compList = {}
@@ -69,6 +75,7 @@ function DataManager.Create(Entity,components : {})
 		warn("[DataManager] Entidade inválida, func Create")
 		return nil
 	end
+
 
 
 	--inicializa o wrapper de movimentação

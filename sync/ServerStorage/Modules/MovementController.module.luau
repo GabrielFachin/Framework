@@ -13,17 +13,16 @@ MovementController.__index = MovementController
 --=============================================================================
 
 -- Entidades rastreadas e seus objetos de física
--- Estrutura: [entityCore.ID] = { LinearVelocity, AngularVelocity, Attachment }
+-- Estrutura: [entityCore] = { LinearVelocity, AngularVelocity, Attachment }
 local physicsCache = {} 
 
-local LAST_POSITIONS = {} -- [entityCore.ID] = {Pos = Vector3, Time = tick()}
+local LAST_POSITIONS = {} -- [entityCore] = {Pos = Vector3, Time = tick()}
 local TOLERANCE_MULTIPLIER = 1.2 -- 20% de tolerância para lag
 
 local heartbeatConnection = nil
 
 -- Constantes de Configuração
 local CONSTRAINT_ATTACHMENT_NAME = "MovementControllerAtt"
-local MAX_FORCE_VEC = Vector3.new(100000, 100000, 100000) -- Força alta para garantir imobilização
 local INFINITE_FORCE = math.huge
 
 
@@ -95,7 +94,7 @@ end
 --=============================================================================
 
 local function applyMovementRestrictions(entityCore, tags: {[string]: any})
-	local physicsObjs = physicsCache[entityCore.ID]
+	local physicsObjs = physicsCache[entityCore]
 	if not physicsObjs then return end
 
 	-- Flags de controle
@@ -124,10 +123,10 @@ local function applyMovementRestrictions(entityCore, tags: {[string]: any})
 				
 				-- Restaura valores originais
 				if movementWrapper then
-					local baseSpeed = entityCore:GetStat("Speed", 16)
-					local baseJump = entityCore:GetStat("JumpForce", 50)
-					entityCore:SetSpeed(baseSpeed)
-					entityCore:SetJumpForce(baseJump)
+					local baseSpeed = entityCore.GetStat("Speed", 16)
+					local baseJump = entityCore.GetStat("JumpForce", 50)
+					entityCore.SetSpeed(baseSpeed)
+					entityCore.SetJumpForce(baseJump)
 				end
 			end
 		else
@@ -150,8 +149,8 @@ local function applyMovementRestrictions(entityCore, tags: {[string]: any})
 			physicsObjs.LinearVelocity.Enabled = false
 			physicsObjs.AngularVelocity.Enabled = false
 			if movementWrapper then
-				local baseSpeed = entityCore:GetStat("Speed", 16)
-				entityCore:SetSpeed(baseSpeed)
+				local baseSpeed = entityCore.GetStat("Speed", 16)
+				entityCore.SetSpeed(baseSpeed)
 			end
 		else
 			physicsObjs.LinearVelocity.Enabled = true
@@ -164,19 +163,19 @@ end
 --  ANTI TP/SUPER SPEED
 --=============================================================================
 
-local function validateMovement(entityCore.ID, root, dt)
-    local lastData = LAST_POSITIONS[entityCore.ID]
+local function validateMovement(entityCore, root, dt)
+    local lastData = LAST_POSITIONS[entityCore]
     local currentPos = root.Position
     local currentTime = tick()
     
     if not lastData then
-        LAST_POSITIONS[entityCore.ID] = {Pos = currentPos, Time = currentTime}
+        LAST_POSITIONS[entityCore] = {Pos = currentPos, Time = currentTime}
         return true -- ignora primeiro frame
     end
 
 
     local distanceTraveled = (currentPos - lastData.Pos).Magnitude
-    local maxSpeed = entityCore:GetStat("Speed", 16)
+    local maxSpeed = entityCore.GetStat("Speed", 16)
     
     -- Calcula a distância máxima que o player poderia andar nesse tempo
     local maxDistanceAllowed = (maxSpeed * (currentTime - lastData.Time)) * TOLERANCE_MULTIPLIER + 5 
@@ -185,11 +184,11 @@ local function validateMovement(entityCore.ID, root, dt)
     if distanceTraveled > maxDistanceAllowed then
         -- Tem tag de permissão? 
         local statusComp = entityCore:GetComponent(entityCore.ComponentKey.Status)
-        local tags = statusComp and statusComp:GetActiveTags() or {}
+        local tags = statusComp and entityCore:GetActiveTags() or {}
         
 		--Se não tem tag, então:
         if not tags.isDashing then
-            warn("[AntiCheat] Comportamento suspeito:", entityCore.ID)
+            warn("[AntiCheat] Comportamento suspeito:", entityCore)
             
         	--Rubberband
             root.CFrame = CFrame.new(lastData.Pos)
@@ -198,7 +197,7 @@ local function validateMovement(entityCore.ID, root, dt)
     end
 
     -- Atualiza última posição válida
-    LAST_POSITIONS[entityCore.ID] = {Pos = currentPos, Time = currentTime}
+    LAST_POSITIONS[entityCore] = {Pos = currentPos, Time = currentTime}
     return true
 end
 
@@ -206,7 +205,7 @@ end
 --  UPDATE LOOP
 --=============================================================================
 
-local function onHeartbeat()
+local function onHeartbeat(dt)
 	for entityCore, _ in pairs(physicsCache) do
 		if not entityCore.Active then
 			MovementController.Untrack(entityCore)
@@ -218,11 +217,8 @@ local function onHeartbeat()
                 validateMovement(entityCore, root, dt) -- Valida antes de aplicar física
             end
 
-		local statusComp = entityCore:GetComponent(entityCore.ComponentKey.Status)
-		if statusComp then
-			local tags = statusComp:GetActiveTags()
+			local tags = entityCore.GetActiveTags()
 			applyMovementRestrictions(entityCore, tags)
-		end
 
 	end
 end
@@ -232,27 +228,28 @@ end
 --=============================================================================
 
 function MovementController.Track(entityCore)
-	if physicsCache[entityCore.ID] then return end
+	if physicsCache[entityCore] then return end
 
 	local wrapper = entityCore:GetCharacterWrapper()
 	if not wrapper then return end
 	
-	local root = wrapper:GetRoot()
+	local root = entityCore:GetRoot()
 	if not root then return end
 
 	-- Armazena o ID ao iniciar tracker
-	physicsCache[entityCore.ID] = getOrCreatePhysicsObjects(root)
+	physicsCache[entityCore] = getOrCreatePhysicsObjects(root)
 
 	if not heartbeatConnection then
-		heartbeatConnection = RunService.Heartbeat:Connect(onHeartbeat)
-		print("[MovementController] Loop iniciado")
+		heartbeatConnection = RunService.Heartbeat:Connect(function(dt)
+		onHeartbeat(dt)
+		end)
 	end
 end
 
 function MovementController.Untrack(entityCore)
-	if physicsCache[entityCore.ID] then
-		destroyPhysicsObjects(physicsCache[entityCore.ID])
-		physicsCache[entityCore.ID] = nil
+	if physicsCache[entityCore] then
+		destroyPhysicsObjects(physicsCache[entityCore])
+		physicsCache[entityCore] = nil
 	end
 
 	-- Desliga o loop se não existem entidades para dar track

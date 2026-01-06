@@ -95,6 +95,8 @@ function HealthComponent:TakeDamage(amount : number, source : any, flags : {[str
 	if self.HP <= 0 and not self.IsDead then
 		self:Die(source)
 	end
+
+	print(self.HP)
 	
 	return true, actualDamage
 end

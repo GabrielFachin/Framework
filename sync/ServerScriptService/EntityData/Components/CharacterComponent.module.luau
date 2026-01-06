@@ -118,9 +118,9 @@ function CharacterComponent:SetCharacter(Entity) : boolean
 		humanoid = model.Humanoid
 		root = model:FindFirstChild("HumanoidRootPart") or Entity
 	else
-		root = model.PrimaryPart
+		model = Entity
+		root = model:FindFirstChildWhichIsA("BasePart") or model.PrimaryPart
 		humanoid = nil
-		or model:FindFirstChildWhichIsA("BasePart")
 	end
 
 	self.CharacterWrap = EntityWrapper.CreateCharacter({

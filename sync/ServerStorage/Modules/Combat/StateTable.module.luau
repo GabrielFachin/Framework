@@ -299,7 +299,6 @@ StateTable.Status = {
 					
 					local damage = self.skillData.data.damage * self.counter
 					self.Entity.TakeDamage(damage, self) -- Status se envia como parametro
-					print(self.counter)
 				end
 			end,
 

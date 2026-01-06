@@ -42,16 +42,18 @@ local Skill = {
 			--Gera o primeiro ID do pacote de estados (usado pra controle), esse ID  será usado como parametro no resto dos estados de controle pra serem removidos juntos ao fim do m1!
 			self.stateID = self.Entity.ApplyStatus(self.PlayerState, 9999, self)
 
-			self.Entity.ApplyStatus(self.control,9999,self,self.stateID)			
+			--self.Entity.ApplyStatus(self.control,9999,self,self.stateID)			
 			
 			self.Entity.StartHitbox(self.data.duration)
 
-			self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
+			--self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
 			
 		end,
 		
 		
 		onHit = function(self,hitResult)
+
+			print(hitResult)
 
 			local statsTable = self.statusTable
 			
@@ -91,19 +93,19 @@ local Skill = {
 		
 		onRecast = function(self)
 			self.counter += 1
-			if self.counter == 2 then
+			--if self.counter == 2 then
 				self.track = self.Entity.PlayAnimation(self.M1S2)
 				
 				
-				self.Entity.ApplyStatus(self.PlayerState, 9999, self, self.stateID)
+				--self.Entity.ApplyStatus(self.PlayerState, 9999, self, self.stateID)
 
-				self.Entity.ApplyStatus(self.control, 9999, self, self.stateID)
+				--self.Entity.ApplyStatus(self.control, 9999, self, self.stateID)
 				
 				self.Entity.StartHitbox(self.data.duration,function(hitResult) self:onHit(hitResult.target, hitResult)end)
 				
-				self.damage = 3
+				--self.damage = 3
 				
-			end
+			--end
 		end,
 
 		onEnd = function(self)

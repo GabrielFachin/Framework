@@ -86,9 +86,9 @@ function AnimationComponent:_Initialize() : boolean
 	
 	local wrapper = charComp:GetCharacterWrapper()
 	if not wrapper then
-		warn("[AnimationComponent] Character wrapper não encontrado")
 		return false
 	end
+	
 	
 	-- Tenta obter Humanoid primeiro
 	local humanoid = self.Entity:GetHumanoid()

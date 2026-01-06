@@ -95,7 +95,6 @@ function NPChar:SetHumanoid()
 end
 
 function NPChar:GetHumanoid()
-	warn("[EntityWrapper]Tentativa de acessar Humanoid em entidade sem humanoid")
 	return nil
 end
 
