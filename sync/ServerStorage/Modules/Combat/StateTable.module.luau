@@ -179,7 +179,6 @@ StateTable.States = {
 		
 		tags = {			--Flags de status que alteram a possibilidade de ações do player (mais informaçõpes na tabela PlayerActions)
 			canMove = false, 
-			canCast = false,
 			canControl = false,
 		},
 		
@@ -200,7 +199,6 @@ StateTable.States = {
 		name = "Root",
 		tags = {
 			canMove = false,
-			canCast = true,
 		},
 		visual = {
 			anim = "RootAnim"

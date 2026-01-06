@@ -15,6 +15,7 @@ local Skill = {
 		clearControl = function(runner,stateID)
 			runner.Entity.StopAllAnimations(0.2)
 			runner.Entity.RemoveStatusByID(stateID)
+			runner.Entity.RemovePlayerState()
 		end,
 			
 
@@ -40,19 +41,16 @@ local Skill = {
 			self.PlayerState = statsTable.PlayerStates.Out.cast			 
 
 			--Gera o primeiro ID do pacote de estados (usado pra controle), esse ID  será usado como parametro no resto dos estados de controle pra serem removidos juntos ao fim do m1!
-			self.stateID = self.Entity.ApplyStatus(self.PlayerState, 9999, self)
+			self.Entity.SetPlayerState(self.PlayerState, self)
 
-			--self.Entity.ApplyStatus(self.control,9999,self,self.stateID)			
+			self.stateID = self.Entity.ApplyStatus(self.control,9999,self)			
 			
 			self.Entity.StartHitbox(self.data.duration)
-
-			--self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
 			
 		end,
 		
 		
 		onHit = function(self,hitResult)
-
 
 			local statsTable = self.statusTable
 			
@@ -71,6 +69,7 @@ local Skill = {
 
 				self.Entity.StopAnimation(self.M1Start,0.2)
 				self.Entity.RemoveStatusByID(self.stateID)
+				self.Entity.RemovePlayerState()
 				self.Entity.StopHitbox()
 				end)
 
@@ -81,6 +80,7 @@ local Skill = {
 				self.track:GetMarkerReachedSignal("End"):Once(function()
 						self:Stop(false)
 						self.Entity.RemoveStatusByID(self.stateID)
+						self.Entity.RemovePlayerState()
 						self.Entity.StopHitbox()
 				end)
 
@@ -92,19 +92,19 @@ local Skill = {
 		
 		onRecast = function(self)
 			self.counter += 1
-			--if self.counter == 2 then
+			if self.counter == 2 then
 				self.track = self.Entity.PlayAnimation(self.M1S2)
 				
 				
-				--self.Entity.ApplyStatus(self.PlayerState, 9999, self, self.stateID)
+				self.Entity.SetPlayerState(self.PlayerState, self)
 
-				--self.Entity.ApplyStatus(self.control, 9999, self, self.stateID)
+				self.Entity.ApplyStatus(self.control, 9999, self, self.stateID)
 				
 				self.Entity.StartHitbox(self.data.duration,function(hitResult) self:onHit(hitResult.target, hitResult)end)
 				
-				--self.damage = 3
+				self.damage = 3
 				
-			--end
+			end
 		end,
 
 		onEnd = function(self)

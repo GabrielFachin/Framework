@@ -1,9 +1,4 @@
---[[
-	CharacterComponent - Gerencia dados específicos de entidade
-	- Stats (MaxHP, Speed, etc)
-	- Referências ao modelo
-	- Caminhos de dados
-]]
+--[[                           COMPONENTE VITAL                                                      ]]
 
 local ServerStorage = game:GetService("ServerStorage")
 local EntityWrapper = require(ServerStorage.Modules.EntityWrapper)
@@ -24,45 +19,7 @@ function CharacterComponent.new(entity, config)
 
 	self.CharacterWrap = nil
 
-	-- Caminhos de dados (cache)
-	self.charFolder = nil
-	self._formFolder = nil
-
-
 	return self
-end
-
---=============================================================================
---  FOLDER LOADING
---=============================================================================
-
---[[
-Carrega as pastas de dados do personagem
-@return sucesso BOOLEAN
-]]
-function CharacterComponent:_LoadFolders() : boolean
-	local combatComp = self.Entity:GetComponent(self.Entity.ComponentKey.Combat)
-	if not combatComp then
-		warn("[CharacterComponent] entidade não tem componente de combate:", self.Entity)
-		return false
-	end
-
-	local charFolder = ServerStorage.Modules.CharData:FindFirstChild(combatComp.ChosenChar)
-	if not charFolder then
-		warn("[CharacterComponent] Personagem não encontrado:", combatComp.ChosenChar)
-		return false
-	end
-
-	local formFolder = charFolder:FindFirstChild(combatComp.Mode)
-	if not formFolder then
-		warn("[CharacterComponent] Forma não encontrada:", combatComp.Mode)
-		return false
-	end
-
-	self.charFolder = charFolder
-	self._formFolder = formFolder
-
-	return true
 end
 
 --=============================================================================
@@ -105,7 +62,7 @@ Setta o characterModel humanoid da entidade
 @param characterModel - modelo do personagem MODEL
 @return sucesso BOOLEAN
 ]]
-function CharacterComponent:SetCharacter(Entity) : boolean
+function CharacterComponent:SetEntity(Entity) : boolean
 
 	if self.CharacterWrap then return false end
 
@@ -132,10 +89,10 @@ function CharacterComponent:SetCharacter(Entity) : boolean
 end
 
 --[[
-Retorna o modelo do personagem da entidade
+Retorna o modelo da entidade
 @return modelo do personagem MODEL
 ]]
-function CharacterComponent:GetCharacter()
+function CharacterComponent:GetModel()
 	return self.entity.Instance
 end
 
@@ -207,15 +164,12 @@ function CharacterComponent:Destroy()
 	self.Character = nil
 	self.Root = nil
 	self.Humanoid = nil
-	self.charFolder = nil
-	self._formFolder = nil
 end
 
 
---[[
-Função de inicialização do componente, carrega folders automaticamente]]
+
 function CharacterComponent:OnAdded()
-	self:_LoadFolders()
+	
 end
 
 --=============================================================================
@@ -228,14 +182,11 @@ local ExposeAPI = {
 	GetStat = function(component, ...) return component:GetStat(...) end,
 
 	-- Character Model
-	SetCharacter = function(component, ...) return component:SetCharacter(...) end,
+	SetEntity = function(component, ...) return component:SetEntity(...) end,
 	GetCharacterWrapper = function(component, ...) return component:GetCharacterWrapper(...) end,
+	GetModel = function(component,...) return component:GetModel (...) end,
 	GetRoot = function(component) return component:GetRoot() end,
 	GetHumanoid = function(component) return component:GetHumanoid() end,
-
-	-- Form
-	ChangeForm = function(component, ...) return component:ChangeForm(...) end,
-
 
 	-- Utility
 	GetPosition = function(component) return component:GetPosition() end,

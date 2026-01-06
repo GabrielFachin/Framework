@@ -46,6 +46,46 @@ function HealthComponent.new(entity, config)
 	return self
 end
 
+
+
+--=============================================================================
+--  VALIDAÇÃO DE HIT
+--=============================================================================
+
+--[[
+FUNÇÃO INTERNA!
+Valida se um ataque pode afetar a entidade baseado em suas tags de imunidade
+@param source - Fonte do ataque (Entity) TABLE
+@param flags - Flags/tags fornecidas para interações envolvendo StatusTable, obrigatório mas pode ser {}
+@return sucesso BOOLEAN, razão STRING (nome da imunidade que bloqueou o hit)]]
+function HealthComponent:_ValidateHit(source : {}, flags : {string}) : (boolean, string?)
+
+	--Se não tiver componente de status, não existem tags de ivulnerabilidade e valida o hit.
+	if not self.Entity:HasComponent(self.Entity.ComponentKey.Status) then return true end
+
+	local targetTags = self.Entity:GetActiveTags()
+	local immunityRules = self._immunityRules or self.Entity.GetImmunityRules() 
+	
+	for immunityName, rule in pairs(immunityRules) do
+		if targetTags[immunityName] then
+			local allowed = false
+			
+			for _, flag in ipairs(flags or {}) do
+				if table.find(rule.bypassableBy, flag) then
+					allowed = true
+					break
+				end
+			end
+			
+			if not allowed then
+				return false, immunityName
+			end
+		end
+	end
+	
+	return true
+end
+
 --=============================================================================
 --  DANO
 --=============================================================================
@@ -65,7 +105,7 @@ function HealthComponent:TakeDamage(amount : number, source : any, flags : {[str
 	-- Se tem StatusComponent, valida o hit e aplica modificadores
 	local statusComp = self.Entity:GetComponent(self.Entity.ComponentKey.Status)
 	if statusComp then
-		local canHit, reason = statusComp:ValidateHit(source, flags)
+		local canHit, reason = self:_ValidateHit(source, flags)
 		if not canHit then
 			return false, reason
 		end

@@ -30,12 +30,50 @@ function StatusComponent.new(entity, config)
 	
 	-- Cache de regras de imunidade
 	self._immunityRules = nil
+
+	--Cooldown de status
+	self.StatusCooldowns = {} -- [statusName] = timestamp
 	
 	return self
 end
 
+
 --=============================================================================
---  STATUS APPLICATION
+--  STATUS COOLDOWN
+--=============================================================================
+
+--[[
+Checa se o status está em cooldown
+@param name - nome do status STRING
+@return está em cooldown BOOLEAN
+]]
+function Statuscomponent:HasStatusCooldown(name)
+	return (self.StatusCooldowns[name] or 0) > tick()
+end
+
+
+--[[
+Seta o cooldown de um status
+@param name - nome do status STRING
+@param duration - duração do cooldown NUMBER
+]]
+function Statuscomponent:SetStatusCooldown(name : string, duration : number)
+	self.StatusCooldowns[name] = tick() + duration
+end
+
+
+--[[
+Devolve o tempo restante do cooldown de um status
+@param name - nome do status STRING
+@return tempo restante do cooldown NUMBER
+]]
+function Statuscomponent:GetStatusCooldown(name : string) : number
+	return math.max(0, (self.StatusCooldowns[name] or 0) - tick())
+end
+
+
+--=============================================================================
+--  APLICAÇÃO DE STATUS
 --=============================================================================
 
 --[[
@@ -60,6 +98,11 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	data.StatusComponent = self
 	data.data.castTime = 0
 	
+	if data.data.category == "PlayerState" then
+		warn("[StatusComponent] PlayerState settado com função errada!")
+		return false
+	end
+
 	local meta = data.data
 	if not meta or not meta.name then
 		warn("[StatusComponent] Status sem nome ou .data")
@@ -74,10 +117,10 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	if meta.cooldown and meta.cooldown > 0 and sourceSkill then
 		local sourceEntity = sourceSkill.ED -- EntityData
 		if sourceEntity and sourceEntity.hasStatusCooldown then
-			if sourceEntity:hasStatusCooldown(meta.name) then
+			if self:hasStatusCooldown(meta.name) then
 				return nil -- Em cooldown
 			end
-			sourceEntity:setStatusCooldown(meta.name, meta.cooldown)
+			self:setStatusCooldown(meta.name, meta.cooldown)
 		end
 	end
 	
@@ -190,8 +233,20 @@ function StatusComponent:_CreateRunner(data : {[string]: any}, name : string, du
 	return runner
 end
 
+
+--[[
+Gera um ID único para um status
+@param sourceName - Nome da fonte STRING (opcional)
+@return ID único STRING
+]]
+function StatusComponent:GenerateUniqueEffectID(sourceName : string) : string
+	sourceName = sourceName or "Generic"
+	return sourceName .. "_" .. tostring(tick()):gsub("%.", "") .. "_" .. math.random(1000, 999999)
+end
+
+
 --=============================================================================
---  STATUS REMOVAL
+--  REMOÇÃO DE STATUS
 --=============================================================================
 
 --[[
@@ -362,7 +417,7 @@ function StatusComponent:_OnRunnerFinished(name : string, runner)
 end
 
 --=============================================================================
---  TAGS SYSTEM
+--  TAGS
 --=============================================================================
 
 --[[
@@ -403,44 +458,14 @@ function StatusComponent:_MarkTagsDirty()
 end
 
 --=============================================================================
---  HIT VALIDATION
+--  VALIDAÇÃO DE HIT
 --=============================================================================
 
 --[[
-Valida se um ataque pode afetar a entidade baseado em suas tags de imunidade
-@param source - Fonte do ataque (geralmente um ED) ANY
-@param flags - Flags/tags fornecidas para interações envolvendo StatusTable, obrigatório mas pode ser {}
-@return sucesso BOOLEAN, razão STRING (nome da imunidade que bloqueou o hit)]]
-function StatusComponent:ValidateHit(source : any, flags : {string}) : (boolean, string?)
-	local targetTags = self:GetActiveTags()
-	local immunityRules = self._immunityRules or self:_InitImmunityRules()
-	
-	for immunityName, rule in pairs(immunityRules) do
-		if targetTags[immunityName] then
-			local allowed = false
-			
-			for _, flag in ipairs(flags or {}) do
-				if table.find(rule.bypassableBy, flag) then
-					allowed = true
-					break
-				end
-			end
-			
-			if not allowed then
-				return false, immunityName
-			end
-		end
-	end
-	
-	return true
-end
-
---[[
-Função interna!
-Inicializa as regras de imunidade baseadas na StateTable
+Inicializa e retorna as regras de imunidade baseadas na StateTable
 @return tabela de regras TABLE
 ]]
-function StatusComponent:_InitImmunityRules()
+function StatusComponent:GetImmunityRules()
 	local rules = {}
 	
 	for name, def in pairs(StateTable.Status) do
@@ -462,82 +487,6 @@ function StatusComponent:_InitImmunityRules()
 end
 
 
---=============================================================================
---  PLAYER STATE (Cast, GlobalCast, etc)
---=============================================================================
-
---[[
-Retorna todos ESTADOS ativos
-]]
-function StatusComponent:GetActivePlayerState()
-	for name, state in pairs(self.Statuses.state) do
-		if state and state.data.data then
-			if state.data.data.category == "PlayerState" then
-				return state
-			end
-		end
-	end
-	return nil
-end
-
---[[
-Busca por um estado especifico
-]]
-function StatusComponent:GetPlayerState(stateName : string)
-	return self.Statuses.state[stateName]
-end
-
---[[
-valida se a entidade pode continuar a ação atual (cast, ataque, etc)
-@return sucesso BOOLEAN
-]]
-function StatusComponent:CanContinue() : boolean
-	local tags = self:GetActiveTags()
-	if tags["canCast"] == false then
-		return false
-	end
-	
-	local rawState = self:GetActivePlayerState()
-	if not rawState then return true end
-	
-	local activeState = rawState.data
-	
-	-- Checa se está em tabela Self (pode cancelar)
-	for _, stateDef in pairs(StateTable.PlayerStates.Self) do
-		if activeState.data.name == stateDef.data.name then
-			return true
-		end
-	end
-	
-	return false
-end
-
---[[
-Cancelamento interno de skills buscando por estados do tipo SelfCast
-@return sucesso BOOLEAN
-]]
-function StatusComponent:TrySelfCancel() : boolean
-	for stateName, _ in pairs(self.Statuses.state) do
-		local state = self:GetPlayerState(stateName)
-		if not state or not state.data.data then continue end
-		
-		if state.data.data.category == "PlayerState" then
-			-- Checa se é Self
-			for _, v in pairs(StateTable.PlayerStates.Self) do
-				if v.data.name == stateName then
-					local runner = state.sourceSkill or state.sourceRunner or state.runner
-					if runner and typeof(runner) == "table" and runner.Stop then
-						runner:Stop(true)
-						return true
-					end
-				end
-			end
-			return false -- Encontrou PlayerState mas não é Self
-		end
-	end
-	
-	return true -- Nenhum PlayerState ativo
-end
 
 --=============================================================================
 --  GETTERS
@@ -576,13 +525,38 @@ function StatusComponent:GetStatusCounter(name : string) : number
 end
 
 --[[
-Gera um ID único para um status
-@param sourceName - Nome da fonte STRING (opcional)
-@return ID único STRING
+Busca por um estado especifico
 ]]
-function StatusComponent:GenerateUniqueEffectID(sourceName : string) : string
-	sourceName = sourceName or "Generic"
-	return sourceName .. "_" .. tostring(tick()):gsub("%.", "") .. "_" .. math.random(1000, 999999)
+function StatusComponent:GetState(stateName : string)
+	return self.Statuses.state[stateName]
+end
+
+--[[
+ Retorna todos os estados ativos atualmente na entidade.
+@return Tabela de estados ativos { [Nome] = Dados }
+]]
+function StatusComponent:GetActiveStates()
+	return self.Statuses.state
+end
+
+--[[
+Verifica se a entidade possui algum estado de uma categoria específica.
+@param category - String da categoria
+@return boolean
+]]
+function StatusComponent:HasStateCategory(category : string) : boolean
+	for _, entry in pairs(self.Statuses.state) do
+		-- Suporta tanto entrada única (tabela direta) quanto lista de stacks (array)
+		local items = (entry.runner or entry.data) and {entry} or entry
+		
+		for _, item in ipairs(items) do
+			-- Verifica a estrutura de dados (item -> data -> data -> category)
+			if item.data and item.data.data and item.data.data.category == category then
+				return true
+			end
+		end
+	end
+	return false
 end
 
 --=============================================================================
@@ -608,6 +582,7 @@ end
 Destroi o componente, limpando referências e parando processos
 ]]
 function StatusComponent:Destroy()
+	table.clear(self.StatusCooldowns)
 	self:ClearAll()
 	self.Entity = nil
 	self._cachedTags = nil
@@ -619,16 +594,27 @@ end
 --=============================================================================
 
 local ExposeAPI = {
+
+	--Status/entidade
 	ApplyStatus = function(component, ...) return component:ApplyStatus(...) end,
 	RemoveStatus = function(component, ...) return component:RemoveStatus(...) end,
 	RemoveStatusByID = function(component, ...) return component:RemoveStatusByID(...) end,
 	GetStatus = function(component, ...) return component:GetStatus(...) end,
-	GetActiveTags = function(component) return component:GetActiveTags() end,               
-	ValidateHit = function(component, ...) return component:ValidateHit(...) end,           --??
-	GetStatusCounter = function(component, ...) return component:GetStatusCounter(...) end,
-	GenerateUniqueEffectID = function(component, ...) return component:GenerateUniqueEffectID(...) end,
-	CanContinue = function(component) return component:CanContinue() end,                  --??????
-	TrySelfCancel = function(component) return component:TrySelfCancel() end,              --?????
+	RemoveAmount = function(component,...) return component:RemoveAmount(...)end,
+
+	--Tags
+	GetImmunityRules = function(component) return component:GetImmunityRules(...) end,
+	GetActiveTags = function(component) return component:GetActiveTags(...) end,               
+	GetStatusCounter = function(component) return component:GetStatusCounter(...) end,
+	GenerateUniqueEffectID = function(component, ...) return component:GenerateUniqueEffectID(...) end,         
+
+	--Status Cooldown
+	HasStatusCooldown = function(component, ...) return component:HasStatusCooldown(...) end,
+	SetStatusCooldown = function(component, ...) return component:SetStatusCooldown(...) end,
+	GetStatusCooldown = function(component, ...) return component:GetStatusCooldown(...) end,
+
+	GetActiveStates = function(component) return component:GetActiveStates() end,
+	HasStateCategory = function(component, ...) return component:HasStateCategory(...) end,
 }
 
 return {

@@ -55,7 +55,7 @@ function DataManager.Create(Entity,components : {})
 	warn("[DataManager] Componentes adicionados:", compList)
 
 	--Setta o wrapper no componente Character (vital)
-	core.SetCharacter(Entity)
+	core.SetEntity(Entity)
 
 	-- inicializa o wrapper e guarda o modelo/character da entidade
 	core:ComponentsLoaded()

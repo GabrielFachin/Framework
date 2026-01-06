@@ -6,6 +6,7 @@
 ]]
 
 local ServerStorage = game:GetService("ServerStorage")
+local StateTable = require(ServerStorage.Modules.Combat.StateTable)
 
 local CombatComponent = {}
 CombatComponent.__index = CombatComponent
@@ -24,9 +25,8 @@ function CombatComponent.new(entity, config)
 	-- Skills disponíveis (carregadas depois)
 	self.SkillsData = nil
 
-	-- Cooldowns
+	-- Cooldown de skills
 	self.Cooldowns = {} -- [skillName] = timestamp
-	self.StatusCooldowns = {} -- [statusName] = timestamp
 
 	-- Skills ativas (runners)
 	self.ActiveSkills = {} -- [skillName] = {runner1, runner2, ...}
@@ -34,6 +34,12 @@ function CombatComponent.new(entity, config)
 	-- Personagem e modo
 	self.ChosenChar = config.ChosenChar or "Schema"
 	self.Mode = config.Mode or "Base"
+
+	--Estado de cast
+	self.PlayerState = {
+		name = nil,
+		runner = nil
+	}
 
 	return self
 end
@@ -48,14 +54,10 @@ Inicializa a pasta de skills, carrega dados e inicializa cooldowns
 ]]
 function CombatComponent:LoadSkillsData() : boolean
 
-	local charFolder = ServerStorage.Modules.CharData:FindFirstChild(self.ChosenChar)
-	if not charFolder then return false end
+	if not self:_LoadFolders() then return false end
 
-	local formFolder = charFolder:FindFirstChild(self.Mode)
-	if not formFolder then return false end
-
-	local skillsModule = formFolder:FindFirstChild("Skills")
-		and formFolder.Skills:FindFirstChild("Skills")
+	local skillsModule = self._formFolder:FindFirstChild("Skills")
+		and self._formFolder.Skills:FindFirstChild("Skills")
 
 	if not skillsModule then return false end
 
@@ -71,6 +73,31 @@ function CombatComponent:LoadSkillsData() : boolean
 
 	return true
 end
+
+--[[
+Carrega as pastas de dados do personagem
+@return sucesso BOOLEAN
+]]
+function CombatComponent:_LoadFolders() : boolean
+
+	local charFolder = ServerStorage.Modules.CharData:FindFirstChild(self.ChosenChar)
+	if not charFolder then
+		warn("[CharacterComponent] Personagem não encontrado:", self.ChosenChar)
+		return false
+	end
+
+	local formFolder = charFolder:FindFirstChild(self.Mode)
+	if not formFolder then
+		warn("[CharacterComponent] Forma não encontrada:", self.Mode)
+		return false
+	end
+
+	self.charFolder = charFolder
+	self._formFolder = formFolder
+
+	return true
+end
+
 
 --=============================================================================
 --  SKILL GETTERS
@@ -139,7 +166,7 @@ function CombatComponent:GetSkillData(skillName : string, index : number?) : any
 end
 
 --=============================================================================
---  COOLDOWN SYSTEM
+--  COOLDOWN
 --=============================================================================
 
 
@@ -201,38 +228,93 @@ function CombatComponent:ResetAllCooldowns()
 end
 
 --=============================================================================
---  STATUS COOLDOWN
+--  PLAYER STATE (Cast, GlobalCast, SelfCast, LockedCast)
 --=============================================================================
 
 --[[
-Checa se o status está em cooldown
-@param name - nome do status STRING
-@return está em cooldown BOOLEAN
+Retorna o PlayerState atual
 ]]
-function CombatComponent:HasStatusCooldown(name)
-	return (self.StatusCooldowns[name] or 0) > tick()
+function CombatComponent:GetPlayerState()
+	return self.PlayerState
 end
 
---[[
-Seta o cooldown de um status
-@param name - nome do status STRING
-@param duration - duração do cooldown NUMBER
-]]
-function CombatComponent:SetStatusCooldown(name : string, duration : number)
-	self.StatusCooldowns[name] = tick() + duration
+function CombatComponent:SetPlayerState(name,runner)
+
+	if not playerState then PlayerState = {name = name, runner, runner} return true end
+
+	self.PlayerState.name = name
+	self.PlayerState.runner = runner
 end
 
---[[
-Devolve o tempo restante do cooldown de um status
-@param name - nome do status STRING
-@return tempo restante do cooldown NUMBER
-]]
-function CombatComponent:GetStatusCooldown(name : string) : number
-	return math.max(0, (self.StatusCooldowns[name] or 0) - tick())
+function CombatComponent:RemovePlayerState()
+	self.PlayerState = nil
 end
+
+
+--[[
+Cancelamento interno de skills buscando por estados do tipo SelfCast
+@return sucesso BOOLEAN
+]]
+function CombatComponent:TrySelfCancel() : boolean
+		
+		if self.PlayerState then
+			-- Checa se é Self
+			for _, v in pairs(StateTable.PlayerStates.Self) do
+				if PlayerState.name == stateName then
+					local runner = PlayerState.runner 
+					if runner and typeof(runner) == "table" and runner.Stop then
+						runner:Stop(true)
+						return true
+					end
+				end
+			end
+			return false -- Encontrou PlayerState mas não é Self
+		end
+	
+	return true -- Nenhum PlayerState ativo
+end
+
 
 --=============================================================================
---  ACTIVE SKILLS (Runners)
+--  VALIDAÇÃO
+--=============================================================================
+
+--[[
+valida se a entidade pode continuar a ação
+@return sucesso BOOLEAN
+]]
+function CombatComponent:CanContinue() : boolean
+
+	--Busca por tag de impedimento
+	local statusComp = self.Entity:HasComponent(self.Entity.ComponentKey.Status)
+	
+	--existem estados ativos?
+	if statusComp then
+		local rawState = self.Entity:GetActiveState()
+			if not rawState then
+				return true 
+			end
+
+		--Existe alguma tag de silence?
+		local tags = self.Entity.GetActiveTags()
+		if tags["canCast"] == false then
+			return false
+		end
+	end
+	
+	-- Checa se o estado de player atual é selfCancel
+	for _, stateDef in pairs(StateTable.PlayerStates.Self) do
+		if self.PlayerState.name == stateDef.data.name then
+			return true
+		end
+	end
+	
+	return false
+end
+
+
+--=============================================================================
+--  SKILLS E RUNNERS
 --=============================================================================
 
 --[[
@@ -335,7 +417,7 @@ function CombatComponent:SetChosenChar(Char)
     self.ChosenChar = Char
 
     -- Recarrega folders
-    if not self.Entity:_loadFolders() then
+    if not self:_LoadFolders() then
         return false
     end
 
@@ -356,7 +438,6 @@ function CombatComponent:SetChosenChar(Char)
 
     return true
 end
-
 
 
 function CombatComponent:GetChosenChar()
@@ -371,7 +452,7 @@ function CombatComponent:SetCharMode(Mode)
     self.Mode = Mode
 
     -- Recarrega folders
-    if not self.Entity:_loadFolders() then
+    if not self:_LoadFolders() then
         return false
     end
 
@@ -392,7 +473,6 @@ function CombatComponent:SetCharMode(Mode)
 
     return true
 end
-
 
 
 function CombatComponent:GetCharMode()
@@ -420,7 +500,6 @@ Função de destruição do componente, para todas as skills ativas e limpa tabe
 function CombatComponent:Destroy()
 	self:StopAllActiveSkills(true)
 	table.clear(self.Cooldowns)
-	table.clear(self.StatusCooldowns)
 	table.clear(self.ActiveSkills)
 	self.Entity = nil
 end
@@ -441,25 +520,29 @@ local ExposeAPI = {
 	GetCooldown = function(component, ...) return component:GetCooldown(...) end,
 	ResetCooldown = function(component, ...) return component:ResetCooldown(...) end,
 
-	-- Status Cooldowns
-	HasStatusCooldown = function(component, ...) return component:HasStatusCooldown(...) end,
-	SetStatusCooldown = function(component, ...) return component:SetStatusCooldown(...) end,
-	GetStatusCooldown = function(component, ...) return component:GetStatusCooldown(...) end,
-
 	-- Active Skills
 	AddActiveSkill = function(component, ...) return component:AddActiveSkill(...) end,
 	RemoveActiveSkill = function(component, ...) return component:RemoveActiveSkill(...) end,
 	GetActiveSkills = function(component, ...) return component:GetActiveSkills(...) end,
 	GetActiveSkillCount = function(component,...) return component:GetActiveSkillCount(...) end,
 	HasActiveSkill = function(component, ...) return component:HasActiveSkill(...) end,
-	StopAllActiveSkills = function(component, ...) return component:StopAllActiveSkills(...) end,
-	
+	StopAllActiveSkills = function(component, ...) return component:StopAllActiveSkills(...) end
 
 	--Personagem/modo
 	GetChosenChar = function(component,...) return component:GetChosenChar(...) end,
 	SetChosenChar = function(component,...) return component:SetChosenChar(...) end,
 	GetCharMode = function(component,...) return component:GetCharMode(...) end,
 	SetCharMode = function(component,...) return component:SetCharMode(...) end,
+
+	--Validação
+	CanContinue = function(component) return component:CanContinue(...) end,
+	TrySelfCancel = function(component) return component:TrySelfCancel(...) end,     
+
+	--PlayerState
+	GetPlayerState = function(component) return component:GetPlayerState(...)end,
+	SetPlayerState = function(component) return component:SetPlayerState(...)end,
+	RemovePlayerState = function(component) return component:RemovePlayerState(...)end,
+
 }
 
 return {
