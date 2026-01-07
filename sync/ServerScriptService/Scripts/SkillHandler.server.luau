@@ -33,6 +33,10 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 	--Futuramente precisamos fazer um debounce aqui, checando o delay entre o ultimo envio do cliente e o atual, evitando spam e cheats (ambos pro input de movimento e skills)
 
+	--Se não tiver componente de combate, ignore.
+	if not entityCore:HasComponent(entityCore.ComponentKey.Combat) then return false end
+	
+	
 	local skillScript = entityCore.GetSkillScript(skillIndex) --Pega o script da skill
 	if not skillScript then  warn("Skill não encontrada") 
 	return false end
@@ -66,7 +70,6 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 					--Pego o primeiro runner da lista
 					local runner = activeRunners[1]
-					
 
 					--Pede pro runner se ele encontrou um recast, e então retorna com uma flag
 					local handled = runner:Recast(true)

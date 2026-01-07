@@ -52,6 +52,7 @@ local Skill = {
 		
 		onHit = function(self,hitResult)
 
+
 			local statsTable = self.statusTable
 			
 			local targetEntity = hitResult.target

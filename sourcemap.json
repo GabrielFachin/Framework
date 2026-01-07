@@ -14,44 +14,6 @@
           ]
         },
         {
-          "name": "Lighting",
-          "className": "Folder",
-          "children": [
-            {
-              "name": "SunRays",
-              "className": "SunRaysEffect"
-            },
-            {
-              "name": "DepthOfField",
-              "className": "DepthOfFieldEffect"
-            },
-            {
-              "name": "ColorCorrection",
-              "className": "ColorCorrectionEffect"
-            },
-            {
-              "name": "Bloom",
-              "className": "BloomEffect"
-            }
-          ]
-        },
-        {
-          "name": "Baseplate",
-          "className": "Folder",
-          "children": [
-            {
-              "name": "Baseplate",
-              "className": "Part",
-              "children": [
-                {
-                  "name": "Texture",
-                  "className": "Texture"
-                }
-              ]
-            }
-          ]
-        },
-        {
           "name": "Dummies",
           "className": "Folder",
           "children": [
@@ -91,10 +53,6 @@
                   "className": "Pants"
                 },
                 {
-                  "name": "Clothing",
-                  "className": "Shirt"
-                },
-                {
                   "name": "Body Colors",
                   "className": "BodyColors"
                 },
@@ -130,48 +88,6 @@
                         },
                         {
                           "name": "HairAttachment",
-                          "className": "Attachment"
-                        },
-                        {
-                          "name": "AccessoryWeld",
-                          "className": "Weld"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "Tied Waist Jacket in Black",
-                  "className": "Accessory",
-                  "children": [
-                    {
-                      "name": "ThumbnailConfiguration",
-                      "className": "Configuration",
-                      "children": [
-                        {
-                          "name": "ThumbnailCameraTarget",
-                          "className": "ObjectValue"
-                        },
-                        {
-                          "name": "ThumbnailCameraValue",
-                          "className": "CFrameValue"
-                        }
-                      ]
-                    },
-                    {
-                      "name": "BlusaCintura",
-                      "className": "Part",
-                      "children": [
-                        {
-                          "name": "SpecialMesh",
-                          "className": "SpecialMesh"
-                        },
-                        {
-                          "name": "AvatarPartScaleType",
-                          "className": "StringValue"
-                        },
-                        {
-                          "name": "WaistCenterAttachment",
                           "className": "Attachment"
                         },
                         {
@@ -267,6 +183,52 @@
                   ]
                 },
                 {
+                  "name": "Clothing",
+                  "className": "Shirt"
+                },
+                {
+                  "name": "Tied Waist Jacket in Black",
+                  "className": "Accessory",
+                  "children": [
+                    {
+                      "name": "ThumbnailConfiguration",
+                      "className": "Configuration",
+                      "children": [
+                        {
+                          "name": "ThumbnailCameraTarget",
+                          "className": "ObjectValue"
+                        },
+                        {
+                          "name": "ThumbnailCameraValue",
+                          "className": "CFrameValue"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "BlusaCintura",
+                      "className": "Part",
+                      "children": [
+                        {
+                          "name": "SpecialMesh",
+                          "className": "SpecialMesh"
+                        },
+                        {
+                          "name": "AvatarPartScaleType",
+                          "className": "StringValue"
+                        },
+                        {
+                          "name": "WaistCenterAttachment",
+                          "className": "Attachment"
+                        },
+                        {
+                          "name": "AccessoryWeld",
+                          "className": "Weld"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
                   "name": "HumanoidRootPart",
                   "className": "Part",
                   "children": [
@@ -425,10 +387,6 @@
                   "className": "MeshPart",
                   "children": [
                     {
-                      "name": "WaistRigAttachment",
-                      "className": "Attachment"
-                    },
-                    {
                       "name": "NeckRigAttachment",
                       "className": "Attachment"
                     },
@@ -467,24 +425,10 @@
                     {
                       "name": "Waist",
                       "className": "Motor6D"
-                    }
-                  ]
-                },
-                {
-                  "name": "LeftFoot",
-                  "className": "MeshPart",
-                  "children": [
+                    },
                     {
-                      "name": "LeftAnkleRigAttachment",
+                      "name": "WaistRigAttachment",
                       "className": "Attachment"
-                    },
-                    {
-                      "name": "OriginalSize",
-                      "className": "Vector3Value"
-                    },
-                    {
-                      "name": "LeftAnkle",
-                      "className": "Motor6D"
                     }
                   ]
                 },
@@ -501,12 +445,12 @@
                       "className": "Attachment"
                     },
                     {
-                      "name": "OriginalSize",
-                      "className": "Vector3Value"
-                    },
-                    {
                       "name": "LeftKnee",
                       "className": "Motor6D"
+                    },
+                    {
+                      "name": "OriginalSize",
+                      "className": "Vector3Value"
                     }
                   ]
                 },
@@ -619,10 +563,6 @@
                       "className": "Attachment"
                     },
                     {
-                      "name": "WaistFrontAttachment",
-                      "className": "Attachment"
-                    },
-                    {
                       "name": "WaistBackAttachment",
                       "className": "Attachment"
                     },
@@ -633,6 +573,10 @@
                     {
                       "name": "Root",
                       "className": "Motor6D"
+                    },
+                    {
+                      "name": "WaistFrontAttachment",
+                      "className": "Attachment"
                     }
                   ]
                 },
@@ -670,6 +614,24 @@
                     },
                     {
                       "name": "Neck",
+                      "className": "Motor6D"
+                    }
+                  ]
+                },
+                {
+                  "name": "LeftFoot",
+                  "className": "MeshPart",
+                  "children": [
+                    {
+                      "name": "LeftAnkleRigAttachment",
+                      "className": "Attachment"
+                    },
+                    {
+                      "name": "OriginalSize",
+                      "className": "Vector3Value"
+                    },
+                    {
+                      "name": "LeftAnkle",
                       "className": "Motor6D"
                     }
                   ]
@@ -714,48 +676,6 @@
                 {
                   "name": "Clothing",
                   "className": "Shirt"
-                },
-                {
-                  "name": "Accessory (Meshes/2. Wolf cut (11)Accessory)",
-                  "className": "Accessory",
-                  "children": [
-                    {
-                      "name": "ThumbnailConfiguration",
-                      "className": "Configuration",
-                      "children": [
-                        {
-                          "name": "ThumbnailCameraTarget",
-                          "className": "ObjectValue"
-                        },
-                        {
-                          "name": "ThumbnailCameraValue",
-                          "className": "CFrameValue"
-                        }
-                      ]
-                    },
-                    {
-                      "name": "Handle",
-                      "className": "Part",
-                      "children": [
-                        {
-                          "name": "SpecialMesh",
-                          "className": "SpecialMesh"
-                        },
-                        {
-                          "name": "AvatarPartScaleType",
-                          "className": "StringValue"
-                        },
-                        {
-                          "name": "HairAttachment",
-                          "className": "Attachment"
-                        },
-                        {
-                          "name": "AccessoryWeld",
-                          "className": "Weld"
-                        }
-                      ]
-                    }
-                  ]
                 },
                 {
                   "name": "Accessory (MeshPartAccessory)",
@@ -846,6 +766,48 @@
                   ]
                 },
                 {
+                  "name": "Accessory (Meshes/2. Wolf cut (11)Accessory)",
+                  "className": "Accessory",
+                  "children": [
+                    {
+                      "name": "ThumbnailConfiguration",
+                      "className": "Configuration",
+                      "children": [
+                        {
+                          "name": "ThumbnailCameraTarget",
+                          "className": "ObjectValue"
+                        },
+                        {
+                          "name": "ThumbnailCameraValue",
+                          "className": "CFrameValue"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Handle",
+                      "className": "Part",
+                      "children": [
+                        {
+                          "name": "SpecialMesh",
+                          "className": "SpecialMesh"
+                        },
+                        {
+                          "name": "AvatarPartScaleType",
+                          "className": "StringValue"
+                        },
+                        {
+                          "name": "HairAttachment",
+                          "className": "Attachment"
+                        },
+                        {
+                          "name": "AccessoryWeld",
+                          "className": "Weld"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
                   "name": "HumanoidRootPart",
                   "className": "Part",
                   "children": [
@@ -920,12 +882,12 @@
                       "className": "Attachment"
                     },
                     {
-                      "name": "OriginalSize",
-                      "className": "Vector3Value"
-                    },
-                    {
                       "name": "LeftShoulder",
                       "className": "Motor6D"
+                    },
+                    {
+                      "name": "OriginalSize",
+                      "className": "Vector3Value"
                     }
                   ]
                 },
@@ -1164,12 +1126,12 @@
                       "className": "Attachment"
                     },
                     {
-                      "name": "OriginalSize",
-                      "className": "Vector3Value"
-                    },
-                    {
                       "name": "RightHip",
                       "className": "Motor6D"
+                    },
+                    {
+                      "name": "OriginalSize",
+                      "className": "Vector3Value"
                     }
                   ]
                 },
@@ -1183,10 +1145,6 @@
                     },
                     {
                       "name": "WaistRigAttachment",
-                      "className": "Attachment"
-                    },
-                    {
-                      "name": "LeftHipRigAttachment",
                       "className": "Attachment"
                     },
                     {
@@ -1212,6 +1170,10 @@
                     {
                       "name": "Root",
                       "className": "Motor6D"
+                    },
+                    {
+                      "name": "LeftHipRigAttachment",
+                      "className": "Attachment"
                     }
                   ]
                 },
@@ -2330,6 +2292,485 @@
               "className": "Part",
               "children": [
                 {
+                  "name": "LeftGripAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "LeftShoulderAttachment",
+                  "className": "Attachment"
+                }
+              ]
+            },
+            {
+              "name": "Right Arm",
+              "className": "Part",
+              "children": [
+                {
+                  "name": "RightShoulderAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "RightGripAttachment",
+                  "className": "Attachment"
+                }
+              ]
+            },
+            {
+              "name": "Left Leg",
+              "className": "Part",
+              "children": [
+                {
+                  "name": "LeftFootAttachment",
+                  "className": "Attachment"
+                }
+              ]
+            },
+            {
+              "name": "Right Leg",
+              "className": "Part",
+              "children": [
+                {
+                  "name": "RightFootAttachment",
+                  "className": "Attachment"
+                }
+              ]
+            },
+            {
+              "name": "HumanoidRootPart",
+              "className": "Part",
+              "children": [
+                {
+                  "name": "RootAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "RootJoint",
+                  "className": "Motor6D"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Rig",
+          "className": "Model",
+          "children": [
+            {
+              "name": "Animate",
+              "className": "LocalScript",
+              "filePaths": [
+                "sync/Workspace/Rig/Animate.client.luau"
+              ],
+              "children": [
+                {
+                  "name": "idle",
+                  "className": "StringValue",
+                  "children": [
+                    {
+                      "name": "Animation1",
+                      "className": "Animation",
+                      "children": [
+                        {
+                          "name": "Weight",
+                          "className": "NumberValue"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Animation2",
+                      "className": "Animation",
+                      "children": [
+                        {
+                          "name": "Weight",
+                          "className": "NumberValue"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "walk",
+                  "className": "StringValue",
+                  "children": [
+                    {
+                      "name": "WalkAnim",
+                      "className": "Animation"
+                    }
+                  ]
+                },
+                {
+                  "name": "run",
+                  "className": "StringValue",
+                  "children": [
+                    {
+                      "name": "RunAnim",
+                      "className": "Animation"
+                    }
+                  ]
+                },
+                {
+                  "name": "jump",
+                  "className": "StringValue",
+                  "children": [
+                    {
+                      "name": "JumpAnim",
+                      "className": "Animation"
+                    }
+                  ]
+                },
+                {
+                  "name": "climb",
+                  "className": "StringValue",
+                  "children": [
+                    {
+                      "name": "ClimbAnim",
+                      "className": "Animation"
+                    }
+                  ]
+                },
+                {
+                  "name": "toolnone",
+                  "className": "StringValue",
+                  "children": [
+                    {
+                      "name": "ToolNoneAnim",
+                      "className": "Animation"
+                    }
+                  ]
+                },
+                {
+                  "name": "fall",
+                  "className": "StringValue",
+                  "children": [
+                    {
+                      "name": "FallAnim",
+                      "className": "Animation"
+                    }
+                  ]
+                },
+                {
+                  "name": "sit",
+                  "className": "StringValue",
+                  "children": [
+                    {
+                      "name": "SitAnim",
+                      "className": "Animation"
+                    }
+                  ]
+                },
+                {
+                  "name": "ScaleDampeningPercent",
+                  "className": "NumberValue"
+                },
+                {
+                  "name": "PlayEmote",
+                  "className": "BindableFunction"
+                }
+              ]
+            },
+            {
+              "name": "Humanoid",
+              "className": "Humanoid",
+              "children": [
+                {
+                  "name": "HumanoidDescription",
+                  "className": "HumanoidDescription",
+                  "children": [
+                    {
+                      "name": "BodyPartDescription",
+                      "className": "BodyPartDescription"
+                    }
+                  ]
+                },
+                {
+                  "name": "Animator",
+                  "className": "Animator"
+                }
+              ]
+            },
+            {
+              "name": "Body Colors",
+              "className": "BodyColors"
+            },
+            {
+              "name": "AnimSaves",
+              "className": "ObjectValue",
+              "children": [
+                {
+                  "name": "TIraDasCostas",
+                  "className": "KeyframeSequence",
+                  "children": [
+                    {
+                      "name": "Keyframe",
+                      "className": "Keyframe",
+                      "children": [
+                        {
+                          "name": "HumanoidRootPart",
+                          "className": "Pose",
+                          "children": [
+                            {
+                              "name": "Torso",
+                              "className": "Pose",
+                              "children": [
+                                {
+                                  "name": "Right Arm",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Left Arm",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Right Leg",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Left Leg",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Head",
+                                  "className": "Pose"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "MaoNaBocaFarm",
+                  "className": "KeyframeSequence",
+                  "children": [
+                    {
+                      "name": "Keyframe",
+                      "className": "Keyframe",
+                      "children": [
+                        {
+                          "name": "HumanoidRootPart",
+                          "className": "Pose",
+                          "children": [
+                            {
+                              "name": "Torso",
+                              "className": "Pose",
+                              "children": [
+                                {
+                                  "name": "Right Arm",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Left Arm",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Right Leg",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Left Leg",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Head",
+                                  "className": "Pose"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "PointFarm",
+                  "className": "KeyframeSequence",
+                  "children": [
+                    {
+                      "name": "Keyframe",
+                      "className": "Keyframe",
+                      "children": [
+                        {
+                          "name": "HumanoidRootPart",
+                          "className": "Pose",
+                          "children": [
+                            {
+                              "name": "Torso",
+                              "className": "Pose",
+                              "children": [
+                                {
+                                  "name": "Right Arm",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Left Arm",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Right Leg",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Left Leg",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Head",
+                                  "className": "Pose"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Automatic Save",
+                  "className": "KeyframeSequence",
+                  "children": [
+                    {
+                      "name": "Keyframe",
+                      "className": "Keyframe",
+                      "children": [
+                        {
+                          "name": "HumanoidRootPart",
+                          "className": "Pose",
+                          "children": [
+                            {
+                              "name": "Torso",
+                              "className": "Pose",
+                              "children": [
+                                {
+                                  "name": "Left Leg",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Right Arm",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Left Arm",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Right Leg",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Head",
+                                  "className": "Pose"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Head",
+              "className": "Part",
+              "children": [
+                {
+                  "name": "Mesh",
+                  "className": "SpecialMesh"
+                },
+                {
+                  "name": "face",
+                  "className": "Decal"
+                },
+                {
+                  "name": "HairAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "HatAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "FaceFrontAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "FaceCenterAttachment",
+                  "className": "Attachment"
+                }
+              ]
+            },
+            {
+              "name": "Torso",
+              "className": "Part",
+              "children": [
+                {
+                  "name": "roblox",
+                  "className": "Decal"
+                },
+                {
+                  "name": "NeckAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "BodyFrontAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "BodyBackAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "LeftCollarAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "RightCollarAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "WaistFrontAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "WaistCenterAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "WaistBackAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "Left Shoulder",
+                  "className": "Motor6D"
+                },
+                {
+                  "name": "Right Hip",
+                  "className": "Motor6D"
+                },
+                {
+                  "name": "Left Hip",
+                  "className": "Motor6D"
+                },
+                {
+                  "name": "Neck",
+                  "className": "Motor6D"
+                },
+                {
+                  "name": "Right Shoulder",
+                  "className": "Motor6D"
+                }
+              ]
+            },
+            {
+              "name": "Left Arm",
+              "className": "Part",
+              "children": [
+                {
                   "name": "LeftShoulderAttachment",
                   "className": "Attachment"
                 },
@@ -2795,16 +3236,6 @@
               ]
             },
             {
-              "name": "Right Leg",
-              "className": "Part",
-              "children": [
-                {
-                  "name": "RightFootAttachment",
-                  "className": "Attachment"
-                }
-              ]
-            },
-            {
               "name": "HumanoidRootPart",
               "className": "Part",
               "children": [
@@ -2817,481 +3248,6 @@
                   "className": "Motor6D"
                 }
               ]
-            }
-          ]
-        },
-        {
-          "name": "NAO APAGA",
-          "className": "Model",
-          "children": [
-            {
-              "name": "Wedge",
-              "className": "WedgePart"
-            },
-            {
-              "name": "Sign",
-              "className": "Part",
-              "children": [
-                {
-                  "name": "Sign Terrain Joint",
-                  "className": "ManualWeld"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "Rig",
-          "className": "Model",
-          "children": [
-            {
-              "name": "Animate",
-              "className": "LocalScript",
-              "filePaths": [
-                "sync/Workspace/Rig/Animate.client.luau"
-              ],
-              "children": [
-                {
-                  "name": "idle",
-                  "className": "StringValue",
-                  "children": [
-                    {
-                      "name": "Animation1",
-                      "className": "Animation",
-                      "children": [
-                        {
-                          "name": "Weight",
-                          "className": "NumberValue"
-                        }
-                      ]
-                    },
-                    {
-                      "name": "Animation2",
-                      "className": "Animation",
-                      "children": [
-                        {
-                          "name": "Weight",
-                          "className": "NumberValue"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "walk",
-                  "className": "StringValue",
-                  "children": [
-                    {
-                      "name": "WalkAnim",
-                      "className": "Animation"
-                    }
-                  ]
-                },
-                {
-                  "name": "run",
-                  "className": "StringValue",
-                  "children": [
-                    {
-                      "name": "RunAnim",
-                      "className": "Animation"
-                    }
-                  ]
-                },
-                {
-                  "name": "jump",
-                  "className": "StringValue",
-                  "children": [
-                    {
-                      "name": "JumpAnim",
-                      "className": "Animation"
-                    }
-                  ]
-                },
-                {
-                  "name": "climb",
-                  "className": "StringValue",
-                  "children": [
-                    {
-                      "name": "ClimbAnim",
-                      "className": "Animation"
-                    }
-                  ]
-                },
-                {
-                  "name": "toolnone",
-                  "className": "StringValue",
-                  "children": [
-                    {
-                      "name": "ToolNoneAnim",
-                      "className": "Animation"
-                    }
-                  ]
-                },
-                {
-                  "name": "fall",
-                  "className": "StringValue",
-                  "children": [
-                    {
-                      "name": "FallAnim",
-                      "className": "Animation"
-                    }
-                  ]
-                },
-                {
-                  "name": "sit",
-                  "className": "StringValue",
-                  "children": [
-                    {
-                      "name": "SitAnim",
-                      "className": "Animation"
-                    }
-                  ]
-                },
-                {
-                  "name": "PlayEmote",
-                  "className": "BindableFunction"
-                },
-                {
-                  "name": "ScaleDampeningPercent",
-                  "className": "NumberValue"
-                }
-              ]
-            },
-            {
-              "name": "Humanoid",
-              "className": "Humanoid",
-              "children": [
-                {
-                  "name": "HumanoidDescription",
-                  "className": "HumanoidDescription",
-                  "children": [
-                    {
-                      "name": "BodyPartDescription",
-                      "className": "BodyPartDescription"
-                    }
-                  ]
-                },
-                {
-                  "name": "Animator",
-                  "className": "Animator"
-                }
-              ]
-            },
-            {
-              "name": "Body Colors",
-              "className": "BodyColors"
-            },
-            {
-              "name": "AnimSaves",
-              "className": "ObjectValue",
-              "children": [
-                {
-                  "name": "TIraDasCostas",
-                  "className": "KeyframeSequence",
-                  "children": [
-                    {
-                      "name": "Keyframe",
-                      "className": "Keyframe",
-                      "children": [
-                        {
-                          "name": "HumanoidRootPart",
-                          "className": "Pose",
-                          "children": [
-                            {
-                              "name": "Torso",
-                              "className": "Pose",
-                              "children": [
-                                {
-                                  "name": "Right Arm",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Left Arm",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Right Leg",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Left Leg",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Head",
-                                  "className": "Pose"
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "MaoNaBocaFarm",
-                  "className": "KeyframeSequence",
-                  "children": [
-                    {
-                      "name": "Keyframe",
-                      "className": "Keyframe",
-                      "children": [
-                        {
-                          "name": "HumanoidRootPart",
-                          "className": "Pose",
-                          "children": [
-                            {
-                              "name": "Torso",
-                              "className": "Pose",
-                              "children": [
-                                {
-                                  "name": "Right Arm",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Left Arm",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Right Leg",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Left Leg",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Head",
-                                  "className": "Pose"
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "PointFarm",
-                  "className": "KeyframeSequence",
-                  "children": [
-                    {
-                      "name": "Keyframe",
-                      "className": "Keyframe",
-                      "children": [
-                        {
-                          "name": "HumanoidRootPart",
-                          "className": "Pose",
-                          "children": [
-                            {
-                              "name": "Torso",
-                              "className": "Pose",
-                              "children": [
-                                {
-                                  "name": "Right Arm",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Left Arm",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Right Leg",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Left Leg",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Head",
-                                  "className": "Pose"
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "Automatic Save",
-                  "className": "KeyframeSequence",
-                  "children": [
-                    {
-                      "name": "Keyframe",
-                      "className": "Keyframe",
-                      "children": [
-                        {
-                          "name": "HumanoidRootPart",
-                          "className": "Pose",
-                          "children": [
-                            {
-                              "name": "Torso",
-                              "className": "Pose",
-                              "children": [
-                                {
-                                  "name": "Left Leg",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Right Arm",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Left Arm",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Right Leg",
-                                  "className": "Pose"
-                                },
-                                {
-                                  "name": "Head",
-                                  "className": "Pose"
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "Head",
-              "className": "Part",
-              "children": [
-                {
-                  "name": "Mesh",
-                  "className": "SpecialMesh"
-                },
-                {
-                  "name": "face",
-                  "className": "Decal"
-                },
-                {
-                  "name": "HairAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "HatAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "FaceFrontAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "FaceCenterAttachment",
-                  "className": "Attachment"
-                }
-              ]
-            },
-            {
-              "name": "Torso",
-              "className": "Part",
-              "children": [
-                {
-                  "name": "roblox",
-                  "className": "Decal"
-                },
-                {
-                  "name": "NeckAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "BodyFrontAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "BodyBackAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "LeftCollarAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "RightCollarAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "WaistFrontAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "WaistCenterAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "WaistBackAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "Right Shoulder",
-                  "className": "Motor6D"
-                },
-                {
-                  "name": "Left Shoulder",
-                  "className": "Motor6D"
-                },
-                {
-                  "name": "Right Hip",
-                  "className": "Motor6D"
-                },
-                {
-                  "name": "Left Hip",
-                  "className": "Motor6D"
-                },
-                {
-                  "name": "Neck",
-                  "className": "Motor6D"
-                }
-              ]
-            },
-            {
-              "name": "Left Arm",
-              "className": "Part",
-              "children": [
-                {
-                  "name": "LeftShoulderAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "LeftGripAttachment",
-                  "className": "Attachment"
-                }
-              ]
-            },
-            {
-              "name": "Right Arm",
-              "className": "Part",
-              "children": [
-                {
-                  "name": "RightShoulderAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "RightGripAttachment",
-                  "className": "Attachment"
-                }
-              ]
-            },
-            {
-              "name": "Left Leg",
-              "className": "Part",
-              "children": [
-                {
-                  "name": "LeftFootAttachment",
-                  "className": "Attachment"
-                }
-              ]
             },
             {
               "name": "Right Leg",
@@ -3300,20 +3256,6 @@
                 {
                   "name": "RightFootAttachment",
                   "className": "Attachment"
-                }
-              ]
-            },
-            {
-              "name": "HumanoidRootPart",
-              "className": "Part",
-              "children": [
-                {
-                  "name": "RootAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "RootJoint",
-                  "className": "Motor6D"
                 }
               ]
             }
@@ -3821,10 +3763,6 @@
                                   "className": "Pose"
                                 },
                                 {
-                                  "name": "Right Leg",
-                                  "className": "Pose"
-                                },
-                                {
                                   "name": "Head",
                                   "className": "Pose",
                                   "children": [
@@ -3839,15 +3777,19 @@
                                   ]
                                 },
                                 {
-                                  "name": "Right Arm",
-                                  "className": "Pose"
-                                },
-                                {
                                   "name": "Left Arm",
                                   "className": "Pose"
                                 },
                                 {
                                   "name": "LavaTail",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Right Leg",
+                                  "className": "Pose"
+                                },
+                                {
+                                  "name": "Right Arm",
                                   "className": "Pose"
                                 }
                               ]
@@ -3973,10 +3915,6 @@
                   "className": "Attachment"
                 },
                 {
-                  "name": "RightCollarAttachment",
-                  "className": "Attachment"
-                },
-                {
                   "name": "WaistFrontAttachment",
                   "className": "Attachment"
                 },
@@ -4011,6 +3949,10 @@
                 {
                   "name": "Handle",
                   "className": "Motor6D"
+                },
+                {
+                  "name": "RightCollarAttachment",
+                  "className": "Attachment"
                 }
               ]
             },
@@ -4073,6 +4015,64 @@
                 {
                   "name": "RootJoint",
                   "className": "Motor6D"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Lighting",
+          "className": "Folder",
+          "children": [
+            {
+              "name": "SunRays",
+              "className": "SunRaysEffect"
+            },
+            {
+              "name": "DepthOfField",
+              "className": "DepthOfFieldEffect"
+            },
+            {
+              "name": "ColorCorrection",
+              "className": "ColorCorrectionEffect"
+            },
+            {
+              "name": "Bloom",
+              "className": "BloomEffect"
+            }
+          ]
+        },
+        {
+          "name": "Baseplate",
+          "className": "Folder",
+          "children": [
+            {
+              "name": "Baseplate",
+              "className": "Part",
+              "children": [
+                {
+                  "name": "Texture",
+                  "className": "Texture"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "NAO APAGA",
+          "className": "Model",
+          "children": [
+            {
+              "name": "Wedge",
+              "className": "WedgePart"
+            },
+            {
+              "name": "Sign",
+              "className": "Part",
+              "children": [
+                {
+                  "name": "Sign Terrain Joint",
+                  "className": "ManualWeld"
                 }
               ]
             }
@@ -4777,24 +4777,15 @@
           ]
         },
         {
-          "name": "RemoteEvents",
+          "name": "Modules",
           "className": "Folder",
           "children": [
             {
-              "name": "RequestSkill",
-              "className": "RemoteEvent"
-            },
-            {
-              "name": "RequestDir",
-              "className": "RemoteEvent"
-            },
-            {
-              "name": "UpdateHealthBar",
-              "className": "RemoteEvent"
-            },
-            {
-              "name": "SkillFired",
-              "className": "RemoteEvent"
+              "name": "MoveInputHandler",
+              "className": "ModuleScript",
+              "filePaths": [
+                "sync/ReplicatedStorage/Modules/MoveInputHandler.module.luau"
+              ]
             }
           ]
         },
@@ -4812,15 +4803,24 @@
           ]
         },
         {
-          "name": "Modules",
+          "name": "RemoteEvents",
           "className": "Folder",
           "children": [
             {
-              "name": "MoveInputHandler",
-              "className": "ModuleScript",
-              "filePaths": [
-                "sync/ReplicatedStorage/Modules/MoveInputHandler.module.luau"
-              ]
+              "name": "RequestDir",
+              "className": "RemoteEvent"
+            },
+            {
+              "name": "UpdateHealthBar",
+              "className": "RemoteEvent"
+            },
+            {
+              "name": "SkillFired",
+              "className": "RemoteEvent"
+            },
+            {
+              "name": "RequestSkill",
+              "className": "RemoteEvent"
             }
           ]
         },
@@ -5089,10 +5089,6 @@
                           "className": "CFrameValue"
                         },
                         {
-                          "name": "AttachTo",
-                          "className": "StringValue"
-                        },
-                        {
                           "name": "Hitbox",
                           "className": "Folder",
                           "children": [
@@ -5125,6 +5121,10 @@
                               ]
                             }
                           ]
+                        },
+                        {
+                          "name": "AttachTo",
+                          "className": "StringValue"
                         },
                         {
                           "name": "Martelo",
@@ -5161,6 +5161,26 @@
               ]
             }
           ]
+        },
+        {
+          "name": "NAO APAGA",
+          "className": "Model",
+          "children": [
+            {
+              "name": "Wedge",
+              "className": "WedgePart"
+            },
+            {
+              "name": "Sign",
+              "className": "Part",
+              "children": [
+                {
+                  "name": "Sign Terrain Joint",
+                  "className": "ManualWeld"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -5184,26 +5204,6 @@
               "className": "Script",
               "filePaths": [
                 "sync/ServerScriptService/Scripts/SkillHandler.server.luau"
-              ]
-            }
-          ]
-        },
-        {
-          "name": "Modules",
-          "className": "Folder",
-          "children": [
-            {
-              "name": "SkillRunner",
-              "className": "ModuleScript",
-              "filePaths": [
-                "sync/ServerScriptService/Modules/SkillRunner.module.luau"
-              ]
-            },
-            {
-              "name": "SkillFactory",
-              "className": "ModuleScript",
-              "filePaths": [
-                "sync/ServerScriptService/Modules/SkillFactory.module.luau"
               ]
             }
           ]
@@ -5296,6 +5296,26 @@
               ]
             }
           ]
+        },
+        {
+          "name": "Modules",
+          "className": "Folder",
+          "children": [
+            {
+              "name": "SkillRunner",
+              "className": "ModuleScript",
+              "filePaths": [
+                "sync/ServerScriptService/Modules/SkillRunner.module.luau"
+              ]
+            },
+            {
+              "name": "SkillFactory",
+              "className": "ModuleScript",
+              "filePaths": [
+                "sync/ServerScriptService/Modules/SkillFactory.module.luau"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -5326,322 +5346,6 @@
               "className": "ModuleScript",
               "filePaths": [
                 "sync/ServerStorage/Modules/EntityWrapper.module.luau"
-              ]
-            },
-            {
-              "name": "BaseSkills",
-              "className": "Folder",
-              "children": [
-                {
-                  "name": "BaseSkills",
-                  "className": "ModuleScript",
-                  "filePaths": [
-                    "sync/ServerStorage/Modules/BaseSkills/BaseSkills.module.luau"
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "CharData",
-              "className": "Folder",
-              "children": [
-                {
-                  "name": "GenericChar",
-                  "className": "Folder",
-                  "children": [
-                    {
-                      "name": "Base",
-                      "className": "Folder",
-                      "children": [
-                        {
-                          "name": "Data",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Base",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Data/Base.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Script",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Dash",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Dash.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "M1",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/M1.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill1",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Skill1.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill2",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Skill2.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill3",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Skill3.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Ultimate",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Ultimate.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Skills",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Skills",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Skills/Skills.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "States",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "States",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/States/States.module.luau"
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "AlbertR",
-                  "className": "Folder",
-                  "children": [
-                    {
-                      "name": "Base",
-                      "className": "Folder",
-                      "children": [
-                        {
-                          "name": "Data",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Base",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Data/Base.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Script",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Dash",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Dash.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "M1",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/M1.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill1",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Skill1.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill2",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Skill2.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill3",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Skill3.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Ultimate",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Ultimate.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Skills",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Skills",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Skills/Skills.module.luau"
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "!Doc",
-                  "className": "Folder",
-                  "children": [
-                    {
-                      "name": "DOC",
-                      "className": "ModuleScript",
-                      "filePaths": [
-                        "sync/ServerStorage/Modules/CharData/!Doc/DOC.module.luau"
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "Schema",
-                  "className": "Folder",
-                  "children": [
-                    {
-                      "name": "Base",
-                      "className": "Folder",
-                      "children": [
-                        {
-                          "name": "Data",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Base",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Data/Base.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Script",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Dash",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Dash.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "M1",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/M1.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill1",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Skill1.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill2",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Skill2.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill3",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Skill3.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Ultimate",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Ultimate.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Skills",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Skills",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Skills/Skills.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "States",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "States",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/States/States.module.luau"
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
               ]
             },
             {
@@ -5783,6 +5487,19 @@
               ]
             },
             {
+              "name": "BaseSkills",
+              "className": "Folder",
+              "children": [
+                {
+                  "name": "BaseSkills",
+                  "className": "ModuleScript",
+                  "filePaths": [
+                    "sync/ServerStorage/Modules/BaseSkills/BaseSkills.module.luau"
+                  ]
+                }
+              ]
+            },
+            {
               "name": "Animation",
               "className": "Folder",
               "children": [
@@ -5798,6 +5515,309 @@
                   "className": "ModuleScript",
                   "filePaths": [
                     "sync/ServerStorage/Modules/Animation/AnimationLib.module.luau"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "CharData",
+              "className": "Folder",
+              "children": [
+                {
+                  "name": "GenericChar",
+                  "className": "Folder",
+                  "children": [
+                    {
+                      "name": "Base",
+                      "className": "Folder",
+                      "children": [
+                        {
+                          "name": "Data",
+                          "className": "Folder",
+                          "children": [
+                            {
+                              "name": "Base",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Data/Base.module.luau"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Skills",
+                          "className": "Folder",
+                          "children": [
+                            {
+                              "name": "Skills",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Skills/Skills.module.luau"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "States",
+                          "className": "Folder",
+                          "children": [
+                            {
+                              "name": "States",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/States/States.module.luau"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Script",
+                          "className": "Folder",
+                          "children": [
+                            {
+                              "name": "Dash",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Dash.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "M1",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/M1.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Skill1",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Skill1.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Skill2",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Skill2.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Skill3",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Skill3.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Ultimate",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Ultimate.module.luau"
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Schema",
+                  "className": "Folder",
+                  "children": [
+                    {
+                      "name": "Base",
+                      "className": "Folder",
+                      "children": [
+                        {
+                          "name": "States",
+                          "className": "Folder",
+                          "children": [
+                            {
+                              "name": "States",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/Schema/Base/States/States.module.luau"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Script",
+                          "className": "Folder",
+                          "children": [
+                            {
+                              "name": "Dash",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Dash.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "M1",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/M1.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Skill1",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Skill1.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Skill2",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Skill2.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Skill3",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Skill3.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Ultimate",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Ultimate.module.luau"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Skills",
+                          "className": "Folder",
+                          "children": [
+                            {
+                              "name": "Skills",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/Schema/Base/Skills/Skills.module.luau"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Data",
+                          "className": "Folder",
+                          "children": [
+                            {
+                              "name": "Base",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/Schema/Base/Data/Base.module.luau"
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "!Doc",
+                  "className": "Folder",
+                  "children": [
+                    {
+                      "name": "DOC",
+                      "className": "ModuleScript",
+                      "filePaths": [
+                        "sync/ServerStorage/Modules/CharData/!Doc/DOC.module.luau"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "AlbertR",
+                  "className": "Folder",
+                  "children": [
+                    {
+                      "name": "Base",
+                      "className": "Folder",
+                      "children": [
+                        {
+                          "name": "Skills",
+                          "className": "Folder",
+                          "children": [
+                            {
+                              "name": "Skills",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Skills/Skills.module.luau"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Data",
+                          "className": "Folder",
+                          "children": [
+                            {
+                              "name": "Base",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Data/Base.module.luau"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Script",
+                          "className": "Folder",
+                          "children": [
+                            {
+                              "name": "Dash",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Dash.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "M1",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/M1.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Skill1",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Skill1.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Skill2",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Skill2.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Skill3",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Skill3.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Ultimate",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Ultimate.module.luau"
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
                   ]
                 }
               ]
@@ -5925,12 +5945,12 @@
           "className": "BloomEffect"
         },
         {
-          "name": "DepthOfField",
-          "className": "DepthOfFieldEffect"
-        },
-        {
           "name": "Stylized",
           "className": "Sky"
+        },
+        {
+          "name": "DepthOfField",
+          "className": "DepthOfFieldEffect"
         }
       ]
     }

@@ -5,6 +5,7 @@
 	- Validação de cast
 ]]
 
+local Geometry = game:GetService("Geometry")
 local ServerStorage = game:GetService("ServerStorage")
 local StateTable = require(ServerStorage.Modules.Combat.StateTable)
 
@@ -132,8 +133,8 @@ function CombatComponent:GetSkillScript(index : number?, name : string?) : Insta
 			 return nil end
 
 
-	local skillScript = charComp._formFolder:FindFirstChild("Script")
-		and charComp._formFolder.Script:FindFirstChild(skillName)
+	local skillScript = self._formFolder:FindFirstChild("Script")
+		and self._formFolder.Script:FindFirstChild(skillName)
 
 	return skillScript
 end
@@ -240,7 +241,7 @@ end
 
 function CombatComponent:SetPlayerState(name,runner)
 
-	if not playerState then PlayerState = {name = name, runner, runner} return true end
+	if not self.PlayerState then self.PlayerState = {name = name, runner, runner} end
 
 	self.PlayerState.name = name
 	self.PlayerState.runner = runner
@@ -257,18 +258,18 @@ Cancelamento interno de skills buscando por estados do tipo SelfCast
 ]]
 function CombatComponent:TrySelfCancel() : boolean
 		
-		if self.PlayerState then
+		if self.PlayerState and #self.PlayerState > 0 then
 			-- Checa se é Self
 			for _, v in pairs(StateTable.PlayerStates.Self) do
-				if PlayerState.name == stateName then
-					local runner = PlayerState.runner 
+				if self.PlayerState.name == v.data.name then
+					local runner = self.PlayerState.runner 
 					if runner and typeof(runner) == "table" and runner.Stop then
 						runner:Stop(true)
 						return true
 					end
 				end
+				return false -- Encontrou PlayerState mas não é Self
 			end
-			return false -- Encontrou PlayerState mas não é Self
 		end
 	
 	return true -- Nenhum PlayerState ativo
@@ -290,8 +291,8 @@ function CombatComponent:CanContinue() : boolean
 	
 	--existem estados ativos?
 	if statusComp then
-		local rawState = self.Entity:GetActiveState()
-			if not rawState then
+		local rawState = self.Entity:GetActiveStates()
+			if #rawState == 0 then
 				return true 
 			end
 
@@ -480,6 +481,13 @@ function CombatComponent:GetCharMode()
 end
 
 
+--[[
+Retorna as postas de forma e dados do personagem escolhido.
+@return FormFolder, CharFolder
+]]
+function CombatComponent:GetCharFolders()
+	return self._formFolder,self.charFolder
+end
 
 --=============================================================================
 --  LIFECYCLE
@@ -526,7 +534,7 @@ local ExposeAPI = {
 	GetActiveSkills = function(component, ...) return component:GetActiveSkills(...) end,
 	GetActiveSkillCount = function(component,...) return component:GetActiveSkillCount(...) end,
 	HasActiveSkill = function(component, ...) return component:HasActiveSkill(...) end,
-	StopAllActiveSkills = function(component, ...) return component:StopAllActiveSkills(...) end
+	StopAllActiveSkills = function(component, ...) return component:StopAllActiveSkills(...) end,
 
 	--Personagem/modo
 	GetChosenChar = function(component,...) return component:GetChosenChar(...) end,
@@ -535,13 +543,15 @@ local ExposeAPI = {
 	SetCharMode = function(component,...) return component:SetCharMode(...) end,
 
 	--Validação
-	CanContinue = function(component) return component:CanContinue(...) end,
-	TrySelfCancel = function(component) return component:TrySelfCancel(...) end,     
+	CanContinue = function(component,...) return component:CanContinue(...) end,
+	TrySelfCancel = function(component,...) return component:TrySelfCancel(...) end,     
 
 	--PlayerState
-	GetPlayerState = function(component) return component:GetPlayerState(...)end,
-	SetPlayerState = function(component) return component:SetPlayerState(...)end,
-	RemovePlayerState = function(component) return component:RemovePlayerState(...)end,
+	GetPlayerState = function(component,...) return component:GetPlayerState(...)end,
+	SetPlayerState = function(component,...) return component:SetPlayerState(...)end,
+	RemovePlayerState = function(component,...) return component:RemovePlayerState(...)end,
+
+	GetCharFolders = function(component,...) return component:GetCharFolders(...)end,
 
 }
 

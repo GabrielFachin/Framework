@@ -47,7 +47,7 @@ Checa se o status está em cooldown
 @param name - nome do status STRING
 @return está em cooldown BOOLEAN
 ]]
-function Statuscomponent:HasStatusCooldown(name)
+function StatusComponent:HasStatusCooldown(name)
 	return (self.StatusCooldowns[name] or 0) > tick()
 end
 
@@ -57,7 +57,7 @@ Seta o cooldown de um status
 @param name - nome do status STRING
 @param duration - duração do cooldown NUMBER
 ]]
-function Statuscomponent:SetStatusCooldown(name : string, duration : number)
+function StatusComponent:SetStatusCooldown(name : string, duration : number)
 	self.StatusCooldowns[name] = tick() + duration
 end
 
@@ -67,7 +67,7 @@ Devolve o tempo restante do cooldown de um status
 @param name - nome do status STRING
 @return tempo restante do cooldown NUMBER
 ]]
-function Statuscomponent:GetStatusCooldown(name : string) : number
+function StatusComponent:GetStatusCooldown(name : string) : number
 	return math.max(0, (self.StatusCooldowns[name] or 0) - tick())
 end
 
@@ -603,9 +603,9 @@ local ExposeAPI = {
 	RemoveAmount = function(component,...) return component:RemoveAmount(...)end,
 
 	--Tags
-	GetImmunityRules = function(component) return component:GetImmunityRules(...) end,
-	GetActiveTags = function(component) return component:GetActiveTags(...) end,               
-	GetStatusCounter = function(component) return component:GetStatusCounter(...) end,
+	GetImmunityRules = function(component) return component:GetImmunityRules() end,
+	GetActiveTags = function(component) return component:GetActiveTags() end,               
+	GetStatusCounter = function(component) return component:GetStatusCounter() end,
 	GenerateUniqueEffectID = function(component, ...) return component:GenerateUniqueEffectID(...) end,         
 
 	--Status Cooldown

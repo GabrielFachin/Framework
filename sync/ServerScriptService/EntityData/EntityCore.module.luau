@@ -6,26 +6,8 @@ local EntityCore = {}
 EntityCore.ComponentKey = {}
 EntityCore.Events = {}
 
--- Entra em caso de chamada p/ função inexistente
-local function DummyFunc()
-	print("[EntityCore] Tentativa de interação com comp/método inexistente")
-    return nil 
-end
 
-function EntityCore:__index(input)
-
-	--Busca por métodos existentes na própia classe
-    local member = EntityCore[input]
-    if member then 
-        return member 
-    end
-	--Caso não encontre, retorne a função dummy.
-    return DummyFunc
-end
-
-EntityCore.Components = {}
-
-
+EntityCore.__index = EntityCore
 local ComponentRegistry = {}
 
 --=============================================================================
@@ -92,6 +74,7 @@ function EntityCore:AddComponent(componentName : string, config : {[string]: any
 			end
 		end
 	end
+	
 
 	return component
 end
@@ -204,7 +187,8 @@ end
 Registra um componente globalmente para uso em entidades
 @param name - Nome do componente STRING
 @param componentModule - Módulo do componente TABLE
-]]
+  ]]
+
 function EntityCore.RegisterComponent(name : string, componentModule : {[string]: any})
 	if ComponentRegistry[name] then
 		warn("[EntityCore] Componente já registrado:", name)
@@ -218,6 +202,7 @@ function EntityCore.RegisterComponent(name : string, componentModule : {[string]
 	}
 
 	print("[EntityCore] Componente registrado:", name)
+	
 end
 
 --[[
@@ -277,6 +262,8 @@ local function AutoRegisterComponents()
 			end
 		end
 	end
+
+	
 
 	
 	--Eventos exportados por componentes

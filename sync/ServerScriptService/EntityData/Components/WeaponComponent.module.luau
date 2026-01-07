@@ -50,6 +50,8 @@ Equipar uma arma ao personagem
 @return sucesso BOOLEAN
 ]]
 function WeaponComponent:EquipWeapon(weaponName : string) : boolean
+
+	if not self.Entity:HasComponent(self.Entity.ComponentKey.Combat) then warn ("ARMA CRIADA SEM COMBAT") return false end
 	-- Remove arma antiga
 	self:UnequipWeapon()
 
@@ -62,6 +64,7 @@ function WeaponComponent:EquipWeapon(weaponName : string) : boolean
 		warn("[WeaponComponent] Pasta de armas não encontrada:", chosenChar)
 		return false
 	end
+
 
 	local weaponModel = weaponFolder:FindFirstChild(weaponName)
 	if not weaponModel then

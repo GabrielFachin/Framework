@@ -31,9 +31,11 @@ Retorna a tabela de Stats do personagem
 @return tabela de Stats TABLE
 ]]
 function CharacterComponent:GetStats() : {}
-	if not self._formFolder then return {} end
+	if not self.Entity:HasComponent(self.Entity.ComponentKey.Combat) then return {Speed = 16, JumpForce = 20} end
 
-	local dataFolder = self._formFolder:FindFirstChild("Data")
+	local formFolder,_ = self.Entity.GetCharFolders()
+
+	local dataFolder = formFolder:FindFirstChild("Data")
 	if not dataFolder then return {} end
 
 	local baseModule = dataFolder:FindFirstChild("Base")

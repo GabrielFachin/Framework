@@ -274,7 +274,7 @@ function HitboxWrapper:_getTargetEntity(hitInstance: Instance)
 			return self.DataManager.Get(hitID) 
 
 			--Retorna que atingiu algo sem ID, permite efeitos de atingir parede e afins.
-			else warn("bob") return false end
+			else return false end
 
 		end
 		current = current.Parent

@@ -49,10 +49,18 @@ function SkillRunner.new(skillData,Entity,name,type) --Instancia o SkillRunner c
 
 	--=====FACILITADORES DE ACESSO=====--
 
-	if self.Entity then 
-	self.charLib = self.lib.character[self.Entity.GetChosenChar()]  --Biblioteca de animações do char escolhido
-	self.hitPoint = self.Entity.GetHitOrigin() 						--Origem de hitboxes criadas em runtime pela arma
-	self.weapon = self.Entity.GetWeapon()						    --Arma sendo utilizada pelo player
+	if self.Entity then
+		
+		if Entity:HasComponent(Entity.ComponentKey.Animation) then
+			self.charLib = self.lib.character[self.Entity.GetChosenChar()] 	--Biblioteca de animações do char escolhido
+		end
+
+		if self.Entity:HasComponent(self.Entity.ComponentKey.Weapon) then
+
+		self.hitPoint = self.Entity.GetHitOrigin() 							--Origem de hitboxes criadas em runtime pela arma
+		self.weapon = self.Entity.GetWeapon()						   	 --Arma sendo utilizada pelo player
+
+		end
 	end
 
 	
@@ -83,7 +91,10 @@ function SkillRunner:start()
 
 
 	if self.Entity then
-	self.Entity.AddActiveSkill(self.skillName,self)	
+		if self.Entity:HasComponent(self.Entity.ComponentKey.Combat) then
+			self.Entity.AddActiveSkill(self.skillName,self)	
+		end
+		
 		 if self.Entity:HasComponent(self.Entity.ComponentKey.Weapon) then
 			self.Entity.AddHitboxOwner(self) --Informa que o dono da skill é esse skillRunner, permitindo que o wrapper chame o onHit direto por aqui
 		end
@@ -171,7 +182,7 @@ function SkillRunner:endSkill(cancel)
 		if self.skillData.callbacks.onCancel then
 			local stop = self.skillData.callbacks.onCancel(self)   --Roda a ação da skill ao ser cancelada
 			warn("[SkillRunner] Skill cancelada:", self.skillName) 
-			if not stop then self.state == STATE.Running end	   --Permita que somente a ação ocorra sem parar a skill.
+			if not stop then self.state = STATES.Running end	   --Permita que somente a ação ocorra sem parar a skill.
 		end
 	end	
 	

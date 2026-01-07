@@ -123,7 +123,7 @@ function HealthComponent:TakeDamage(amount : number, source : any, flags : {[str
 	local lastHP = self.HP
 	self.HP = math.max(0, self.HP - amount)
 	print(self.HP)
-	if self.Entity.IsPlayer() then UpdateHPBar:FireClient(self.Entity.Player,self.HP,self.MaxHP) end
+	if self.Entity:IsPlayer() then UpdateHPBar:FireClient(self.Entity.Player,self.HP,self.MaxHP) end
 	local actualDamage = lastHP - self.HP
 	
 	-- Registra no histórico
