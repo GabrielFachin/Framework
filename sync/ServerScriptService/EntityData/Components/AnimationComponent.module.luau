@@ -579,5 +579,5 @@ local ExposeAPI = {
 
 return {
 	new = AnimationComponent.new,
-	ExposeAPI = ExposeAPI
+	ExposeAPI = ExposeAPI,
 }

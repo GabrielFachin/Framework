@@ -36,6 +36,18 @@ function EntityCore.new(instance : Model, entityType : string, entityID : string
 	self.Active = true
 	self.CreatedAt = tick()
 
+	for compName, compData in pairs(ComponentRegistry) do
+		if compData.ExposeAPI then
+			for funcName,_ in pairs(compData.ExposeAPI) do
+				if not self[funcName] then
+					self[funcName] = function(...)
+						warn("[EntityCore]Componente ignorado: ",compName,"| Func: ",funcName)
+					end
+				end
+			end
+		end
+	end
+
 	return self
 end
 
@@ -67,10 +79,9 @@ function EntityCore:AddComponent(componentName : string, config : {[string]: any
 	-- Expõe API do componente diretamente na entidade
 	if ComponentRegistry[componentName].ExposeAPI then
 		for methodName, method in pairs(ComponentRegistry[componentName].ExposeAPI) do
-			if not self[methodName] then -- Não sobrescreve métodos existentes
+				--Sobrescreve o método (anula dummy)
 				self[methodName] = function(...)
 					return method(component, ...)
-				end
 			end
 		end
 	end
@@ -205,6 +216,7 @@ function EntityCore.RegisterComponent(name : string, componentModule : {[string]
 	
 end
 
+
 --[[
 Retorna a lista de nomes de componentes registrados
 @return lista de nomes de componentes TABLE {STRING, STRING, ...}
@@ -280,6 +292,7 @@ local function AutoRegisterComponents()
 	end
 
 	EntityCore.ComponentKey = table.freeze(EntityCore.ComponentKey)			--Freeze o enum pra eviltar alterações em runtime
+	print(ComponentRegistry)
 	
 end
 
