@@ -24,9 +24,9 @@ function WeaponComponent.new(entity, config)
 
 	-- Arma atual
 	self.Weapon = nil
-	self.WeaponName = config.WeaponName or nil		--Busca por nome na pasta do char selecionado
+	self.WeaponName =  config.WeaponName or nil		--Busca por nome na pasta do char selecionado
 	self.WeaponModel = config.WeaponModel or nil	--Cria direto com base no modelo fornecido.
-	self.IsCosmetic = config.IsCosmetic or false	--Ignora a criação de hitboxes
+	self.IsCosmetic =  config.IsCosmetic or false	--Ignora a criação de hitboxes
 
 	-- Hitbox
 	self.HitOrigin = nil
@@ -64,18 +64,22 @@ function WeaponComponent:EquipWeapon(weaponName : string) : boolean
 		local chosenChar = self.Entity:GetChosenChar()
 
 		-- Busca arma na pasta de assets
-		local weaponFolder = RS.Assets.Weapons:FindFirstChild(chosenChar)
-		if not weaponFolder then
+		local weaponsFolder = RS.Assets.Weapons:FindFirstChild(chosenChar)
+		if not weaponsFolder then
 			warn("[WeaponComponent] Pasta de armas não encontrada:", chosenChar)
 			return false
 		end
 
 
-		weaponModel = weaponFolder:FindFirstChild(weaponName)
-		if not weaponModel then
+		local weaponFolder = weaponsFolder:FindFirstChild(weaponName)
+		if not weaponFolder then
 			warn("[WeaponComponent] Arma não encontrada:", weaponName)
 			return false
 		end
+
+		weaponModel = weaponFolder:FindFirstChild(weaponName)
+
+
 	--Se não tiver, aceite modelo informado por config
 	elseif self.WeaponModel then
 		weaponModel = self.WeaponModel

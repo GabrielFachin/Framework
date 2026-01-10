@@ -5073,25 +5073,571 @@
               "className": "Folder",
               "children": [
                 {
+                  "name": "Ashley",
+                  "className": "Folder"
+                },
+                {
                   "name": "Schema",
                   "className": "Folder",
                   "children": [
                     {
-                      "name": "martelo",
-                      "className": "Model",
+                      "name": "Martelo",
+                      "className": "Folder",
                       "children": [
                         {
-                          "name": "Value",
-                          "className": "CFrameValue"
-                        },
-                        {
-                          "name": "AttachTo",
-                          "className": "StringValue"
-                        },
-                        {
-                          "name": "Hitbox",
-                          "className": "Folder",
+                          "name": "Martelo",
+                          "className": "Model",
                           "children": [
+                            {
+                              "name": "Value",
+                              "className": "CFrameValue"
+                            },
+                            {
+                              "name": "AttachTo",
+                              "className": "StringValue"
+                            },
+                            {
+                              "name": "Hitbox",
+                              "className": "Folder",
+                              "children": [
+                                {
+                                  "name": "Handle",
+                                  "className": "Part",
+                                  "children": [
+                                    {
+                                      "name": "WeldConstraint",
+                                      "className": "WeldConstraint"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "name": "Blade",
+                                  "className": "Part",
+                                  "children": [
+                                    {
+                                      "name": "WeldConstraint",
+                                      "className": "WeldConstraint"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    },
+                                    {
+                                      "name": "DmgPoint",
+                                      "className": "Attachment"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "name": "Martelo",
+                              "className": "MeshPart"
+                            },
                             {
                               "name": "Handle",
                               "className": "Part",
@@ -5099,60 +5645,24 @@
                                 {
                                   "name": "WeldConstraint",
                                   "className": "WeldConstraint"
-                                },
-                                {
-                                  "name": "DmgPoint",
-                                  "className": "Attachment"
                                 }
                               ]
                             },
                             {
-                              "name": "Blade",
+                              "name": "hitOrigin",
                               "className": "Part",
                               "children": [
                                 {
                                   "name": "WeldConstraint",
                                   "className": "WeldConstraint"
-                                },
-                                {
-                                  "name": "DmgPoint",
-                                  "className": "Attachment"
                                 }
                               ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Martelo",
-                          "className": "MeshPart"
-                        },
-                        {
-                          "name": "Handle",
-                          "className": "Part",
-                          "children": [
-                            {
-                              "name": "WeldConstraint",
-                              "className": "WeldConstraint"
-                            }
-                          ]
-                        },
-                        {
-                          "name": "hitOrigin",
-                          "className": "Part",
-                          "children": [
-                            {
-                              "name": "WeldConstraint",
-                              "className": "WeldConstraint"
                             }
                           ]
                         }
                       ]
                     }
                   ]
-                },
-                {
-                  "name": "Ashley",
-                  "className": "Folder"
                 }
               ]
             }

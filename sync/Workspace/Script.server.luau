@@ -6,6 +6,7 @@ local component = require(ServerScriptService.EntityData.ComponentsExport)
 local components = {
 	Character = component.Character,
 	Health = component.Health,
+    Status = component.Status
 }
 
 for i = 0,100,1 do
