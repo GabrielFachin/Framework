@@ -25,7 +25,7 @@ function HealthComponent.new(entity, config)
 	local self = setmetatable({}, HealthComponent)
 	
 	self.Entity = entity
-	self.MaxHP = config.MaxHP or 100
+	self.MaxHP = config.MaxHP or 10
 	self.HP = config.StartHP or self.MaxHP
 	self.Subscription = config.Events or false
 	self.IsDead = false

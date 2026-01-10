@@ -24,7 +24,9 @@ function WeaponComponent.new(entity, config)
 
 	-- Arma atual
 	self.Weapon = nil
-	self.WeaponName = config.WeaponName or nil
+	self.WeaponName = config.WeaponName or nil		--Busca por nome na pasta do char selecionado
+	self.WeaponModel = config.WeaponModel or nil	--Cria direto com base no modelo fornecido.
+	self.IsCosmetic = config.IsCosmetic or false	--Ignora a criação de hitboxes
 
 	-- Hitbox
 	self.HitOrigin = nil
@@ -51,26 +53,38 @@ Equipar uma arma ao personagem
 ]]
 function WeaponComponent:EquipWeapon(weaponName : string) : boolean
 
-	if not self.Entity:HasComponent(self.Entity.ComponentKey.Combat) then warn ("ARMA CRIADA SEM COMBAT") return false end
-	-- Remove arma antiga
-	self:UnequipWeapon()
-
 	local char = self.Entity.Instance
-	local chosenChar = self.Entity:GetChosenChar()
 
-	-- Busca arma na pasta de assets
-	local weaponFolder = RS.Assets.Weapons:FindFirstChild(chosenChar)
-	if not weaponFolder then
-		warn("[WeaponComponent] Pasta de armas não encontrada:", chosenChar)
-		return false
+	local weaponModel
+
+	--Se tiver componente de combate:
+	if self.Entity:HasComponent(self.Entity.ComponentKey.Combat) then
+
+
+		local chosenChar = self.Entity:GetChosenChar()
+
+		-- Busca arma na pasta de assets
+		local weaponFolder = RS.Assets.Weapons:FindFirstChild(chosenChar)
+		if not weaponFolder then
+			warn("[WeaponComponent] Pasta de armas não encontrada:", chosenChar)
+			return false
+		end
+
+
+		weaponModel = weaponFolder:FindFirstChild(weaponName)
+		if not weaponModel then
+			warn("[WeaponComponent] Arma não encontrada:", weaponName)
+			return false
+		end
+	--Se não tiver, aceite modelo informado por config
+	elseif self.WeaponModel then
+		weaponModel = self.WeaponModel
+	else
+		return false 
 	end
 
-
-	local weaponModel = weaponFolder:FindFirstChild(weaponName)
-	if not weaponModel then
-		warn("[WeaponComponent] Arma não encontrada:", weaponName)
-		return false
-	end
+		-- Remove arma antiga
+		self:UnequipWeapon()
 
 	-- Clona arma
 	local weaponClone = weaponModel:Clone()
@@ -110,8 +124,10 @@ function WeaponComponent:EquipWeapon(weaponName : string) : boolean
 	self.WeaponName = weaponName
 	self.HitOrigin = weaponClone:FindFirstChild("hitOrigin")
 
-	-- Cria wrapper de hitbox
-	self.Hitbox = HitboxWrapper.new(self.Entity)
+	-- Cria wrapper de hitbox caso não seja modelo cosmético
+	if not self.IsCosmetic then
+		self.Hitbox = HitboxWrapper.new(self.Entity)
+	end
 
 	return true
 end
