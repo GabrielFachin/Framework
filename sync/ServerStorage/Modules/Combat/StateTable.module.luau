@@ -27,14 +27,6 @@ Silence = "Silence"
 
 PlayerState = "PlayerState"
 
-
-
--- [ TAGS DE IMUNIDADE ] --
-
---Tags utilizadas pra ignorar certos efeitos
-
-immune_DOT = true
-
 -- [ TAGS DE BYPASS ] --
 
 --[[Essas tags são utilizadas pra ignorar certos comportamentos]]
@@ -266,6 +258,21 @@ StateTable.Status = {
 		
 		callbacks = {}
 	},
+
+
+	--Exemplo de buff que ignora efeitos especificos
+	SpellShield = {
+    data = {
+        name = "SpellShield",
+        category = "Buff", 
+        
+        tags = {
+            immune_Stun = true,  
+            immune_Bleed = true,   
+        }
+    },
+    callbacks = {}
+}
 	
 	
 	--==[ DEBUFFS ]==--
