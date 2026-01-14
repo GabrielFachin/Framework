@@ -153,7 +153,7 @@ end
 
 
 
-function SkillRunner:Recast(checkOnly)
+function SkillRunner:Recast(checkOnly,context)
 	
 	--Procura se tem onRecast, se tiver, roda e fala que encontrou
 	if self.skillData.callbacks.onRecast then
@@ -161,7 +161,8 @@ function SkillRunner:Recast(checkOnly)
 		--Se for um pedido de teste, retorna antes de rodar o recast
 		if checkOnly then return true end
 		
-		self.skillData.callbacks.onRecast(self)
+		--roda o onRecast com contexto pra permitir informar o motivo/origem do recast
+		self.skillData.callbacks.onRecast(self,context)
 		return true
 	end
 

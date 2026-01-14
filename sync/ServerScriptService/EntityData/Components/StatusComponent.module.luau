@@ -18,8 +18,8 @@ function StatusComponent.new(entity, config)
 	
 	self.Entity = entity
 	
-	-- Statuses ativos
-	self.Statuses = {
+	-- Effects ativos
+	self.Effects = {
 		status = {}, -- Buffs/debuffs 
 		state = {}   -- Estados 
 	}
@@ -85,6 +85,14 @@ Aplica um status à entidade
 @return ID do status STRING ou nil se não aplicado
 ]]
 function StatusComponent:ApplyStatus(statusData : {}, duration : number?, sourceSkill : any?, ID : string?,targetEntity: {}?) : string?
+
+	local canApply, reason = self:_ValidateApplication(statusData, sourceSkill)
+
+	if not canApply then
+		print("[StatusComponent] Aplicação de status bloqueada:", reason)
+		return nil
+	end
+
 	-- Gera ID único se não fornecido
 	if not ID then
 		ID = self:GenerateUniqueEffectID(sourceSkill and sourceSkill.skillName or "Generic")
@@ -111,7 +119,7 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	
 	-- Determina se é estado ou status
 	local isState = StateTable:IsState(meta)
-	local group = isState and self.Statuses.state or self.Statuses.status
+	local group = isState and self.Effects.state or self.Effects.status
 	
 	-- Verifica cooldown (se aplicável)
 	if meta.cooldown and meta.cooldown > 0 and sourceSkill then
@@ -235,6 +243,58 @@ end
 
 
 --[[
+Função interna, valida a aplicação de um status/estado
+@param statusData - Dados do status TABLE
+@param sourceSkill - SkillRunner que aplicou o status ANY (opcional)
+@return sucesso,motivo(se falseo) BOOLEAN,STRING
+]]
+function StatusComponent:_ValidateApplication(statusData, sourceSkill)
+    local activeTags = self:GetActiveTags()
+    local effectCategory = statusData.data.category
+    local effectName = statusData.data.name
+
+    local tagToCheck = nil
+
+    -- Ordem de prioridade: Global > Categoria > Específico
+    if activeTags["SpellShield"] then 
+        tagToCheck = "SpellShield"
+    elseif effectCategory and activeTags["immune_" .. effectCategory] then
+        tagToCheck = "immune_" .. effectCategory
+    elseif effectName and activeTags["immune_" .. effectName] then
+        tagToCheck = "immune_" .. effectName
+    end
+
+    if tagToCheck then
+        local blocked, reason = self:_TriggerStatusDefense(tagToCheck, statusData, sourceSkill)
+        
+        if blocked then
+            return false, reason 
+        end
+    end
+    
+    if activeTags["immune_All"] then
+        return false, "GlobalImmunity"
+    end
+
+    return true
+end
+
+function StatusComponent:_TriggerImunnityOwner(immunityTag,incomingData,sourceSkill)
+
+	if self._tagsDirty then self:GetActiveTags() end
+
+	local runner = self._tagRunners[immunityTag]
+
+	if runner then	--Chama o recast com o runner que aplicou a imunidade
+		local blocked = runner:onRecast(sourceSkill)
+			if blocked then return true end
+	end
+
+end
+
+
+
+--[[
 Gera um ID único para um status
 @param sourceName - Nome da fonte STRING (opcional)
 @return ID único STRING
@@ -254,7 +314,7 @@ RemoveStatus um status completamente pelo nome
 @param name - Nome do status STRING
 ]]
 function StatusComponent:RemoveStatus(name : string)
-	for _, group in pairs(self.Statuses) do
+	for _, group in pairs(self.Effects) do
 		local entry = group[name]
 		if not entry then continue end
 		
@@ -290,7 +350,7 @@ function StatusComponent:RemoveAmount(name: string, amount: number): boolean
 	local removed = false
 
 	-- busca por status
-	local group = self.Statuses.status
+	local group = self.Effects.status
 	local entry = group[name]
 	if not entry then
 		return false
@@ -340,7 +400,7 @@ RemoveStatus um status/estado completamente pelo ID único
 function StatusComponent:RemoveStatusByID(id : string) : boolean
 	local removed = false
 	
-	for groupName, group in pairs(self.Statuses) do
+	for groupName, group in pairs(self.Effects) do
 		if groupName == "state" then
 			for name, entry in pairs(group) do
 				if entry.ID == id then
@@ -390,7 +450,7 @@ Callback injetavel para a func de limpeza do runner
 @param runner - SkillRunner que finalizou SkillRunner
 ]]
 function StatusComponent:_OnRunnerFinished(name : string, runner)
-	local list = self.Statuses.status[name]
+	local list = self.Effects.status[name]
 	if not list then return end
 	
 	-- Single runner
@@ -408,9 +468,9 @@ function StatusComponent:_OnRunnerFinished(name : string, runner)
 	end
 	
 	if #newList > 0 then
-		self.Statuses.status[name] = newList
+		self.Effects.status[name] = newList
 	else
-		self.Statuses.status[name] = nil
+		self.Effects.status[name] = nil
 	end
 	
 	self:_MarkTagsDirty()
@@ -423,36 +483,48 @@ end
 --[[
 Obtém as tags ativas combinadas da entidade
 @return tabela de tags TABLE]]
-function StatusComponent:GetActiveTags() : { [string]: any }
-	if not self._tagsDirty and self._cachedTags then
-		return self._cachedTags
-	end
-	
-	local merged = {}
-	
-	for _, group in pairs(self.Statuses) do
-		for _, entry in pairs(group) do
-			local entries = (entry.runner or entry.data) and {entry} or entry
-			
-			for _, e in ipairs(entries) do
-				local tags = e.data.data.tags or {}
-				for k, v in pairs(tags) do
-					if v == false then
-						merged[k] = false
-					elseif merged[k] ~= false then
-						merged[k] = v
-					end
-				end
-			end
-		end
-	end
-	
-	self._cachedTags = merged
-	self._tagsDirty = false
-	
-	return merged
+function StatusComponent:GetActiveTags()
+    if not self._tagsDirty and self._cachedTags then
+        return self._cachedTags
+    end
+    
+    local mergedTags = {}
+    local tagOwners = {} 
+    
+    for _, group in pairs(self.Effects) do 
+        for _, entry in pairs(group) do
+            local items = (entry.runner or entry.data) and {entry} or entry
+            
+            for _, item in ipairs(items) do
+                local runner = item.runner
+                local metaData = runner and runner.data.data or item.data.data
+                local tags = metaData and metaData.tags or {}
+                
+                for tagName, val in pairs(tags) do
+                    if val == false then
+                        mergedTags[tagName] = false
+                    elseif mergedTags[tagName] ~= false then
+                        mergedTags[tagName] = val
+                    end
+                    
+                    if runner and val then 
+                        tagOwners[tagName] = runner 
+                    end
+                end
+            end
+        end
+    end
+    
+    self._cachedTags = mergedTags
+    self._tagRunners = tagOwners 
+    self._tagsDirty = false
+    
+    return mergedTags
 end
 
+--[[
+Salva que uma mudança de tags ocorreu.
+]]
 function StatusComponent:_MarkTagsDirty()
 	self._tagsDirty = true
 end
@@ -498,7 +570,7 @@ Retorna um status especifico por nome
 @return lista de entradas do status TABLE ou nil se não encontrado
 ]]
 function StatusComponent:GetStatus(name : string) : {}?
-	local entry = self.Statuses.status[name] or self.Statuses.state[name]
+	local entry = self.Effects.status[name] or self.Effects.state[name]
 	if not entry then return nil end
 	
 	if entry.runner or entry.data then
@@ -528,7 +600,7 @@ end
 Busca por um estado especifico
 ]]
 function StatusComponent:GetState(stateName : string)
-	return self.Statuses.state[stateName]
+	return self.Effects.state[stateName]
 end
 
 --[[
@@ -536,7 +608,7 @@ end
 @return Tabela de estados ativos { [Nome] = Dados }
 ]]
 function StatusComponent:GetActiveStates()
-	return self.Statuses.state
+	return self.Effects.state
 end
 
 --[[
@@ -545,7 +617,7 @@ Verifica se a entidade possui algum estado de uma categoria específica.
 @return boolean
 ]]
 function StatusComponent:HasStateCategory(category : string) : boolean
-	for _, entry in pairs(self.Statuses.state) do
+	for _, entry in pairs(self.Effects.state) do
 		-- Suporta tanto entrada única (tabela direta) quanto lista de stacks (array)
 		local items = (entry.runner or entry.data) and {entry} or entry
 		
@@ -569,7 +641,7 @@ Limpa todos os STATUS ativos e devolve quantos foram removidos
 ]]
 function StatusComponent:ClearAll() : number
 	local removed = 0
-	for _, group in pairs(self.Statuses) do
+	for _, group in pairs(self.Effects) do
 		for name in pairs(group) do
 			self:RemoveStatus(name)
 			removed += 1

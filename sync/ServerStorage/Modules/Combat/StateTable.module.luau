@@ -29,7 +29,11 @@ PlayerState = "PlayerState"
 
 
 
+-- [ TAGS DE IMUNIDADE ] --
 
+--Tags utilizadas pra ignorar certos efeitos
+
+immune_DOT = true
 
 -- [ TAGS DE BYPASS ] --
 

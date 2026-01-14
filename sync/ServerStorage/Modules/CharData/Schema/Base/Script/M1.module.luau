@@ -40,7 +40,6 @@ local Skill = {
 
 			self.PlayerState = statsTable.PlayerStates.Out.cast			 
 
-			--Gera o primeiro ID do pacote de estados (usado pra controle), esse ID  será usado como parametro no resto dos estados de controle pra serem removidos juntos ao fim do m1!
 			self.Entity.SetPlayerState(self.PlayerState, self)
 
 			self.stateID = self.Entity.ApplyStatus(self.control,9999,self)			
