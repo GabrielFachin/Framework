@@ -190,9 +190,8 @@ function SkillRunner:TriggerAction(context)
 		
 		--roda triggerAction com contexto da origem do trigger
 		self.skillData.callbacks.onTriggerAction(self,context)
-		return true
 	end
-
+		return true
 end
 
 

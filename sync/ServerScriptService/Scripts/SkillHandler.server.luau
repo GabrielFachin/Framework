@@ -58,18 +58,6 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 			warn("Skill não pode rodar")
 			return false
 		end
-
-		--inicia cadeia de contexto pra controle de profundeza de interações
-		local newContext = {
-    	 rootOrigin = entityCore, 
-    	 rootSkill = skillName,   
-   		 history = {skillName},   
-   		 depth = 1,
-   		 uniqueId = tostring(math.random(100000,999999))
-		}
-
-		--injeta esse contexto
-		skill.context = newContext
 		
 		--Se já tiver uma instância ativa dessa skill
 		if #activeRunners > 0 then
@@ -82,7 +70,6 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 					--Pego o primeiro runner da lista
 					local runner = activeRunners[1]
-					warn(runner)
 
 					--Pede pro runner se ele encontrou um recast, e então retorna com uma flag
 					local handled = runner:Recast(true)
@@ -103,7 +90,7 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 		entityCore.SetCooldown(skillName)
 		
-
+		
 
 		local maxCooldown = entityCore.GetCooldown(skillName) --Pega o cooldown restante da skill
 		

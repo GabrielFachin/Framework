@@ -351,4 +351,13 @@ function StateTable:IsState(meta)
 	return false
 end
 
+
+
+function StateTable:BuildShield(spell,)
+
+	
+
+end
+
+
 return StateTable

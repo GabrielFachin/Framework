@@ -105,7 +105,7 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
     local nextContext
     if sourceSkill and sourceSkill.context then
         local newHistory = table.clone(sourceSkill.context.history)  -- Clona o histórico
-        table.insert(newHistory, statusData.data.name or "UnknownStatus")
+        table.insert(newHistory, factoryData.data.name or "UnknownStatus")
         
         nextContext = {
             rootOrigin = sourceSkill.context.rootOrigin,
@@ -117,9 +117,9 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
     else
     -- Se não tiver sourceSkill, cria novo
     nextContext = {
-        rootOrigin = "Unknown"
-        rootSkill = statusData.data.name,
-        history = {statusData.data.name},
+        rootOrigin = "Unknown",
+        rootSkill = factoryData.data.name,
+        history = {factoryData.data.name},
         depth = 1,
         uniqueChainID = "STATUS_" .. tostring(tick())
     }
@@ -594,8 +594,8 @@ function StatusComponent:_GetShields()
 	local effectRunner
 
 	for _,effect in pairs(self.Effects.status) do
-		effectRunner = effect.sourceSkill if    --     Erro proposital para encontrar essa linha mais tarde!
-		if effect.data.data.ShieldsFrom ~= nil then -- Transformar o runner no própio shield!
+		effectRunner = effect.runner     
+		if effect.data.data.ShieldsFrom ~= nil then 
 			for _,StatusName in pairs(effect.data.data.ShieldsFrom) do
 				shields[StatusName] = effectRunner
 			end
