@@ -233,4 +233,40 @@ SkillRunner SÓ RODA A HABILIDADE, não sabe e nem deve saber de nehnuma informa
 
 Criação de armas: https://www.youtube.com/watch?v=TB5maVsu5V0
 
+
+
+
+
+
+EXEMPLIFICAÇÃO DE ARMA COM DIFERENTES MODOS DE USO!!
+
+
+return {
+	BaseName = "HunterBlades",
+	DefaultMode = "Dual",
+
+	Modes = {
+		Dual = {
+			AttachPoints = {
+				primary = "Right Arm",
+				secondary = "Left Arm"
+			},
+			AnimSet = "DualBlades",
+			Skills = "DualSkills",  
+			TransformTime = 0.5,
+			TransformAnim = "MergeBlades"
+		},
+
+		Merged = {
+			AttachPoints = {
+				primary = "Right Arm"
+			},
+			AnimSet = "MergedBlade",
+			Skills = "MergedSkills",
+			TransformTime = 0.5,
+			TransformAnim = "SplitBlades"
+		}
+	}
+}
+
 ]]

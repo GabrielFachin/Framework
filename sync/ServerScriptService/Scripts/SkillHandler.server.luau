@@ -70,6 +70,7 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 					--Pego o primeiro runner da lista
 					local runner = activeRunners[1]
+					warn(runner)
 
 					--Pede pro runner se ele encontrou um recast, e então retorna com uma flag
 					local handled = runner:Recast(true)

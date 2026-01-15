@@ -26,6 +26,8 @@ function WeaponComponent.new(entity, config)
 	self.Weapon = nil
 	self.WeaponName =  config.WeaponName or nil		--Busca por nome na pasta do char selecionado
 	self.WeaponModel = config.WeaponModel or nil	--Cria direto com base no modelo fornecido.
+	self.WeaponMode = nil
+	self.WeaponData = nil
 	self.IsCosmetic =  config.IsCosmetic or false	--Ignora a criação de hitboxes
 
 	-- Hitbox

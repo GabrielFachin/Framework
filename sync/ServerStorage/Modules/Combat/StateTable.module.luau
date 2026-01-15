@@ -27,6 +27,8 @@ Silence = "Silence"
 
 PlayerState = "PlayerState"
 
+EffectShield = "EffectShield"
+
 -- [ TAGS DE BYPASS ] --
 
 --[[Essas tags são utilizadas pra ignorar certos comportamentos]]
@@ -239,43 +241,22 @@ StateTable.States = {
 
 StateTable.Status = {
 	
-	
-	
 
 	--==[  BUFFS  ]==--
 	
 	
 	iFrame = {
 		data = {
-		category = Buff,
-		exclusive = false,
-		name = "iFrame",
-		tags = {
-			iFrame = true
-		},
-		bypassBy = {trueHit}
+			category = Buff,
+			exclusive = false,
+			name = "iFrame",
+			tags = {iFrame = true},
+			bypassBy = {trueHit}
 		},
 		
 		callbacks = {}
 	},
-
-
-	--Exemplo de buff que ignora efeitos especificos
-	SpellShield = {
-    data = {
-        name = "SpellShield",
-        category = "Buff", 
-        
-        tags = {
-            immune_Stun = true,  
-            immune_Bleed = true,   
-        }
-    },
-    callbacks = {}
-}
 	
-	
-	--==[ DEBUFFS ]==--
 	
 	 Bleed = {
 			data = {
@@ -312,9 +293,25 @@ StateTable.Status = {
 			end,
 
 		}
-	}}
+	},
 
 	
+	--Exemplo de buff que ignora efeitos especificos
+	StatusShield = {
+    data = {
+		exclusive = true,
+        name = "StatusShield",
+        category = Buff, 
+        ShieldsFrom = {DOT}
+   		 },
+    callbacks = {}
+
+	},
+
+
+		
+	--==[ DEBUFFS ]==--
+}
 
 --Prepara as tags usando as tags base estabelicidas caso não tenham sido declaradas
 function StateTable:GetTags(stateName)
@@ -347,7 +344,7 @@ function StateTable:IsState(meta)
 		end
 	end
 
-	if meta.category == "PlayerState" then
+	if meta.category == PlayerState then
 		return true
 	end
 

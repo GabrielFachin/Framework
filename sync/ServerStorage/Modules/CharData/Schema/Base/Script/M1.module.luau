@@ -45,6 +45,10 @@ local Skill = {
 			self.stateID = self.Entity.ApplyStatus(self.control,9999,self)			
 			
 			self.Entity.StartHitbox(self.data.duration)
+
+			self.Entity.ApplyStatus(statsTable.Status.StatusShield,9999,self)
+
+			self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
 			
 		end,
 		

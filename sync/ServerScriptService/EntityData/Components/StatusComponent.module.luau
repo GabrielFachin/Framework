@@ -108,7 +108,7 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	
 	if data.data.category == "PlayerState" then
 		warn("[StatusComponent] PlayerState settado com função errada!")
-		return false
+		return nil
 	end
 
 	local meta = data.data
@@ -120,6 +120,7 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	-- Determina se é estado ou status
 	local isState = StateTable:IsState(meta)
 	local group = isState and self.Effects.state or self.Effects.status
+
 	
 	-- Verifica cooldown (se aplicável)
 	if meta.cooldown and meta.cooldown > 0 and sourceSkill then
@@ -249,47 +250,46 @@ Função interna, valida a aplicação de um status/estado
 @return sucesso,motivo(se falseo) BOOLEAN,STRING
 ]]
 function StatusComponent:_ValidateApplication(statusData, sourceSkill)
-    local activeTags = self:GetActiveTags()
+    local activeShields = self:_GetShields()
     local effectCategory = statusData.data.category
     local effectName = statusData.data.name
 
-    local tagToCheck = nil
+	local foundShield = nil
 
-    -- Ordem de prioridade: Global > Categoria > Específico
-    if activeTags["SpellShield"] then 
-        tagToCheck = "SpellShield"
-    elseif effectCategory and activeTags["immune_" .. effectCategory] then
-        tagToCheck = "immune_" .. effectCategory
-    elseif effectName and activeTags["immune_" .. effectName] then
-        tagToCheck = "immune_" .. effectName
+    -- Ordem de prioridade: Categoria > Específico
+    if effectCategory and activeShields[effectCategory] then
+        foundShield = effectCategory
+    elseif effectName and activeShields[effectName] then
+        foundShield = effectName
     end
 
-    if tagToCheck then
-        local blocked, reason = self:_TriggerStatusDefense(tagToCheck, statusData, sourceSkill)
+    if foundShield then
+        local blocked, reason = self:_TriggerShield(foundShield, activeShields, statusData, sourceSkill)
         
         if blocked then
             return false, reason 
         end
     end
     
-    if activeTags["immune_All"] then
+    if activeShields["All"] then
         return false, "GlobalImmunity"
     end
 
     return true
 end
 
-function StatusComponent:_TriggerImunnityOwner(immunityTag,incomingData,sourceSkill)
+function StatusComponent:_TriggerShield(immunityTag, activeShields,incomingData,sourceSkill)
 
-	if self._tagsDirty then self:GetActiveTags() end
+	local runner = activeShields[immunityTag]
 
-	local runner = self._tagRunners[immunityTag]
-
-	if runner then	--Chama o recast com o runner que aplicou a imunidade
-		local blocked = runner:onRecast(sourceSkill)
+	if runner then
+		
+		 --Chama o recast com a skill que interagiu com o shield
+		local blocked = runner:Recast(false,sourceSkill)
 			if blocked then return true end
 	end
-
+	
+	return false 
 end
 
 
@@ -445,34 +445,34 @@ end
 	
 
 --[[
-Callback injetavel para a func de limpeza do runner
+Limpa referências ao runner finalizar
 @param name - Nome do status STRING
 @param runner - SkillRunner que finalizou SkillRunner
 ]]
 function StatusComponent:_OnRunnerFinished(name : string, runner)
-	local list = self.Effects.status[name]
-	if not list then return end
-	
-	-- Single runner
-	if list.runner then
-		self:RemoveStatus(name)
+	local entry = self.Effects.status[name]
+	if not entry then return end
+
+	-- Caso único
+	if entry.runner == runner then
+		self.Effects.status[name] = nil
+		self:_MarkTagsDirty()
 		return
 	end
-	
-	-- Multiple runners
-	local newList = {}
-	for _, entry in ipairs(list) do
-		if entry.runner ~= runner then
-			table.insert(newList, entry)
+
+	-- Caso múltiplas instâncias
+	if type(entry) == "table" then
+		for i = #entry, 1, -1 do
+			if entry[i].runner == runner then
+				table.remove(entry, i)
+			end
+		end
+
+		if #entry == 0 then
+			self.Effects.status[name] = nil
 		end
 	end
-	
-	if #newList > 0 then
-		self.Effects.status[name] = newList
-	else
-		self.Effects.status[name] = nil
-	end
-	
+
 	self:_MarkTagsDirty()
 end
 
@@ -558,6 +558,24 @@ function StatusComponent:GetImmunityRules()
 	return rules
 end
 
+--[[
+Retorna os efeitos a serem ignorados.
+]]
+function StatusComponent:_GetShields()
+	local shields = {}
+	local effectRunner
+
+	for _,effect in pairs(self.Effects.status) do
+		effectRunner = effect.sourceSkill
+		if effect.data.data.ShieldsFrom ~= nil then 
+			for _,StatusName in pairs(effect.data.data.ShieldsFrom) do
+				shields[StatusName] = effectRunner
+			end
+		end
+	end
+
+	return shields
+end
 
 
 --=============================================================================
