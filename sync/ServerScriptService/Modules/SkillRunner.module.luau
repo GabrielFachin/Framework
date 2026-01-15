@@ -33,7 +33,7 @@ function SkillRunner.new(skillData,Entity,name,type) --Instancia o SkillRunner c
 	--=====DADOS VITAIS=====--
 
 	self.skillData = skillData   --Informações extras da skill que vai rodar
-	self.Entity = Entity				 --Tabela de dados do player que usou a habilidade
+	self.Entity = Entity		 --Tabela de dados do player que usou a habilidade
 
 
 
@@ -70,6 +70,20 @@ function SkillRunner.new(skillData,Entity,name,type) --Instancia o SkillRunner c
 	self.utils     = skillData.utils or {}
 	
 	
+
+	--Contexto da skill (interações passadas sequenciais até chegar no runner atual)
+    if skillData.context then
+        self.context = skillData.context
+    else
+        -- Fallback para casos onde o runner é criado sem input diret
+        self.context = {
+            rootOrigin = Entity and Entity or "Uknown",
+            rootSkill = name,
+            history = {name},
+            depth = 1,
+            uniqueChainID = "SYSTEM_" .. tostring(tick())
+        }
+    end
 	
 	return self
 end
@@ -153,16 +167,29 @@ end
 
 
 
-function SkillRunner:Recast(checkOnly,context)
+function SkillRunner:Recast(checkOnly)
 	
 	--Procura se tem onRecast, se tiver, roda e fala que encontrou
-	if self.skillData.callbacks.onRecast then
+	if self.skillData.callbacks.onRecast ~= nil then
 		
 		--Se for um pedido de teste, retorna antes de rodar o recast
 		if checkOnly then return true end
 		
 		--roda o onRecast com contexto pra permitir informar o motivo/origem do recast
-		self.skillData.callbacks.onRecast(self,context)
+		self.skillData.callbacks.onRecast(self)
+		return true
+	end
+
+end
+
+
+--Permite ações de trigger externas
+function SkillRunner:TriggerAction(context)
+
+	if self.skillData.callbacks.onTriggerAction ~= nil then
+		
+		--roda triggerAction com contexto da origem do trigger
+		self.skillData.callbacks.onTriggerAction(self,context)
 		return true
 	end
 

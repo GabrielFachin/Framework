@@ -99,12 +99,39 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	end
 
 	local factoryData = SkillFactory.GetStatus(statusData)
-	
+
+
+	-- Preparação do Contexto para o novo Status
+    local nextContext
+    if sourceSkill and sourceSkill.context then
+        local newHistory = table.clone(sourceSkill.context.history)  -- Clona o histórico
+        table.insert(newHistory, statusData.data.name or "UnknownStatus")
+        
+        nextContext = {
+            rootOrigin = sourceSkill.context.rootOrigin,
+            rootSkill = sourceSkill.context.rootSkill,
+            history = newHistory,
+            depth = sourceSkill.context.depth + 1,
+            uniqueChainID = sourceSkill.context.uniqueChainID
+        }
+    else
+    -- Se não tiver sourceSkill, cria novo
+    nextContext = {
+        rootOrigin = "Unknown"
+        rootSkill = statusData.data.name,
+        history = {statusData.data.name},
+        depth = 1,
+        uniqueChainID = "STATUS_" .. tostring(tick())
+    }
+    end
+
+
 	-- Prepara dados
 	local data = table.clone(factoryData)
 	data.ID = ID
 	data.StatusComponent = self
 	data.data.castTime = 0
+    data.context = nextContext
 	
 	if data.data.category == "PlayerState" then
 		warn("[StatusComponent] PlayerState settado com função errada!")
@@ -284,8 +311,8 @@ function StatusComponent:_TriggerShield(immunityTag, activeShields,incomingData,
 
 	if runner then
 		
-		 --Chama o recast com a skill que interagiu com o shield
-		local blocked = runner:Recast(false,sourceSkill)
+		 --Chama a ação de trigger no shield com a skill que está tentando aplicar o status
+		local blocked = runner:TriggerAction(sourceSkill)
 			if blocked then return true end
 	end
 	
@@ -559,15 +586,16 @@ function StatusComponent:GetImmunityRules()
 end
 
 --[[
-Retorna os efeitos a serem ignorados.
+Retorna os efeitos a ser ignorados.
 ]]
 function StatusComponent:_GetShields()
+
 	local shields = {}
 	local effectRunner
 
 	for _,effect in pairs(self.Effects.status) do
-		effectRunner = effect.sourceSkill
-		if effect.data.data.ShieldsFrom ~= nil then 
+		effectRunner = effect.sourceSkill if    --     Erro proposital para encontrar essa linha mais tarde!
+		if effect.data.data.ShieldsFrom ~= nil then -- Transformar o runner no própio shield!
 			for _,StatusName in pairs(effect.data.data.ShieldsFrom) do
 				shields[StatusName] = effectRunner
 			end
@@ -576,7 +604,6 @@ function StatusComponent:_GetShields()
 
 	return shields
 end
-
 
 --=============================================================================
 --  GETTERS
