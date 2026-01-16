@@ -4,8 +4,6 @@
 
 Buff = "Buff" --Buff
 
-Movement = "Movement" --Status relacionado a movimentos (como dashing)
-
 Debuff = "Debuff" --Debuff
 
 DOT = "DamageOverTime"
@@ -70,7 +68,7 @@ local reactTags = {
 local tagsBase = {
 	canMove = true,
 	canCast = true,
-	canControl = true, --tag utilizada pra impedir player de rotacionar!
+	canControl = true, --impede rotação do player
 	iFrame = false,
 	stackable = false,
 	exclusive = false,
@@ -84,20 +82,6 @@ local StateTable = { States = {} }
 
 StateTable.reactTags = reactTags
 
--- =============[ TABELA DE AÇÕES DO PLAYER ]==================== --
-
---Essa tabela deve somente conter as ações que o player pode executar, facilitando assim o acesso e teste de flags quando for testar estados no CD (Combat Data), deve ser tratada como enum global
-
-StateTable.PlayerActions = {
-
-	Cast = "CanCast",
-	Move = "CanMove",
-	Block = "CanBlock",
-
-}
-
-
-
 --==[ ESTADOS INTERNOS DO PLAYER ]==--
 
 
@@ -107,9 +91,9 @@ StateTable.PlayerStates = {
 	Self = { 
 		selfCast = {
 			data = {
-			category = PlayerState,
-			exclusive = true,
-			name = "SelfCast",
+				category = PlayerState,
+				exclusive = true,
+				name = "SelfCast",
 			},
 			
 			callbacks = {}
@@ -117,9 +101,9 @@ StateTable.PlayerStates = {
 			},
 		globalCast = {
 			data = {
-			category = PlayerState,
-			exclusive = true,
-			name = "GlobalCast"
+				category = PlayerState,
+				exclusive = true,
+				name = "GlobalCast"
 			},
 			callbacks = {}
 
@@ -130,18 +114,19 @@ StateTable.PlayerStates = {
 	Out = {
 		cast = {
 			data = {
-			category = PlayerState,
-			exclusive = true,
-			name = "Cast",
+				category = PlayerState,
+				exclusive = true,
+				name = "Cast",
 			},
 			callbacks = {}
 				
+
 			},
 		globalCast = {
 			data = {
-			category = PlayerState,
-			exclusive = true,
-			name = "GlobalCast",
+				category = PlayerState,
+				exclusive = true,
+				name = "GlobalCast",
 			},
 			callbacks = {}
 				
@@ -171,20 +156,15 @@ StateTable.States = {
 	--Nome do estado
 	stun = {
 		data = {
-		category = Stun, --Categoria de controle, ou seja, altera funções de controle do player
-		exclusive = false,   --Garante exclusividade, ou seja, não permite que outro estado do mesmo tipo (no caso, controle) seja aplicado
-		name = "Stun", 		--Nome utilizado pra acesso e armazenamento de dados nos gerenciadores
-		
-		tags = {			--Flags de status que alteram a possibilidade de ações do player (mais informaçõpes na tabela PlayerActions)
-			canMove = false, 
-			canControl = false,
-		},
-		
-		visual = {
-			anim = "StunAnim",
-			VFX = "StunEffect",
-			particles = "StunParticles"
-		},
+			category = Stun, 	 --Categoria de controle, ou seja, altera funções de controle do player
+			exclusive = false,   --Garante exclusividade, ou seja, não permite que outro estado do mesmo tipo (no caso, controle) seja aplicado
+			name = "Stun", 		 --Nome utilizado pra acesso e armazenamento de dados nos gerenciadores
+			
+			tags = {			  --Flags de status que alteram a possibilidade de ações do player (mais informaçõpes na tabela PlayerActions)
+				canMove = false, 
+				canControl = false,
+			},
+			visual = {},
 		},
 		callbacks = {}
 	},
@@ -192,31 +172,27 @@ StateTable.States = {
 
 	root = {
 		data = {
-		category = Root,
-		exclusive = false,
-		name = "Root",
-		tags = {
-			canMove = false,
-		},
-		visual = {
-			anim = "RootAnim"
-		}
+			category = Root,
+			exclusive = false,
+			name = "Root",
+			tags = {
+				canMove = false,
+			},
+			visual = {}
 		},
 		callbacks = {}
 	},
 	
 	Silence = {
 		data = {
-		category = Silence,
-		exclusive = false,
-		name = "Silence",
-		tags = {
-			canMove = false,
-			canCast = true,
-		},
-		visual = {
-			anim = "RootAnim"
-		}
+			category = Silence,
+			exclusive = false,
+			name = "Silence",
+			tags = {
+				canMove = false,
+				canCast = true,
+			},
+			visual = {}
 		},
 		callbacks = {}
 	},	
@@ -259,21 +235,19 @@ StateTable.Status = {
 	
 	
 	 Bleed = {
-			data = {
-		name = "Bleed",
-		category = DOT,
-		exclusive = false,
-		stackable = true,
-		stackOnSelf = true, 
-		maxStacks = 10,
-		duration = 0, 
-		tickRate = 0.5, 
-		damage = 1,
-		cooldown = 1,
-		
-		flags = {canCancel}
-	
-	
+		data = {
+			name = "Bleed",
+			category = DOT,
+			exclusive = false,
+			stackable = true,
+			stackOnSelf = true, 
+			maxStacks = 10,
+			duration = 0, 
+			tickRate = 0.5, 
+			damage = 1,
+			cooldown = 1,
+			
+			flags = {canCancel}
 		},
 		
 		callbacks = {
