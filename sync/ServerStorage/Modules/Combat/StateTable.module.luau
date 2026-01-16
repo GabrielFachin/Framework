@@ -353,9 +353,19 @@ end
 
 
 
-function StateTable:BuildShield(spell,)
+function StateTable:BuildShield(spell,callback,action)
 
-	
+	if not spell then return nil end	
+	local statusCopy = clone(spell)
+
+
+	if not statusCopy.callbacks then
+		statusCopy.callbacks = {}
+	else
+		statusCopy.callbacks = clone(statusCopy.callbacks)
+	end
+
+	statusCopy.callbacks[callback] = action
 
 end
 
