@@ -36,11 +36,13 @@ local Skill = {
 
 			local statsTable = self.statusTable
 
-			self.control = statsTable.States.noControl
+			self.control = statsTable.States.NoControl
 
 			self.PlayerState = statsTable.PlayerStates.Out.cast			 
 
 			self.Entity.SetPlayerState(self.PlayerState, self)
+
+			warn(statsTable)
 
 			self.stateID = self.Entity.ApplyStatus(self.control,9999,self)			
 			

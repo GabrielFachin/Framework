@@ -1,21 +1,23 @@
-	Self = { 
-		selfCast = {
+--OUT
+
+return {
+		cast = {
 			data = {
 				category = PlayerState,
 				exclusive = true,
-				name = "SelfCast",
+				name = "Cast",
 			},
-			
 			callbacks = {}
-			
+				
+
 			},
 		globalCast = {
 			data = {
 				category = PlayerState,
 				exclusive = true,
-				name = "GlobalCast"
+				name = "GlobalCast",
 			},
 			callbacks = {}
-
+				
 			},
-		},
+		}

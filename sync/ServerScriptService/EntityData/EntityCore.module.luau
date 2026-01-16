@@ -292,7 +292,6 @@ local function AutoRegisterComponents()
 	end
 
 	EntityCore.ComponentKey = table.freeze(EntityCore.ComponentKey)			--Freeze o enum pra eviltar alterações em runtime
-	print(ComponentRegistry)
 	
 end
 

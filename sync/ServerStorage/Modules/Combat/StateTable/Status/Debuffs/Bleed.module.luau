@@ -1,4 +1,4 @@
-local Enum = require(script.Parent.Parent.Enum)
+local Enum = require(script.Parent.Parent.Parent.Enum)
 
 local Bleed = {
 	data = {
@@ -12,7 +12,7 @@ local Bleed = {
 		tickRate = 0.5, 
 		damage = 1,
 		
-		flags = {Enum.Tags.CanCancel} 
+		flags = {Enum.Traits.SoftCancel} 
 	},
 	
 	callbacks = {

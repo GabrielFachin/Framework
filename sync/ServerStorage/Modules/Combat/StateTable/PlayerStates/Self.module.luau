@@ -1,21 +1,23 @@
-return Out = {
-		cast = {
+	--SELF
+	
+	return {
+		selfCast = {
 			data = {
 				category = PlayerState,
 				exclusive = true,
-				name = "Cast",
+				name = "SelfCast",
 			},
+			
 			callbacks = {}
-				
-
+			
 			},
 		globalCast = {
 			data = {
 				category = PlayerState,
 				exclusive = true,
-				name = "GlobalCast",
+				name = "GlobalCast"
 			},
 			callbacks = {}
-				
+
 			},
-		}
+	}

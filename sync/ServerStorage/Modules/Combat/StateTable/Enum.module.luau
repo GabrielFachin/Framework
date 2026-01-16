@@ -17,7 +17,7 @@
 enum = {
 
     --Categoria de status
-    Category = {
+    Categories = {
         Buff = "Buff",          --Buff
         Hybrid = "Hybrid",      --Status relacionado com buff e debuff
         Debuff = "Debuff",      --Debuff
@@ -45,10 +45,24 @@ enum = {
     reactTags = {
 	    onHeal = "OnHeal",              --Ativa o status quando o alvo recebe cura
 	    onDamage = "OnDamage",          --Ativa o status quando o alvo recebe dano
-	    onDeath = "OnDeath",             --Ativa o status quando o alvo morre
-}
+	    onDeath = "OnDeath",            --Ativa o status quando o alvo morre
+    },
 
-local tagsBase = {
+
+
+Tags = {
+    canMove = "canMove",
+    canCast = "canCast",
+    canControl = "canControl",
+    iFrame = "iFrame",
+    stackable = "stackable",
+    exclusive = "exclusive"
+},
+
+
+
+--fallback pra caso de não declaração dessas tags
+ tagsBase = {
 	canMove = true,
 	canCast = true,
 	canControl = true, --impede rotação do player
@@ -56,8 +70,10 @@ local tagsBase = {
 	stackable = false,
 	exclusive = false,
 
+	}
+    
 }
 
-}
+
 
 return enum 

@@ -5684,13 +5684,6 @@
               "className": "Folder",
               "children": [
                 {
-                  "name": "StateTable",
-                  "className": "ModuleScript",
-                  "filePaths": [
-                    "sync/ServerStorage/Modules/Combat/StateTable.module.luau"
-                  ]
-                },
-                {
                   "name": "ModifierController",
                   "className": "ModuleScript",
                   "filePaths": [
@@ -5813,6 +5806,129 @@
                   "className": "ModuleScript",
                   "filePaths": [
                     "sync/ServerStorage/Modules/Combat/HitboxSpawner.module.luau"
+                  ]
+                },
+                {
+                  "name": "StateTable",
+                  "className": "ModuleScript",
+                  "filePaths": [
+                    "sync/ServerStorage/Modules/Combat/StateTable.module.luau"
+                  ],
+                  "children": [
+                    {
+                      "name": "Helper",
+                      "className": "ModuleScript",
+                      "filePaths": [
+                        "sync/ServerStorage/Modules/Combat/StateTable/Helper.module.luau"
+                      ]
+                    },
+                    {
+                      "name": "Enum",
+                      "className": "ModuleScript",
+                      "filePaths": [
+                        "sync/ServerStorage/Modules/Combat/StateTable/Enum.module.luau"
+                      ]
+                    },
+                    {
+                      "name": "Status",
+                      "className": "Folder",
+                      "children": [
+                        {
+                          "name": "Debuffs",
+                          "className": "Folder",
+                          "children": [
+                            {
+                              "name": "Bleed",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/Combat/StateTable/Status/Debuffs/Bleed.module.luau"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Buffs",
+                          "className": "Folder",
+                          "children": [
+                            {
+                              "name": "iFrame",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/Combat/StateTable/Status/Buffs/iFrame.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "StatusShield",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/Combat/StateTable/Status/Buffs/StatusShield.module.luau"
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "PlayerStates",
+                      "className": "Folder",
+                      "children": [
+                        {
+                          "name": "LockedCast",
+                          "className": "ModuleScript",
+                          "filePaths": [
+                            "sync/ServerStorage/Modules/Combat/StateTable/PlayerStates/LockedCast.module.luau"
+                          ]
+                        },
+                        {
+                          "name": "Out",
+                          "className": "ModuleScript",
+                          "filePaths": [
+                            "sync/ServerStorage/Modules/Combat/StateTable/PlayerStates/Out.module.luau"
+                          ]
+                        },
+                        {
+                          "name": "Self",
+                          "className": "ModuleScript",
+                          "filePaths": [
+                            "sync/ServerStorage/Modules/Combat/StateTable/PlayerStates/Self.module.luau"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "States",
+                      "className": "Folder",
+                      "children": [
+                        {
+                          "name": "NoControl",
+                          "className": "ModuleScript",
+                          "filePaths": [
+                            "sync/ServerStorage/Modules/Combat/StateTable/States/NoControl.module.luau"
+                          ]
+                        },
+                        {
+                          "name": "Silence",
+                          "className": "ModuleScript",
+                          "filePaths": [
+                            "sync/ServerStorage/Modules/Combat/StateTable/States/Silence.module.luau"
+                          ]
+                        },
+                        {
+                          "name": "Root",
+                          "className": "ModuleScript",
+                          "filePaths": [
+                            "sync/ServerStorage/Modules/Combat/StateTable/States/Root.module.luau"
+                          ]
+                        },
+                        {
+                          "name": "Stun",
+                          "className": "ModuleScript",
+                          "filePaths": [
+                            "sync/ServerStorage/Modules/Combat/StateTable/States/Stun.module.luau"
+                          ]
+                        }
+                      ]
+                    }
                   ]
                 }
               ]

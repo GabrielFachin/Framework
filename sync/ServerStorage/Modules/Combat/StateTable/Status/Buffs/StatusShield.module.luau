@@ -1,4 +1,4 @@
-local Enum = require(script.Parent.Parent.Enum)
+local Enum = require(script.Parent.Parent.Parent.Enum)
 
 return {
 	data = {

@@ -1,4 +1,4 @@
-local Enum = require(script.Parent.Parent.Enum)
+local Enum = require(script.Parent.Parent.Parent.Enum)
 
 return {
 	data = {
@@ -7,7 +7,7 @@ return {
 		exclusive = false,
 		
 		tags = {
-			[Enum.Tags.IFrame] = true
+			[Enum.Tags.iFrame] = true
 		},
 		
 		-- Define o que ignora esse buff (TrueHit ignora iFrame)

@@ -27,7 +27,8 @@ function SkillRunner.new(skillData,Entity,name,type) --Instancia o SkillRunner c
 	self.connection = require(Storage.Modules.SkillScheduler) 					--Heartbeat global
 	self.statusTable = require(Storage.Modules.Combat.StateTable) 				--Facilita acesso a aplicação de estados pelas skills
 	self.weaponHitboxModule = require(Storage.Modules.Combat.ShapecastHitbox)   --Prepara o modulo do shapecast para facil acesso e criação de hitboxes
-	
+
+
 
 
 	--=====DADOS VITAIS=====--

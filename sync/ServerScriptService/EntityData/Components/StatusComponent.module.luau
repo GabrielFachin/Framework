@@ -85,6 +85,7 @@ Aplica um status à entidade
 @return ID do status STRING ou nil se não aplicado
 ]]
 function StatusComponent:ApplyStatus(statusData : {}, duration : number?, sourceSkill : any?, ID : string?,targetEntity: {}?) : string?
+	warn(statusData)
 
 	local canApply, reason = self:_ValidateApplication(statusData, sourceSkill)
 
@@ -278,7 +279,7 @@ Função interna, valida a aplicação de um status/estado
 ]]
 function StatusComponent:_ValidateApplication(statusData, sourceSkill)
     local activeShields = self:_GetShields()
-    local effectCategory = statusData.data.category
+	local effectCategory = statusData.data.category
     local effectName = statusData.data.name
 
 	local foundShield = nil
