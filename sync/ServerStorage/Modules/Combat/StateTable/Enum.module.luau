@@ -45,7 +45,17 @@ enum = {
     reactTags = {
 	    onHeal = "OnHeal",              --Ativa o status quando o alvo recebe cura
 	    onDamage = "OnDamage",          --Ativa o status quando o alvo recebe dano
-	    onKill = "OnKill",              --Ativa o status quando o alvo morre
+	    onDeath = "OnDeath",             --Ativa o status quando o alvo morre
+}
+
+local tagsBase = {
+	canMove = true,
+	canCast = true,
+	canControl = true, --impede rotação do player
+	iFrame = false,
+	stackable = false,
+	exclusive = false,
+
 }
 
 }
