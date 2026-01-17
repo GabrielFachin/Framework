@@ -16,6 +16,8 @@
 
 enum = {
 
+             --=====ENUM PRINCIPAL=====-
+
     --Categoria de status
     Categories = {
         Buff = "Buff",          --Buff
@@ -42,12 +44,31 @@ enum = {
     },
 
 
+
+
+
+
+        --====BREAKPOINTS=====--
+
+
     reactTags = {
 	    onHeal = "OnHeal",              --Ativa o status quando o alvo recebe cura
 	    onDamage = "OnDamage",          --Ativa o status quando o alvo recebe dano
 	    onDeath = "OnDeath",            --Ativa o status quando o alvo morre
     },
 
+
+    SkillBreakpoints = {
+        onTrigger = "onTriggerAction",
+        onRecast = "onRecast",
+        onHit = "onHit",
+        onEnd = "onEnd"
+    },
+
+
+
+
+    --=====TAGS=====--
 
 
 Tags = {

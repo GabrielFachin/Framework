@@ -1,3 +1,5 @@
+local ServerStorage = game:GetService("ServerStorage")
+local StateTable = require(ServerStorage.Modules.Combat.StateTable)
 local Skill = {
 
 	data = {
@@ -42,13 +44,16 @@ local Skill = {
 
 			self.Entity.SetPlayerState(self.PlayerState, self)
 
-			warn(statsTable)
-
 			self.stateID = self.Entity.ApplyStatus(self.control,9999,self)			
 			
 			self.Entity.StartHitbox(self.data.duration)
 
-			self.Entity.ApplyStatus(statsTable.Status.StatusShield,9999,self)
+			local shield = statsTable:BuildEffect(statsTable.Status.StatusShield,
+			StateTable.Enum.SkillBreakpoints.onTrigger,
+		    function() warn("shield atingido")
+			end)
+
+			self.Entity.ApplyStatus(shield,9999,self)
 
 			self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
 			

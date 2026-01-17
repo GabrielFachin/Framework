@@ -15,9 +15,9 @@ for i = 0,100,1 do
 
     local part1 = Instance.new("Part")
     part1.Name = "BasePart"
-    num1 = math.random(1,10)
-    num2 = math.random(1,10)
-    num3 = math.random(1,10)
+    num3 = math.random(1,15)
+    num1 = math.random(1,15)
+    num2 = math.random(1,15)
     part1.Size = Vector3.new(num1, num2, num3)
     part1.Position = Vector3.new(0, 1, 0) 
     part1.Anchored = false
@@ -27,6 +27,7 @@ for i = 0,100,1 do
 
     
     DataManager.Create(model, components)
+    wait(0.1)
 
 end
 

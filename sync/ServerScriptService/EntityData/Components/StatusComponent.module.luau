@@ -85,12 +85,11 @@ Aplica um status à entidade
 @return ID do status STRING ou nil se não aplicado
 ]]
 function StatusComponent:ApplyStatus(statusData : {}, duration : number?, sourceSkill : any?, ID : string?,targetEntity: {}?) : string?
-	warn(statusData)
 
-	local canApply, reason = self:_ValidateApplication(statusData, sourceSkill)
+	local canApply= self:_ValidateApplication(statusData, sourceSkill)
 
 	if not canApply then
-		print("[StatusComponent] Aplicação de status bloqueada:", reason)
+		print("[StatusComponent] Aplicação de efeito bloqueada por shield")
 		return nil
 	end
 
@@ -278,7 +277,7 @@ Função interna, valida a aplicação de um status/estado
 @return sucesso,motivo(se falseo) BOOLEAN,STRING
 ]]
 function StatusComponent:_ValidateApplication(statusData, sourceSkill)
-    local activeShields = self:_GetShields()
+	local activeShields = self:_GetShields()
 	local effectCategory = statusData.data.category
     local effectName = statusData.data.name
 

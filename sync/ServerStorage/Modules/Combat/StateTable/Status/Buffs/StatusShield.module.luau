@@ -4,9 +4,8 @@ return {
 	data = {
 		name = "StatusShield",
 		category = Enum.Categories.Buff,
-		exclusive = true,
+		exclusive = false,
 		
-		-- Lista de categorias/traits que este escudo bloqueia
 		ShieldsFrom = {Enum.Traits.DOT}
 	},
 	

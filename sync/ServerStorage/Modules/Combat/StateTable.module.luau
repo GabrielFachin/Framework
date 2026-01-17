@@ -1,4 +1,4 @@
-
+--!strict
 
 local StateTable = {}
 
@@ -20,18 +20,34 @@ Helper.LoadModules(script, "Status", StateTable.Status)
 Helper.LoadModules(script, "PlayerStates", StateTable.PlayerStates)
 
 
-function StateTable:GetTags(stateName)
+--[[
+Retorna todas as tags de controle de um estado
+@param stateName - STRING
+@return tags - TABLE
+]]
+function StateTable:GetTags(stateName : string) : {}
 	return Helper.GetTags(self, stateName)
 end
 
-function StateTable:IsState(meta)
+--[[
+Devolve se o efeito fornecido é um estado
+@param meta - dados do state
+@return boolean
+]]
+function StateTable:IsState(meta : {}) : boolean
 	return Helper.IsState(self, meta)
 end
 
--- A função que você pediu de volta
-function StateTable:BuildShield(spell, callbackName, action)
-	return Helper.BuildShield(spell, callbackName, action)
+
+--[[
+Injeta a função fornecida num clone do efeito escolhido.
+@param spell - Spell escolhida da table de efeitos TABLE
+@param callbackName - nome do breakpoint a ser utilizado (fornecido em Enum.Skillbreakpoints) STRING
+@param action - função anonima a ser armazenada no breakpoint de escolha
+@return efeito alterado TABLE
+]]
+function StateTable:BuildEffect(spell : {}, callbackName : string, action: () -> nil)
+	return Helper.BuildEffect(spell, callbackName, action)
 end
 
-warn(StateTable)
 return StateTable

@@ -59,26 +59,25 @@ function SkillRunner.new(skillData,Entity,name,type) --Instancia o SkillRunner c
 		if self.Entity:HasComponent(self.Entity.ComponentKey.Weapon) then
 
 		self.hitPoint = self.Entity.GetHitOrigin() 							--Origem de hitboxes criadas em runtime pela arma
-		self.weapon = self.Entity.GetWeapon()						   	 --Arma sendo utilizada pelo player
+		self.weapon = self.Entity.GetWeapon()						   	    --Arma sendo utilizada pelo player
 
 		end
 	end
 
 	
-	-- Facilita o acesso aos dados da skill.
 	self.data      = skillData.data
 	self.callbacks = skillData.callbacks
 	self.utils     = skillData.utils or {}
 	
 	
 
-	--Contexto da skill (interações passadas sequenciais até chegar no runner atual)
+	--=====GERENTE DE CONTEXTO=====--
     if skillData.context then
         self.context = skillData.context
     else
-        -- Fallback para casos onde o runner é criado sem input diret
+        -- Fallback para casos onde o runner é criado sem input direto
         self.context = {
-            rootOrigin = Entity and Entity or "Uknown",
+            rootOrigin = Entity and Entity or "Unknown",
             rootSkill = name,
             history = {name},
             depth = 1,
