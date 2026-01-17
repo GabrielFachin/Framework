@@ -47,10 +47,11 @@ local Skill = {
 			self.stateID = self.Entity.ApplyStatus(self.control,9999,self)			
 			
 			self.Entity.StartHitbox(self.data.duration)
+			
 
 			local shield = statsTable:BuildEffect(statsTable.Status.StatusShield,
 			StateTable.Enum.SkillBreakpoints.onTrigger,
-		    function() warn("shield atingido")
+		    function(runner,context) warn("shield atingido por:",context.data.name)
 			end)
 
 			self.Entity.ApplyStatus(shield,9999,self)

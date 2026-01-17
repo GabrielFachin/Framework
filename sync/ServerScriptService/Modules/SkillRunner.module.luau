@@ -64,7 +64,7 @@ function SkillRunner.new(skillData,Entity,name,type) --Instancia o SkillRunner c
 		end
 	end
 
-	
+
 	self.data      = skillData.data
 	self.callbacks = skillData.callbacks
 	self.utils     = skillData.utils or {}
@@ -184,12 +184,12 @@ end
 
 
 --Permite ações de trigger externas
-function SkillRunner:TriggerAction(context)
+function SkillRunner:TriggerAction(data)
 
 	if self.skillData.callbacks.onTriggerAction ~= nil then
 		
 		--roda triggerAction com contexto da origem do trigger
-		self.skillData.callbacks.onTriggerAction(self,context)
+		self.skillData.callbacks.onTriggerAction(self,data)
 	end
 		return true
 end

@@ -20,6 +20,7 @@ Helper.LoadModules(script, "Status", StateTable.Status)
 Helper.LoadModules(script, "PlayerStates", StateTable.PlayerStates)
 
 
+
 --[[
 Retorna todas as tags de controle de um estado
 @param stateName - STRING
@@ -28,6 +29,7 @@ Retorna todas as tags de controle de um estado
 function StateTable:GetTags(stateName : string) : {}
 	return Helper.GetTags(self, stateName)
 end
+
 
 --[[
 Devolve se o efeito fornecido é um estado

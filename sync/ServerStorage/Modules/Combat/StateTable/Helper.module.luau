@@ -84,8 +84,6 @@ function Helper.BuildEffect(baseStatus, callbackName, actionFunc)
 	if not baseStatus then return nil end
 	
 	local newStatus = table.clone(baseStatus)
-
-	warn(newStatus)
 	
 	if newStatus.callbacks then
 		newStatus.callbacks = table.clone(newStatus.callbacks)

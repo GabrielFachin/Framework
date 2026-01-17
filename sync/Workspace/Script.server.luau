@@ -27,7 +27,6 @@ for i = 0,100,1 do
 
     
     DataManager.Create(model, components)
-    wait(0.1)
 
 end
 

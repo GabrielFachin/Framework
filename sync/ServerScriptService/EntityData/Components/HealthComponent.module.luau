@@ -109,6 +109,8 @@ function HealthComponent:TakeDamage(amount : number, source : any, flags : {[str
 		if not canHit then
 			return false, reason
 		end
+
+		
 	
 			-- Alterações de dano pré-mitigação
 		if self.OnDamage then

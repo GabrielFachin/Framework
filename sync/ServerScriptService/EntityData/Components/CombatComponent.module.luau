@@ -4,8 +4,9 @@
 	- Runners ativos
 	- Validação de cast
 ]]
+	
 
-local Geometry = game:GetService("Geometry")
+
 local ServerStorage = game:GetService("ServerStorage")
 local StateTable = require(ServerStorage.Modules.Combat.StateTable)
 
@@ -302,7 +303,6 @@ function CombatComponent:CanContinue() : boolean
 			return false
 		end
 	end
-	
 	-- Checa se o estado de player atual é selfCancel
 	for _, stateDef in pairs(StateTable.PlayerStates.Self) do
 		if self.PlayerState.name == stateDef.data.name then
@@ -511,6 +511,7 @@ function CombatComponent:Destroy()
 	table.clear(self.ActiveSkills)
 	self.Entity = nil
 end
+
 
 --=============================================================================
 --  API EXPOSE

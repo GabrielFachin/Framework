@@ -89,7 +89,6 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	local canApply= self:_ValidateApplication(statusData, sourceSkill)
 
 	if not canApply then
-		print("[StatusComponent] Aplicação de efeito bloqueada por shield")
 		return nil
 	end
 
@@ -312,7 +311,7 @@ function StatusComponent:_TriggerShield(immunityTag, activeShields,incomingData,
 	if runner then
 		
 		 --Chama a ação de trigger no shield com a skill que está tentando aplicar o status
-		local blocked = runner:TriggerAction(sourceSkill)
+		local blocked = runner:TriggerAction(incomingData)
 			if blocked then return true end
 	end
 	
@@ -663,11 +662,9 @@ Verifica se a entidade possui algum estado de uma categoria específica.
 ]]
 function StatusComponent:HasStateCategory(category : string) : boolean
 	for _, entry in pairs(self.Effects.state) do
-		-- Suporta tanto entrada única (tabela direta) quanto lista de stacks (array)
 		local items = (entry.runner or entry.data) and {entry} or entry
 		
 		for _, item in ipairs(items) do
-			-- Verifica a estrutura de dados (item -> data -> data -> category)
 			if item.data and item.data.data and item.data.data.category == category then
 				return true
 			end
