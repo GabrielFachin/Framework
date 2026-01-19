@@ -4,7 +4,17 @@
 	- Runners ativos
 	- Validação de cast
 ]]
-	
+
+type PlayerStatesType = {
+    Self: {
+        selfCast: any,
+        globalCast: any,
+    },
+    Out: {
+        cast: any,
+        globalCast: any,
+    }
+}
 
 
 local ServerStorage = game:GetService("ServerStorage")
@@ -240,11 +250,11 @@ function CombatComponent:GetPlayerState()
 	return self.PlayerState
 end
 
-function CombatComponent:SetPlayerState(name,runner)
+function CombatComponent:SetPlayerState(state,runner)
 
-	if not self.PlayerState then self.PlayerState = {name = name, runner, runner} end
+	if not self.PlayerState then self.PlayerState = {name = state, runner} end
 
-	self.PlayerState.name = name
+	self.PlayerState.name = state.data.name
 	self.PlayerState.runner = runner
 end
 
@@ -258,10 +268,11 @@ Cancelamento interno de skills buscando por estados do tipo SelfCast
 @return sucesso BOOLEAN
 ]]
 function CombatComponent:TrySelfCancel() : boolean
-		
 		if self.PlayerState and #self.PlayerState > 0 then
+			local playerStates = StateTable.PlayerStates :: PlayerStatesType
+
 			-- Checa se é Self
-			for _, v in pairs(StateTable.PlayerStates.Self) do
+			for _, v in pairs(playerStates.Self) do
 				if self.PlayerState.name == v.data.name then
 					local runner = self.PlayerState.runner 
 					if runner and typeof(runner) == "table" and runner.Stop then
@@ -269,6 +280,7 @@ function CombatComponent:TrySelfCancel() : boolean
 						return true
 					end
 				end
+				warn("Skill não pode rodar!")
 				return false -- Encontrou PlayerState mas não é Self
 			end
 		end
@@ -303,8 +315,10 @@ function CombatComponent:CanContinue() : boolean
 			return false
 		end
 	end
+
+	local playerStates = StateTable.PlayerStates :: PlayerStatesType
 	-- Checa se o estado de player atual é selfCancel
-	for _, stateDef in pairs(StateTable.PlayerStates.Self) do
+	for _, stateDef in pairs(playerStates.Self) do
 		if self.PlayerState.name == stateDef.data.name then
 			return true
 		end

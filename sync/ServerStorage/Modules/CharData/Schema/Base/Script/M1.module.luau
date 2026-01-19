@@ -6,6 +6,7 @@ local Skill = {
 		cooldown = 1,
 		duration = 5,
 		castTime = 0,
+		tags = {[StateTable.Enum.Tags.block] = true}
 
 	},
 
@@ -54,7 +55,7 @@ local Skill = {
 		    function(runner,context) warn("shield atingido por:",context.data.name)
 			end)
 
-			self.Entity.ApplyStatus(shield,9999,self)
+			--self.Entity.ApplyStatus(shield,9999,self)
 
 			self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
 			

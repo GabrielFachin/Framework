@@ -79,7 +79,6 @@ function EntityCore:AddComponent(componentName : string, config : {[string]: any
 	-- Expõe API do componente diretamente na entidade
 	if ComponentRegistry[componentName].ExposeAPI then
 		for methodName, method in pairs(ComponentRegistry[componentName].ExposeAPI) do
-				--Sobrescreve o método (anula dummy)
 				self[methodName] = function(...)
 					return method(component, ...)
 			end
@@ -139,6 +138,7 @@ function EntityCore:RemoveComponent(componentName : string)
 
 	self.Components[componentName] = nil
 end
+
 
 --=============================================================================
 --  LIFECYCLE

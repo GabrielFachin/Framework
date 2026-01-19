@@ -1,8 +1,10 @@
 --LOCKED
+
+local Enum = require(script.Parent.Parent.Enum)
 	
 	return {
 		data = {
-			category = PlayerState,
+			category = Enum.Categories.Player,
 			exclusive = true,
 			name = "LockedCast",
 		},

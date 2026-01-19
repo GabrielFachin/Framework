@@ -110,15 +110,22 @@ function HealthComponent:TakeDamage(amount : number, source : any, flags : {[str
 			return false, reason
 		end
 
-		
-	
+		local tag,owner = self.Entity:GetActiveTags()
+		warn(tag,owner)
+
+		local context = {damage = amount}
+
+		if tag == StateTable.Enum.Tags.block then
+			amount = owner[tag]:TriggerAction(context)
+		end
+
+	end
 			-- Alterações de dano pré-mitigação
 		if self.OnDamage then
 			local preMitigationAmount = task.spawn(self.OnDamage, self, amount, source)
 					if preMitigationAmount then
 						amount = preMitigationAmount
 					end
-		end
 	end
 	
 	-- Aplica dano

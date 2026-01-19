@@ -48,6 +48,10 @@ function SkillRunner.new(skillData,Entity,name,type) --Instancia o SkillRunner c
 
 
 
+	--guarda numa tabela o tipo do runner, skill ou efeitos
+	self.skillData.data.type = self.skillData.data.type or type
+
+
 	--=====FACILITADORES DE ACESSO=====--
 
 	if self.Entity then

@@ -256,7 +256,7 @@ function StatusComponent:_CreateRunner(data : {[string]: any}, name : string, du
 	
 
 	local targetEntity = target and target.Entity or self.Entity
-	local runner = SkillRunner.new(data, targetEntity, name)
+	local runner = SkillRunner.new(data, targetEntity, name,"status")
 	
 	-- Callback de finalização
 	runner.onFinish = function()
@@ -278,14 +278,21 @@ Função interna, valida a aplicação de um status/estado
 function StatusComponent:_ValidateApplication(statusData, sourceSkill)
 	local activeShields = self:_GetShields()
 	local effectCategory = statusData.data.category
+	local effectTraits = statusData.data.traits and statusData.data.traits or {}
     local effectName = statusData.data.name
 
 	local foundShield = nil
 
-    -- Ordem de prioridade: Categoria > Específico
+    -- Ordem de prioridade: Categoria > Traits > Nome
     if effectCategory and activeShields[effectCategory] then
-        foundShield = effectCategory
-    elseif effectName and activeShields[effectName] then
+        foundShield = effectCategory end
+
+	for v,name in pairs(effectTraits) do
+		if name and activeShields[name] then
+			foundShield = name end
+	end
+
+    if effectName and activeShields[effectName] then
         foundShield = effectName
     end
 
@@ -544,8 +551,10 @@ function StatusComponent:GetActiveTags()
     self._cachedTags = mergedTags
     self._tagRunners = tagOwners 
     self._tagsDirty = false
-    
-    return mergedTags
+
+	warn(tagOwners)
+
+    return mergedTags,tagOwners
 end
 
 --[[

@@ -269,4 +269,29 @@ return {
 	}
 }
 
+
+
+
+
+
+
+
+
+DADOS DE SKILLS:
+data{
+
+tags (table)
+type (table)
+
+}
+
+
+
+Traits: comportamentos especiais e/ou indicativos pro sistema (como DOT, que não tem comportamento especial mas é importante pra permitir spellShields de DOT)
+
+type: tipo da habilidade, conta como skill apenas? skill e efeito? pode ser ambos ou só um, caso não fornecido é injetado pelo runner.
+
+tags: dados binarios que podem ter bypasses como CanMove, CanCast, Block, iFrame
+
 ]]
+

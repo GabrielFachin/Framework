@@ -50,7 +50,7 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 	local activeRunners = entityCore.GetActiveSkills(skillName) --Busca instâncias ativas da skill na entidade
 
-	local max = skill.maxInstances--Guarda a quantidade máximas de instâncias permitida daquela skill
+	local max = skill.data.maxInstances--Guarda a quantidade máximas de instâncias permitida daquela skill
 
 	if not entityCore.HasCooldown(skillName) then --Se não estiver em cooldown, então roda
 

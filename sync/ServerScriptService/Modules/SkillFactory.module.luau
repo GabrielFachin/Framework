@@ -45,8 +45,8 @@ function SkillFactory.GetSkill(skillModule)
 	setmetatable(skill.callbacks, { __index = SkillDefaults })
 	
 	-- Prepara as instancias máximas da habilidade
-	if not skill.maxInstances then
-		skill.maxInstances = 1
+	if not skill.data.maxInstances then
+		skill.data.maxInstances = 1
 	end
 
 

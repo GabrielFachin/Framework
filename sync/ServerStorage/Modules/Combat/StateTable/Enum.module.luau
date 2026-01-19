@@ -1,19 +1,3 @@
---==[ INFORMAÇÕES EXTRAS ]==--
-
---categoria: tipo do efeito
-
---exclusivo: Substitui outros efeitos da mesma categoria (default false)
-
---stackavel: Permite stacks como bleed x5 (default false)
-
---Flags: Flags relacionadas ao comportamento da skill no alvo
-
---Visual: Efeitos, animação e afins
-
-
---Estados de casos específicos podem (E DEVEM) ser declarados dentro dos dados base do personagem, seguindo um padrão parecido com o que temos aqui, isso também vale pra modifiers!
-
-
 enum = {
 
              --=====ENUM PRINCIPAL=====-
@@ -44,6 +28,22 @@ enum = {
     },
 
 
+    
+
+    --Traits que não podem coexistir (da override uma na outra)
+    ExclusiveTraits = {
+        --exemplo
+        block = {"blocking","parrying","countering"}
+    },
+
+
+    --Fala a qual grupo a trait pertence
+    TraitToExclusiveGroup = {
+        --exemplo
+        blocking = "block",
+        parrying = "block",
+        countering = "block",
+    },
 
 
 
@@ -71,11 +71,13 @@ enum = {
     --=====TAGS=====--
 
 
+--tags são dados 
 Tags = {
     canMove = "canMove",
     canCast = "canCast",
     canControl = "canControl",
     iFrame = "iFrame",
+    block = "block",
     stackable = "stackable",
     exclusive = "exclusive"
 },
@@ -88,6 +90,7 @@ Tags = {
 	canCast = true,
 	canControl = true, --impede rotação do player
 	iFrame = false,
+    block = false,
 	stackable = false,
 	exclusive = false,
 

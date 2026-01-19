@@ -3,7 +3,7 @@ local Enum = require(script.Parent.Parent.Parent.Enum)
 local Bleed = {
 	data = {
 		name = "Bleed", 
-		category = Enum.Traits.DOT,
+		category = Enum.Categories.Debuff,
 		exclusive = false,
 		stackable = true,
 		stackOnSelf = true, 
@@ -12,7 +12,7 @@ local Bleed = {
 		tickRate = 0.5, 
 		damage = 1,
 		
-		flags = {Enum.Traits.SoftCancel} 
+		traits = {Enum.Traits.DOT,Enum.Traits.SoftCancel}
 	},
 	
 	callbacks = {

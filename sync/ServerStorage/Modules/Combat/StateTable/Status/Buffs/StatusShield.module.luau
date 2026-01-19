@@ -6,7 +6,8 @@ return {
 		category = Enum.Categories.Buff,
 		exclusive = false,
 		
-		ShieldsFrom = {Enum.Traits.DOT}
+		ShieldsFrom = {Enum.Traits.DOT},
+		tags = {[Enum.Tags.block] = true}
 	},
 	
 	callbacks = {}

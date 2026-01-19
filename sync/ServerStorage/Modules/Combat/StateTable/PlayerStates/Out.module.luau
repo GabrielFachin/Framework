@@ -1,9 +1,10 @@
 --OUT
+local Enum = require(script.Parent.Parent.Enum)
 
 return {
 		cast = {
 			data = {
-				category = PlayerState,
+				category = Enum.Categories.Player,
 				exclusive = true,
 				name = "Cast",
 			},
@@ -13,7 +14,7 @@ return {
 			},
 		globalCast = {
 			data = {
-				category = PlayerState,
+				category = Enum.Categories.Player,
 				exclusive = true,
 				name = "GlobalCast",
 			},
