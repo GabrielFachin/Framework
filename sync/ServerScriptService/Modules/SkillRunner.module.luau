@@ -186,22 +186,25 @@ end
 --[[Trigger externo
 @param data - dados de quem deu trigger
 ]]
-function SkillRunner:TriggerAction(data : table?)
-	local data = self.skillData.data
+function SkillRunner:TriggerAction(context : table?)
+    local skillSettings = self.skillData.data
 
-	if self.skillData.callbacks.onTriggerAction ~= nil then
-			local helper = self.StateTable.Helper
+    local hasFilterConfig = skillSettings.Filter or skillSettings.ShieldsFrom or skillSettings.ShieldsFromType
 
-			if data.ShieldsFromType or data.ShieldsFrom then
-				if not Helper.CheckBlockFilter(self, context) then
-            		return nil 
-       			end
-			end
-	
-		--roda triggerAction com contexto da origem do trigger e devolve o valor alterado
-		return self.skillData.callbacks.onTriggerAction(self,data)
-	end
-		return nil
+    if hasFilterConfig then
+        local Helper = self.statusTable.Helper
+        
+        if not Helper.CheckBlockFilter(self, context) then
+            return nil 
+        end
+    end
+
+.
+    if self.skillData.callbacks.onTriggerAction then
+        return self.skillData.callbacks.onTriggerAction(self, context)
+    end
+    
+    return nil
 end
 
 
