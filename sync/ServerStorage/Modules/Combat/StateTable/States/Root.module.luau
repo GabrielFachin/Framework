@@ -4,7 +4,6 @@ return {
 	data = {
 		name = "Root",
 		category = Enum.States.Root,
-		exclusive = false,
 		
 		tags = {
 			[Enum.Tags.canMove] = false,

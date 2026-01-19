@@ -99,7 +99,7 @@ local function applyMovementRestrictions(entityCore, tags: {[string]: any})
 
 	-- Flags de controle
 	local canMove = tags.canMove ~= false
-	local canControl = tags.canControl ~= false
+	local canRotate = tags.canRotate ~= false
 
 	-- Wrappers (apenas pra validação de existênia de funções)
 	local characterWrapper = entityCore:GetCharacterWrapper()
@@ -111,7 +111,7 @@ local function applyMovementRestrictions(entityCore, tags: {[string]: any})
 	-- Aplicação Lógica
 	if humanoid then
 		-- Controle de Rotação
-		humanoid.AutoRotate = canControl
+		humanoid.AutoRotate = canRotate
 
 		-- Controle de Movimento
 		if canMove then

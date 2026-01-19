@@ -4,11 +4,10 @@ return {
 	data = {
 		name = "noControl",
 		category = Enum.States.NoControl,
-		exclusive = false,
 		
 		tags = {
 			[Enum.Tags.canMove] = false,
-			[Enum.Tags.canControl] = false,
+			[Enum.Tags.canRotate] = false,
 		},
 		
 		visual = {}

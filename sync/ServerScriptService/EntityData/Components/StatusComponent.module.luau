@@ -160,7 +160,7 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	end
 	
 	-- ===== STACK NA MESMA INSTÂNCIA =====
-	if meta.stackable and meta.stackOnSelf then
+	if meta.traits[StateTable.Enum.Traits.Stackable] and meta.stackOnSelf then
 		local existing = group[meta.name]
 		if existing then
 			if existing.counter >= (meta.maxStacks or math.huge) then

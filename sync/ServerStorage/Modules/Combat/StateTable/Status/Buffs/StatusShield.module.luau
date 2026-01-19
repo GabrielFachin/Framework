@@ -4,7 +4,6 @@ return {
 	data = {
 		name = "StatusShield",
 		category = Enum.Categories.Buff,
-		exclusive = false,
 		
 		ShieldsFrom = {Enum.Traits.DOT},
 		tags = {[Enum.Tags.block] = true}

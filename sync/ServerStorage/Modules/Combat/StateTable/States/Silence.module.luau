@@ -4,7 +4,6 @@ return {
 	data = {
 		name = "Silence",
 		category = Enum.States.Silence,
-		exclusive = false,
 		
 		tags = {
 			[Enum.Tags.canCast] = false,

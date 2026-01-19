@@ -4,15 +4,16 @@ local Bleed = {
 	data = {
 		name = "Bleed", 
 		category = Enum.Categories.Debuff,
-		exclusive = false,
-		stackable = true,
 		stackOnSelf = true, 
 		maxStacks = 10,
 		duration = 5, 
 		tickRate = 0.5, 
 		damage = 1,
 		
-		traits = {Enum.Traits.DOT,Enum.Traits.SoftCancel}
+		traits = {
+		Enum.Traits.DOT,
+		Enum.Traits.SoftCancel,
+		Enum.Traits.Stackable}
 	},
 	
 	callbacks = {

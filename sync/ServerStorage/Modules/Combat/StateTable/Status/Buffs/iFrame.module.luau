@@ -4,7 +4,6 @@ return {
 	data = {
 		name = "iFrame",
 		category = Enum.Categories.Buff,
-		exclusive = false,
 		
 		tags = {
 			[Enum.Tags.iFrame] = true

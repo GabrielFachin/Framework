@@ -15,7 +15,7 @@ local STATES = {  				--Breakpoints do ciclo de vida da skill
 }
 
 
-function SkillRunner.new(skillData,Entity,name,type) --Instancia o SkillRunner como um objeto responsável de criar a habilidade junto do EntityData para as skills utilizarem
+function SkillRunner.new(skillData,Entity,name,SRtype) --Instancia o SkillRunner como um objeto responsável de criar a habilidade junto do EntityData para as skills utilizarem
 
 	--================VÁRIAVEIS(FACILITAÇÃO DE ACESSO)===================--
 
@@ -39,17 +39,14 @@ function SkillRunner.new(skillData,Entity,name,type) --Instancia o SkillRunner c
 
 
 	--=====INICIALIZAÇÃO SR=====--
+	local runnerType = = self.skillData.data.type or SRtype
 
-	self.state = STATES.Idle 	 --Estado do lifetime skill
-	self.elapsedTime = 0    	 --Tempo de vida atual da skill
-	self.counter = 1      		 --Pode ser utilizado por skills e/ou status pra manter controle de dados de runtime internos, como número de balas, stage, ou stacks aplicados
-	self.type = type			 --Tipo de SR, Skill, Status
-	self.skillName = name  		 --Guarda o nome da skill pra controle de runners ativos
+	self.state = STATES.Idle 	 		--Estado do lifetime skill
+	self.elapsedTime = 0    	 		--Tempo de vida atual da skill
+	self.counter = 1      		 		--Pode ser utilizado por skills e/ou status pra manter controle de dados de runtime internos, como número de balas, stage, ou stacks aplicados
+	self.type = runnerType		 		--Tipo de SR, Skill, Status
+	self.skillName = name  		 		--Guarda o nome da skill pra controle de runners ativos
 
-
-
-	--guarda numa tabela o tipo do runner, skill ou efeitos
-	self.skillData.data.type = self.skillData.data.type or type
 
 
 	--=====FACILITADORES DE ACESSO=====--
@@ -130,7 +127,6 @@ end
 --[[
 Controla o tempo de execução do SkillRunner (atualizado pelo Heartbeat global)
 ]]
-
 function SkillRunner:_internalUpdate(dt)
 	
 	--Controle do timer da skill
@@ -161,7 +157,7 @@ function SkillRunner:_internalUpdate(dt)
 	
 end
 
-
+--[[Callback ao atingir algo]]
 function SkillRunner:onHit(data)
 	if self.skillData.callbacks.onHit then
 		self.skillData.callbacks.onHit(self,data)
@@ -170,8 +166,8 @@ function SkillRunner:onHit(data)
 end
 
 
-
-function SkillRunner:Recast(checkOnly)
+--[[Recast de runner]]
+function SkillRunner:Recast(checkOnly : boolean?)
 	
 	--Procura se tem onRecast, se tiver, roda e fala que encontrou
 	if self.skillData.callbacks.onRecast ~= nil then
@@ -187,20 +183,32 @@ function SkillRunner:Recast(checkOnly)
 end
 
 
---Permite ações de trigger externas
-function SkillRunner:TriggerAction(data)
+--[[Trigger externo
+@param data - dados de quem deu trigger
+]]
+function SkillRunner:TriggerAction(data : table?)
+	local data = self.skillData.data
 
 	if self.skillData.callbacks.onTriggerAction ~= nil then
-		
-		--roda triggerAction com contexto da origem do trigger
-		self.skillData.callbacks.onTriggerAction(self,data)
+			local helper = self.StateTable.Helper
+
+			if data.ShieldsFromType or data.ShieldsFrom then
+				if not Helper.CheckBlockFilter(self, context) then
+            		return nil 
+       			end
+			end
+	
+		--roda triggerAction com contexto da origem do trigger e devolve o valor alterado
+		return self.skillData.callbacks.onTriggerAction(self,data)
 	end
-		return true
+		return nil
 end
 
 
---Permite que o objeto fale que a skill foi cancelada de forma externa (chamando essa função)
-function SkillRunner:Stop(cancel)
+--[[Cancela a skill
+@param cancel - boolean, se a skill foi cancelada forçadamente de forma externa
+]]
+function SkillRunner:Stop(cancel : boolean?)
 		self:endSkill(cancel)
 end
 

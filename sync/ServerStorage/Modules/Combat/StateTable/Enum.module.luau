@@ -8,6 +8,7 @@ enum = {
         Hybrid = "Hybrid",      --Status relacionado com buff e debuff
         Debuff = "Debuff",      --Debuff
         Player = "PlayerState", --Uso interno
+        Internal = "Internal",  --Categoria interna pra impedir interações inesperadas
     },
 
     States = {
@@ -25,27 +26,8 @@ enum = {
         SoftCancel = "lightCancel",     --Cancelamento fraco (TODO)
         HeavyCancel = "heavyCancel",    --Cancelamento forte (TODO)
         BlockBreak = "BlockBreak",      --Quebra o block do adversário (TODO)
+        Stackable = "stackable",
     },
-
-
-    
-
-    --Traits que não podem coexistir (da override uma na outra)
-    ExclusiveTraits = {
-        --exemplo
-        block = {"blocking","parrying","countering"}
-    },
-
-
-    --Fala a qual grupo a trait pertence
-    TraitToExclusiveGroup = {
-        --exemplo
-        blocking = "block",
-        parrying = "block",
-        countering = "block",
-    },
-
-
 
 
         --====BREAKPOINTS=====--
@@ -71,14 +53,13 @@ enum = {
     --=====TAGS=====--
 
 
---tags são dados 
+--tags são dados binários envolvendo comportamento de status na entidade
 Tags = {
     canMove = "canMove",
     canCast = "canCast",
-    canControl = "canControl",
+    canRotate = "canRotate",
     iFrame = "iFrame",
     block = "block",
-    stackable = "stackable",
     exclusive = "exclusive"
 },
 
@@ -88,16 +69,18 @@ Tags = {
  tagsBase = {
 	canMove = true,
 	canCast = true,
-	canControl = true, --impede rotação do player
+	canRotate = true,
 	iFrame = false,
     block = false,
-	stackable = false,
-	exclusive = false,
-
-	}
+	},
     
+
+--====OUTROS====--
+
+Types = {
+    Skill = "Skill",
+    State = "State",
+    Status = "Status"
 }
 
-
-
-return enum 
+} return enum 

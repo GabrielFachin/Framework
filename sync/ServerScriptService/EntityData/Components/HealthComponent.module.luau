@@ -97,10 +97,11 @@ Aplica dano à entidade
 @param source - Fonte do dano ANY
 @param flags - Flags/tags fornecidas para interações envolvendo StatusTable
 @return sucesso BOOLEAN, quantidade real de dano aplicada NUMBER]]
-function HealthComponent:TakeDamage(amount : number, source : any, flags : {[string]: any})
+function HealthComponent:TakeDamage(amount : number, source : any)
 	if self.IsDead or amount <= 0 then 
 		return false
 	end
+	local traits = source.data.traits or {}
 	
 	-- Se tem StatusComponent, valida o hit e aplica modificadores
 	local statusComp = self.Entity:GetComponent(self.Entity.ComponentKey.Status)
@@ -110,21 +111,30 @@ function HealthComponent:TakeDamage(amount : number, source : any, flags : {[str
 			return false, reason
 		end
 
-		local tag,owner = self.Entity:GetActiveTags()
-		warn(tag,owner)
+		--busca por todas as TAGS ativas na entidade
+		local ActiveTags,owner = self.Entity:GetActiveTags()
+		warn(ActiveTags,owner)
+		local blockTag = StateTable.Enum.Tags.block
+		local newAmount = nil
+		local context = {damage = amount,source = source}
 
-		local context = {damage = amount}
+		--se encontrar a block de tag ativa, então roda o trigger do runner dela
+		if ActiveTags[blockTag] then
+			local blockTag = owner[blockTag]
+			if blockTag then
+				newAmount = blockTag:TriggerAction(context)
+			end
 
-		if tag == StateTable.Enum.Tags.block then
-			amount = owner[tag]:TriggerAction(context)
+		if newAmount ~= nil then
+			amount = newAmount
 		end
 
 	end
-			-- Alterações de dano pré-mitigação
+			-- Alterações de dano pós block
 		if self.OnDamage then
 			local preMitigationAmount = task.spawn(self.OnDamage, self, amount, source)
 					if preMitigationAmount then
-						amount = preMitigationAmount
+						newAmount = preMitigationAmount
 					end
 	end
 	
