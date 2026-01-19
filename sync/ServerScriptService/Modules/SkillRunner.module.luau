@@ -189,7 +189,7 @@ end
 function SkillRunner:TriggerAction(context : table?)
     local skillSettings = self.skillData.data
 
-    local hasFilterConfig = skillSettings.Filter or skillSettings.ShieldsFrom or skillSettings.ShieldsFromType
+    local hasFilterConfig = skillSettings.ShieldsFrom or skillSettings.ShieldsFromType
 
     if hasFilterConfig then
         local Helper = self.statusTable.Helper
