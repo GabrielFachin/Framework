@@ -111,7 +111,8 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
             rootSkill = sourceSkill.ChainHistory.rootSkill,
             history = newHistory,
             depth = sourceSkill.ChainHistory.depth + 1,
-            uniqueChainID = sourceSkill.ChainHistory.uniqueChainID
+            uniqueChainID = sourceSkill.ChainHistory.uniqueChainID,
+			chainStart = tick()
         }
     else
     -- Se não tiver sourceSkill, cria novo

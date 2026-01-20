@@ -9,12 +9,13 @@ local StateTable = require(Server.Modules.Combat.StateTable)
 function HandleMovementInput(ID, moveDir)
 
 	local entityCore = DataManager.Get(ID) 	--Salva o EntityCore do player que chamou a função
-	local dirNormal = (dir and dir.Magnitude > 0) and dir.Unit or Vector3.zero --Aqui sim nós tratamos contra manipulação de dados, falando que queremos apenas o valor normalizado do vetor recebido, caso seja nil, então não atualize
+	local dirNormal = (dir and dir.Magnitude > 0) and dir.Unit or Vector3.zero --normaliza direção
 
 	if dirNormal.Magnitude > 0 then
 		entityCore.SetDirection(dirNormal) --se tiver uma nova direção, então dê update, caso contrário mantenha a antiga
+		return true
 	end
-
+	return false
 end
 
 function HandleSkillInput(ID,skillIndex)
@@ -77,13 +78,25 @@ function HandleSkillInput(ID,skillIndex)
 		
 
 		local maxCooldown = entityCore.GetCooldown(skillName) --Pega o cooldown restante da skill
+
+			if not skill.data.ChainHistory then
+		    ChainHistory = {
+            rootOrigin = Entity
+            rootSkill = skillName,
+            history = {skillName},
+            depth = 1,
+            uniqueChainID = stateTable.Enum.Types.Skill .. skillName.. tostring(tick()),
+			chainStart = tick()
+			}
+		end
 		
 
 		local runner = SkillRunner.new(
 			skill,
 			entityCore,
 			skillName,
-			StateTable.Enum.Types.Skill) --lança skill(após checagem de cooldown,validação pelo EntityData e preparação de fallback pelo SkillFactory)
+			StateTable.Enum.Types.Skill,
+			ChainHistory) --lança skill(após checagem de cooldown,validação pelo EntityData e preparação de fallback pelo SkillFactory)
 		runner:start()
 	end
 	return true,skillName,maxCooldown

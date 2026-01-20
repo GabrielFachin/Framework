@@ -1,3 +1,8 @@
+--!strict
+
+
+--====================== GLOBAL ANTI CHEAT ======================--
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Server = game:GetService("ServerScriptService")
 local DataManager = require(Server.EntityData.DataManager)
@@ -36,8 +41,25 @@ end
 
 --=====FUNÇÕES UTILITARIAS=====--
 
-function AntiCheat.CheckMovementInput()
+--[[
+Valida a diferença entre último input de movimento e o atual
+@param Player - dono do input
+@return boolean - Input é válido
+]]
+function AntiCheat.CheckMovementInput(Player,LastInput)
+    valid = tick() - LastInput >= 0.015 -- 1 Frame = 0,0166... secs
+    return valid and TrackedPlayers[Player].ID
+end
 
+
+--[[
+Valida a diferença entre último input de skill e o atual
+@param Player - dono do input
+@return boolean - Input é válido
+]]
+function AntiCheat.CheckSkillInput(Player,LastInput)
+    valid = tick() - LastInput >= 0.015 -- 1 Frame = 0,0166... secs
+    return valid and TrackedPlayers[Player].ID
 end
 
 
@@ -51,10 +73,16 @@ function AntiCheat.CheckNoClip()
 
 end
 
+function AntiCheat.UpdatePlayerInputData()
+
+end
+
+
+
 --=====HEARTBEAT=====--
 
 function AntiCheat._Update(dt)
-    --w
+
 end
 
 

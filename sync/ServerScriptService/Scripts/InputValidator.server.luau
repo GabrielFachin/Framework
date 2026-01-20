@@ -1,57 +1,47 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Server = game:GetService("ServerScriptService")
 local DataManager = require(Server.EntityData.DataManager)
+local AntiCheat = require(script.Parent.GlobalAntiCheat)
 
 local RemoteEventSkill = ReplicatedStorage.RemoteEvents.RequestSkill
 local RemoteEventDir = ReplicatedStorage.RemoteEvents.RequestDir
 local RemoteEventSkillFired = ReplicatedStorage.RemoteEvents.SkillFired
 local SkillHandler = require(Server.Modules.SkillHandler)
 
-requestList = {}
-requestQueue = {}
-requestMovelist = {}
+LastMovementTime = {}
+LastSkillTime = {}
 
 RemoteEventDir.OnServerEvent:Connect(function(player,dir)
-        if requestMoveList[player] then
-        local lastRequestTime = requestMoveList[player]
-        if tick() - lastRequestTime < 0.05 then
-            return
-        end
-    
-    local ID = player.Character:GetAttribute("EntityID")
 
+    local ID = AntiCheat.CheckMovementInput(player,LastMovementTime[Player])
+    if not ID then return end 
+
+    LastMovementTime[player] = tick()
     SkillHandler.HandleMovementInput(ID,dir)
-    requestMoveList[player] = tick()
 end)
 
 RemoteEventSkillFired.OnServerEvent:Connect(function(player,skillIndex)
-    if requestList[player] then
-        local lastRequestTime = requestList[player]
-        if tick() - lastRequestTime < 0.2 then
-            requestQueue[player] = skillIndex
-            return
-        end
-    end
-    skillRequest(player,skillIndex)
+
+    local ID = AntiCheat.CheckSkillInput(player,LastSkillTime[Player])
+    if not ID then return end
+
+    LastSkillTime[player] = tick()
+    local succes,skillName,Cooldown = skillRequest(ID,skillIndex) --Guarda se deu ok pra replicar efeitos no cliente
 
 end)
 
 
-local function skillRequest(player,skillIndex)
+local function skillRequest(ID,skillIndex)
     
-    local ID = player.Character:GetAttribute("EntityID")
     local entityCore = DataManager.Get(ID)
     if not entityCore:HasComponent(entityCore.ComponentKey.Combat) then return false end
     success = SkillHandler.HandleSkillInput(player,skillIndex)
     if succes then RemoteEventSkillFired:FireClient(player,skillName,maxCooldown)    
-    requestList[player] = tick()
+
 end
 
-
-for player,_ in pairs(requestQueue) do
-    local skillIndex = requestQueue[player]
-    skillRequest(player,skillIndex)
-    requestQueue[player] = nil
-end
-
-task.wait()
+Players.PlayerRemoving:Connect(function(player)
+    LastMovementTime[player] = nil
+    LastSkillTime[player] = nil
+    AntiCheat.Unregister(player)
+end)

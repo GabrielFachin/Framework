@@ -19,7 +19,7 @@ local STATES = {  				--Breakpoints do ciclo de vida da skill
 }
 
 
-function SkillRunner.new(skillData,Entity,name,SRtype) --Instancia o SkillRunner como um objeto responsável de criar a habilidade junto do EntityData para as skills utilizarem
+function SkillRunner.new(skillData,Entity,name,SRtype,ChainHistory) --Instancia o SkillRunner como um objeto responsável de criar a habilidade junto do EntityData para as skills utilizarem
 
 	--================VÁRIAVEIS(FACILITAÇÃO DE ACESSO)===================--
 
@@ -77,17 +77,24 @@ function SkillRunner.new(skillData,Entity,name,SRtype) --Instancia o SkillRunner
 	
 
 	--=====HISTÓRICO DE INTERAÇÕES SEQUENCIAIS=====--
+
+	--Se a skill já tem um histórico, então salve no runner
     if skillData.ChainHistory then
         self.ChainHistory = skillData.ChainHistory
-    else
-        -- Fallback para casos onde o runner é criado sem input direto
+	elseif ChainHistory then -- se não tiver mas foi fornecido, salve na skill aqui
+		skillData.ChainHistory = ChainHistory
+		self.ChainHistory = ChainHistory
+	else
+     -- Por fim, se não existe ChainHistory e nem foi fornecido, crie um aqui
         self.ChainHistory = {
             rootOrigin = Entity and Entity or "Unknown",
             rootSkill = name,
             history = {name},
             depth = 1,
-            uniqueChainID = "SYSTEM_" .. tostring(tick())
+            uniqueChainID = "SYSTEM_" .. tostring(tick()),
+			chainStart = tick()
         }
+		self.data.ChainHistory = self.ChainHistory
     end
 	
 	return self
@@ -201,7 +208,9 @@ function SkillRunner:TriggerAction(context : {}?)
         end
     end
 
-
+	if tick() - self.ChainHistory.chainStart <= 1						--Se é spam
+	and self.ChainHistory.depth > self.statusTable.Enum.MAX_RECURSION 	--Se estourou o limite de recursão
+	then return nil end													--Então cancela o trigger
     	if self.skillData.callbacks.onTriggerAction then
     	    return self.skillData.callbacks.onTriggerAction(self, context)
     	end
