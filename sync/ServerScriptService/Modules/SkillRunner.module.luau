@@ -2,8 +2,10 @@
 
 local RunService = game:GetService("RunService")
 local ServerStorage = game:GetService("ServerStorage")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Storage = game:GetService("ServerStorage")
 local StateTable = require(ServerStorage.Modules.Combat.StateTable)
+local Utils = require(ReplicatedStorage.Utils)
 
 local SkillRunner = {}
 SkillRunner.__index = SkillRunner
@@ -35,8 +37,8 @@ function SkillRunner.new(skillData,Entity,name,SRtype) --Instancia o SkillRunner
 
 	--=====DADOS VITAIS=====--
 
-	self.skillData = skillData   --Informações extras da skill que vai rodar
-	self.Entity = Entity		 --Tabela de dados do player que usou a habilidade
+	self.skillData = Utils.deepCopy(skillData)   --Informações extras da skill que vai rodar
+	self.Entity = Entity		 				 --Tabela de dados do player que usou a habilidade
 
 
 
@@ -74,12 +76,12 @@ function SkillRunner.new(skillData,Entity,name,SRtype) --Instancia o SkillRunner
 	
 	
 
-	--=====GERENTE DE CONTEXTO=====--
-    if skillData.context then
-        self.context = skillData.context
+	--=====HISTÓRICO DE INTERAÇÕES SEQUENCIAIS=====--
+    if skillData.ChainHistory then
+        self.ChainHistory = skillData.ChainHistory
     else
         -- Fallback para casos onde o runner é criado sem input direto
-        self.context = {
+        self.ChainHistory = {
             rootOrigin = Entity and Entity or "Unknown",
             rootSkill = name,
             history = {name},
@@ -199,9 +201,10 @@ function SkillRunner:TriggerAction(context : {}?)
         end
     end
 
-    if self.skillData.callbacks.onTriggerAction then
-        return self.skillData.callbacks.onTriggerAction(self, context)
-    end
+
+    	if self.skillData.callbacks.onTriggerAction then
+    	    return self.skillData.callbacks.onTriggerAction(self, context)
+    	end
     
     return nil
 end
@@ -211,7 +214,7 @@ end
 @param cancel - boolean, se a skill foi cancelada forçadamente de forma externa
 ]]
 function SkillRunner:Stop(cancel : boolean?)
-		self:endSkill(cancel)
+	self:endSkill(cancel)
 end
 
 

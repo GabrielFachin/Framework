@@ -101,21 +101,21 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 
 
 	-- Preparação do Contexto para o novo Status
-    local nextContext
-    if sourceSkill and sourceSkill.context then
-        local newHistory = table.clone(sourceSkill.context.history)  -- Clona o histórico
+    local nextChainHistory
+    if sourceSkill and sourceSkill.ChainHistory then
+        local newHistory = table.clone(sourceSkill.ChainHistory.history)  -- Clona o histórico
         table.insert(newHistory, factoryData.data.name or "UnknownStatus")
         
-        nextContext = {
-            rootOrigin = sourceSkill.context.rootOrigin,
-            rootSkill = sourceSkill.context.rootSkill,
+        nextChainHistory = {
+            rootOrigin = sourceSkill.ChainHistory.rootOrigin,
+            rootSkill = sourceSkill.ChainHistory.rootSkill,
             history = newHistory,
-            depth = sourceSkill.context.depth + 1,
-            uniqueChainID = sourceSkill.context.uniqueChainID
+            depth = sourceSkill.ChainHistory.depth + 1,
+            uniqueChainID = sourceSkill.ChainHistory.uniqueChainID
         }
     else
     -- Se não tiver sourceSkill, cria novo
-    nextContext = {
+    nextChainHistory = {
         rootOrigin = "Unknown",
         rootSkill = factoryData.data.name,
         history = {factoryData.data.name},
@@ -130,7 +130,7 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	data.ID = ID
 	data.StatusComponent = self
 	data.data.castTime = 0
-    data.context = nextContext
+    data.ChainHistory = nextChainHistory
 	
 	if data.data.category == "PlayerState" then
 		warn("[StatusComponent] PlayerState settado com função errada!")
@@ -257,7 +257,7 @@ function StatusComponent:_CreateRunner(data : {[string]: any}, name : string, du
 	
 
 	local targetEntity = target and target.Entity or self.Entity
-	local runner = SkillRunner.new(data, targetEntity, name,"status")
+	local runner = SkillRunner.new(data, targetEntity, name,StateTable.Enum.Types.Status)
 	
 	-- Callback de finalização
 	runner.onFinish = function()
@@ -442,7 +442,7 @@ function StatusComponent:RemoveStatusByID(id : string) : boolean
 					removed = true
 				end
 			end
-		elseif groupName == "status" then
+		elseif groupName == StateTable.Enum.Status then
 			for name, list in pairs(group) do
 				-- single entry
 				if list.ID == id then

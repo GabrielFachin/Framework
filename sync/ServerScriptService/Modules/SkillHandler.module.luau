@@ -1,42 +1,26 @@
-local Handler = {}
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SkillHandler = {}
 local Server = game:GetService("ServerScriptService")
-
 
 local SkillRunner = require(Server.Modules.SkillRunner)
 local DataManager = require(Server.EntityData.DataManager)
 local SkillFactory = require(Server.Modules.SkillFactory)
+local StateTable = require(Server.Modules.Combat.StateTable)
 
-
-local RemoteEventSkill = ReplicatedStorage.RemoteEvents.RequestSkill
-local RemoteEventDir = ReplicatedStorage.RemoteEvents.RequestDir
-local RemoteEventSkillFired = ReplicatedStorage.RemoteEvents.SkillFired
-
-RemoteEventDir.OnServerEvent:Connect(function(player,dir)
-	local ID = player.Character:GetAttribute("EntityID")
-
+function HandleMovementInput(ID, moveDir)
 
 	local entityCore = DataManager.Get(ID) 	--Salva o EntityCore do player que chamou a função
 	local dirNormal = (dir and dir.Magnitude > 0) and dir.Unit or Vector3.zero --Aqui sim nós tratamos contra manipulação de dados, falando que queremos apenas o valor normalizado do vetor recebido, caso seja nil, então não atualize
-
 
 	if dirNormal.Magnitude > 0 then
 		entityCore.SetDirection(dirNormal) --se tiver uma nova direção, então dê update, caso contrário mantenha a antiga
 	end
 
-end)
+end
 
-RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
-	local ID = player.Character:GetAttribute("EntityID")
+function HandleSkillInput(ID,skillIndex)
 
-	local entityCore = DataManager.Get(ID) 	--Salva o EntityCore do player que chamou a função
+	local entityCore = DataManager.Get(ID) 	--Salva o EntityCore da entidade que chamou a função
 
-	--Futuramente precisamos fazer um debounce aqui, checando o delay entre o ultimo envio do cliente e o atual, evitando spam e cheats (ambos pro input de movimento e skills)
-
-	--Se não tiver componente de combate, ignore.
-	if not entityCore:HasComponent(entityCore.ComponentKey.Combat) then return false end
-	
-	
 	local skillScript = entityCore.GetSkillScript(skillIndex) --Pega o script da skill
 	if not skillScript then  warn("Skill não encontrada") 
 	return false end
@@ -94,15 +78,15 @@ RemoteEventSkill.OnServerEvent:Connect(function(player, skillIndex)
 
 		local maxCooldown = entityCore.GetCooldown(skillName) --Pega o cooldown restante da skill
 		
-		RemoteEventSkillFired:FireClient(player,skillName,maxCooldown)
 
-		local runner = SkillRunner.new(skill,entityCore,skillName,"skill") --lança skill(após checagem de cooldown,validação pelo EntityData e preparação de fallback pelo SkillFactory)
+		local runner = SkillRunner.new(
+			skill,
+			entityCore,
+			skillName,
+			StateTable.Enum.Types.Skill) --lança skill(após checagem de cooldown,validação pelo EntityData e preparação de fallback pelo SkillFactory)
 		runner:start()
 	end
-
-	end)
-
-
-
+	return true,skillName,maxCooldown
+end
 
 return Handler

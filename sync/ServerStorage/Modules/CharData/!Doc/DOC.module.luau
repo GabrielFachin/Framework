@@ -293,5 +293,14 @@ type: tipo da habilidade, conta como skill apenas? skill e efeito? pode ser ambo
 
 tags: dados binarios que podem ter bypasses como CanMove, CanCast, Block, iFrame
 
+
+=======================IMPORTANTE!========================
+
+Vale comentar que o block TEM segurança contra recursividade, mas a melhor forma de evitar é:
+1 - ter alguma forma de delay entre o recebimento do dano e a aplicação do parry, nem que visual
+2 - usar a flag "MAX_RECURSION" pra controlar a quantidade de ações recusrivas a partir do mesmo block
+3 - caso o seu parry devolva dano IMEDIATO, use task.defer
+4 - você pode escolher somente uma das soluções, delay e permitir recursividade infinita ou MAX_RECURSION pra quebrar a cadeia.
+vale notar que MAX_RECURSION por padrão é 5.
 ]]
 

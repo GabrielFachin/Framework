@@ -83,4 +83,10 @@ Types = {
     Status = "Status"
 }
 
+BlockIgnore = {
+    self.Traits.TrueHit,
+}
+
+MAX_RECURSION = 20, -- limite de ações recursivas como parrys que ativam parrys
+
 } return enum 
