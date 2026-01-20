@@ -1,7 +1,5 @@
 -- ====================== O SCRIPT ABAIXO EXECUTA UM HEARTBEAT GLOBAL, TODAS AS REQUISIÇÕES DE UPDATE POR FRAME SERÃO DIRECIONADAS PRA CÁ==========
 
---Talvez não a melhor solução por si só, mas é o caminho pra achar a solução mais otimizada
-
 
 local RunService = game:GetService("RunService")
 
