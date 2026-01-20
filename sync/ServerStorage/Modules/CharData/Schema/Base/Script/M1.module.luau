@@ -30,6 +30,9 @@ local Skill = {
 --		#Referencias/vars
 
 			--Prepara status
+			local statsTable = self.statusTable
+			
+
 			local shield = statsTable:BuildEffect(statsTable.Status.StatusShield,
 			StateTable.Enum.SkillBreakpoints.onTrigger,
 		    function(runner,context) warn("shield atingido por:",context.data.name)
@@ -37,7 +40,7 @@ local Skill = {
 
 			local block = statsTable:BuildEffect(statsTable.Status.GenericBlock,
 			StateTable.Enum.SkillBreakpoints.onTrigger,
-			function(runner,context) self:TriggerAction("onBlock",context) end)
+			function(runner,context) return self:TriggerAction(context) end)
 
 			self.damage = 2
 			
@@ -46,8 +49,6 @@ local Skill = {
 			
 			self.track = self.Entity.PlayAnimation(self.M1Start)
 			self.track.Looped = false
-
-			local statsTable = self.statusTable
 
 			self.control = statsTable.States.NoControl
 
@@ -128,8 +129,7 @@ local Skill = {
 
 
 		onTriggerAction = function(self,context)
-			warn("Block atingido por:",context.source.data.name)
-			context.damage *= 0.5
+			context.damage = 0
 			return context.damage
 		end,
 

@@ -160,7 +160,8 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	end
 	
 	-- ===== STACK NA MESMA INSTÂNCIA =====
-	if meta.traits[StateTable.Enum.Traits.Stackable] and meta.stackOnSelf then
+
+	if meta.traits and meta.traits[StateTable.Enum.Traits.Stackable] and meta.stackOnSelf then
 		local existing = group[meta.name]
 		if existing then
 			if existing.counter >= (meta.maxStacks or math.huge) then
@@ -194,7 +195,7 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	end
 	
 	-- ===== STACK EM INSTÂNCIAS DIFERENTES =====
-	if meta.stackable and not meta.stackOnSelf then
+	if meta.traits and meta.traits[StateTable.Enum.Traits.Stackable] and not meta.stackOnSelf then
    	 if not group[meta.name] then
       	  group[meta.name] = {}
     	end
@@ -518,7 +519,7 @@ Obtém as tags ativas combinadas da entidade
 @return tabela de tags TABLE]]
 function StatusComponent:GetActiveTags()
     if not self._tagsDirty and self._cachedTags then
-        return self._cachedTags
+        return self._cachedTags,self._tagRunners
     end
     
     local mergedTags = {}
@@ -551,8 +552,6 @@ function StatusComponent:GetActiveTags()
     self._cachedTags = mergedTags
     self._tagRunners = tagOwners 
     self._tagsDirty = false
-
-	warn(tagOwners)
 
     return mergedTags,tagOwners
 end

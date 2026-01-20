@@ -98,19 +98,6 @@ end
 
 
 
-O código que você enviou tem alguns erros de sintaxe e de escopo que farão o script quebrar ou funcionar ao contrário (bloqueando tudo se não tiver filtro definido).
-
-Aqui estão os problemas principais:
-
-Erro de Escopo: Você declarou local typeMatch dentro do bloco if data.ShieldsFromType then. Se o código sair desse bloco (ou seja, se não tiver filtro de tipo), a variável typeMatch deixa de existir. Quando você tenta checar if not typeMatch lá fora, vai dar erro ou considerar nil (que vira true no not, retornando false e cancelando o block indevidamente).
-
-Lógica Invertida (Default Allow): Se data.ShieldsFromType for nil (block genérico), seu código pula o bloco de verificação. Como typeMatch não foi definido como true antes, ele cai no return false lá embaixo. Ou seja: se não tiver filtro, ele não bloqueia nada. O correto é: se não tiver filtro, bloqueia tudo.
-
-Sintaxe do break: break end na mesma linha funciona, mas é perigoso e pouco legível. O break encerra o loop for, mas você precisa garantir que o if foi fechado corretamente.
-
-Aqui está a versão corrigida e blindada:
-
-Lua
 
 function Helper.CheckBlockFilter(runner, context)
     local data = (runner.data and runner.data.data) or (runner.skillData and runner.skillData.data)
@@ -153,8 +140,5 @@ function Helper.CheckBlockFilter(runner, context)
 
     return true 
 end
-
-return Helper
-
 
 return Helper

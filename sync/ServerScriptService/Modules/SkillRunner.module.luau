@@ -1,7 +1,9 @@
 --=================Esse módulo controla o ciclo de vida das skills, TODAS as skills e modificadores são gerados com um SR base=================
 
 local RunService = game:GetService("RunService")
+local ServerStorage = game:GetService("ServerStorage")
 local Storage = game:GetService("ServerStorage")
+local StateTable = require(ServerStorage.Modules.Combat.StateTable)
 
 local SkillRunner = {}
 SkillRunner.__index = SkillRunner
@@ -39,7 +41,7 @@ function SkillRunner.new(skillData,Entity,name,SRtype) --Instancia o SkillRunner
 
 
 	--=====INICIALIZAÇÃO SR=====--
-	local runnerType = = self.skillData.data.type or SRtype
+	local runnerType = self.skillData.data.type or SRtype
 
 	self.state = STATES.Idle 	 		--Estado do lifetime skill
 	self.elapsedTime = 0    	 		--Tempo de vida atual da skill
@@ -183,23 +185,20 @@ function SkillRunner:Recast(checkOnly : boolean?)
 end
 
 
---[[Trigger externo
+--[[
+Trigger externo, usado especialmente mas não exclusivamente por blocks e shields de efeitos
 @param data - dados de quem deu trigger
 ]]
-function SkillRunner:TriggerAction(context : table?)
+function SkillRunner:TriggerAction(context : {}?)
     local skillSettings = self.skillData.data
-
     local hasFilterConfig = skillSettings.ShieldsFrom or skillSettings.ShieldsFromType
 
     if hasFilterConfig then
-        local Helper = self.statusTable.Helper
-        
-        if not Helper.CheckBlockFilter(self, context) then
+        if not self.statusTable.CheckBlockFilter(self, context) then
             return nil 
         end
     end
 
-.
     if self.skillData.callbacks.onTriggerAction then
         return self.skillData.callbacks.onTriggerAction(self, context)
     end

@@ -58,19 +58,20 @@ Valida se um ataque pode afetar a entidade baseado em suas tags de imunidade
 @param source - Fonte do ataque (Entity) TABLE
 @param flags - Flags/tags fornecidas para interações envolvendo StatusTable, obrigatório mas pode ser {}
 @return sucesso BOOLEAN, razão STRING (nome da imunidade que bloqueou o hit)]]
-function HealthComponent:_ValidateHit(source : {}, flags : {string}) : (boolean, string?)
+function HealthComponent:_ValidateHit(source)
 
 	--Se não tiver componente de status, não existem tags de ivulnerabilidade e valida o hit.
 	if not self.Entity:HasComponent(self.Entity.ComponentKey.Status) then return true end
 
 	local targetTags = self.Entity:GetActiveTags()
 	local immunityRules = self._immunityRules or self.Entity.GetImmunityRules() 
+	local tags = source.data.tags
 	
 	for immunityName, rule in pairs(immunityRules) do
-		if targetTags[immunityName] then
+		if targetTags[immunityName] and immunityName ~= StateTable.Enum.Tags.block then
 			local allowed = false
 			
-			for _, flag in ipairs(flags or {}) do
+			for _, flag in ipairs(tags or {}) do
 				if table.find(rule.bypassableBy, flag) then
 					allowed = true
 					break
@@ -97,45 +98,45 @@ Aplica dano à entidade
 @param source - Fonte do dano ANY
 @param flags - Flags/tags fornecidas para interações envolvendo StatusTable
 @return sucesso BOOLEAN, quantidade real de dano aplicada NUMBER]]
-function HealthComponent:TakeDamage(amount : number, source : any)
+function HealthComponent:TakeDamage(amount : number, source : any,flags)
+	warn(amount)
 	if self.IsDead or amount <= 0 then 
 		return false
 	end
-	local traits = source.data.traits or {}
 	
 	-- Se tem StatusComponent, valida o hit e aplica modificadores
 	local statusComp = self.Entity:GetComponent(self.Entity.ComponentKey.Status)
 	if statusComp then
-		local canHit, reason = self:_ValidateHit(source, flags)
+		local canHit, reason = self:_ValidateHit(source,flags)
 		if not canHit then
 			return false, reason
 		end
-
 		--busca por todas as TAGS ativas na entidade
 		local ActiveTags,owner = self.Entity:GetActiveTags()
-		warn(ActiveTags,owner)
 		local blockTag = StateTable.Enum.Tags.block
 		local newAmount = nil
 		local context = {damage = amount,source = source}
 
 		--se encontrar a block de tag ativa, então roda o trigger do runner dela
 		if ActiveTags[blockTag] then
-			local blockTag = owner[blockTag]
-			if blockTag then
-				newAmount = blockTag:TriggerAction(context)
+			local blockRunner = owner[blockTag]
+			if blockRunner then
+				newAmount = blockRunner:TriggerAction(context)
 			end
+		end
 
 		if newAmount ~= nil then
 			amount = newAmount
 		end
 
-	end
+
 			-- Alterações de dano pós block
 		if self.OnDamage then
 			local preMitigationAmount = task.spawn(self.OnDamage, self, amount, source)
 					if preMitigationAmount then
 						newAmount = preMitigationAmount
 					end
+				end
 	end
 	
 	-- Aplica dano
