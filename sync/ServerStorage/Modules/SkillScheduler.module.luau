@@ -2,6 +2,8 @@
 
 
 local RunService = game:GetService("RunService")
+local ServerStorage = game:GetService("ServerStorage")
+local StateTable = require(ServerStorage.Modules.Combat.StateTable)
 
 local SkillScheduler = {}
 
@@ -15,13 +17,13 @@ local frameCount = 0
 
 -- Registra runner
 function SkillScheduler.Register(runner, runnerType)
-	runnerType = runnerType or "skill"
+	runnerType = runnerType or StateTable.Enum.Types.Skill
 
 	-- Adiciona na lista certa
 	local list
-	if runnerType == "status" then
+	if runnerType == StateTable.Enum.Types.Status then
 		list = activeStatus
-	elseif runnerType == "skill" then
+	elseif runnerType == StateTable.Enum.Types.Skill then
 		list = activeSkills
 	else
 		list = activeTasks
@@ -49,12 +51,12 @@ end
 
 -- Remove runner
 function SkillScheduler.Unregister(runner, runnerType)
-	runnerType = runnerType or "skill"
+	runnerType = runnerType or StateTable.Enum.Types.Skill
 
 	local list
-	if runnerType == "status" then
+	if runnerType == StateTable.Enum.Types.Status then
 		list = activeStatus
-	elseif runnerType == "skill" then
+	elseif runnerType == StateTable.Enum.Types.Skill then
 		list = activeSkills
 	else
 		list = activeTasks

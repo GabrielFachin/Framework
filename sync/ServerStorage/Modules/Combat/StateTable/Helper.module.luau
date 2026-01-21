@@ -108,7 +108,9 @@ function Helper.CheckBlockFilter(runner, context)
     local incomingTraits = context.traits or {}
 
     if data.ShieldsFromType then
+		warn("ShieldsFromType:",data.ShieldsFromType)
         local sourceType = source and source.type 
+		warn("Source:",source,"Type:",source.Type)
         local typeMatch = false
         
         for _, Type in pairs(data.ShieldsFromType) do

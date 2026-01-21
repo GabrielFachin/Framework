@@ -4,10 +4,11 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 local StateTable = require(ServerStorage.Modules.Combat.StateTable)
 local DataManager = require(ServerScriptService.EntityData.DataManager)
-local Handler = ServerScriptService.Scripts.SkillHandler
+local Handler = ServerScriptService.Modules.SkillHandler
 local StatusTable = require(ServerStorage.Modules.Combat.StateTable)
 local DataManager = require(game.ServerScriptService.EntityData.DataManager)
 local component = require(ServerScriptService.EntityData.ComponentsExport)
+local AntiCheat = require(ServerScriptService.Modules.GlobalAntiCheat)
 
 local PlayerComponents = {
 	Character = component.Character,
@@ -27,6 +28,7 @@ Players.PlayerAdded:Connect(function(player)
             Model = character,
             Player = player,
         }, PlayerComponents)
+		AntiCheat.Register(player)
     end
 
     -- primeiro spawn
@@ -40,6 +42,7 @@ end)
 
 Players.PlayerRemoving:Connect(function(player)
     DataManager.Remove(player)
+	AntiCheat.Unregister(player)
 end)
 
 

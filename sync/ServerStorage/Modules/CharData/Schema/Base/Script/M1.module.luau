@@ -6,8 +6,8 @@ local Skill = {
 		cooldown = 1,
 		duration = 5,
 		castTime = 0,
-		tags = {[StateTable.Enum.Tags.block] = true}
-
+		tags = {[StateTable.Enum.Tags.block] = true},
+		effects = {StateTable.Status.Bleed,StateTable.States.Stun}
 	},
 
 	callbacks = {
@@ -29,6 +29,7 @@ local Skill = {
 			
 --		#Referencias/vars
 
+
 			--Prepara status
 			local statsTable = self.statusTable
 			
@@ -46,6 +47,7 @@ local Skill = {
 			
 			self.M1Start = self.charLib.M1.M1Start
 			self.M1S2 = self.charLib.M1.M1S2
+
 			
 			self.track = self.Entity.PlayAnimation(self.M1Start)
 			self.track.Looped = false
@@ -62,9 +64,20 @@ local Skill = {
 		
 			--self.Entity.ApplyStatus(shield,9999,self)
 
-			self.Entity.ApplyStatus(block,9999,self)
+			self.blockID = self.Entity.ApplyStatus(block,9999,self)
 
-			self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
+			--self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
+
+			self.cleanUp = function()
+				self.Entity.StopAnimation(self.M1Start,0.2)
+				self.Entity.RemoveStatusByID(self.stateID)
+				self.Entity.RemovePlayerState()
+				self.Entity.StopHitbox()
+			end
+
+			self.Entity.OnMarker(tostring(self.M1Start), "End", function()
+  			  self.cleanUp()
+			end)
 			
 		end,
 		
@@ -83,30 +96,9 @@ local Skill = {
 		
 
 		onStep = function(self, dt)
-
-			if self.counter == 1 then
-			self.track:GetMarkerReachedSignal("End"):Once(function()
-
-				self.Entity.StopAnimation(self.M1Start,0.2)
-				self.Entity.RemoveStatusByID(self.stateID)
-				self.Entity.RemovePlayerState()
-				self.Entity.StopHitbox()
-				end)
-
-			-------
-
-			elseif self.counter == 2 then
-				
-				self.track:GetMarkerReachedSignal("End"):Once(function()
-						self:Stop(false)
-						self.Entity.RemoveStatusByID(self.stateID)
-						self.Entity.RemovePlayerState()
-						self.Entity.StopHitbox()
-				end)
-
+			if self.trigger then
+				self.cleanUp()
 			end
-		
-		
 		end,
 		
 		
@@ -114,7 +106,7 @@ local Skill = {
 			self.counter += 1
 			if self.counter == 2 then
 				self.track = self.Entity.PlayAnimation(self.M1S2)
-				
+				self.track.Looped = false
 				
 				self.Entity.SetPlayerState(self.PlayerState, self)
 
@@ -123,13 +115,29 @@ local Skill = {
 				self.Entity.StartHitbox(self.data.duration,function(hitResult) self:onHit(hitResult.target, hitResult)end)
 				
 				self.damage = 3
+
+				self.cleanUp = function()
+					self:Stop(false)
+					self.Entity.RemoveStatusByID(self.stateID)
+					self.Entity.RemovePlayerState()
+					self.Entity.StopHitbox()
+				end
+
+					self.Entity.OnMarker(tostring(self.M1S2), "End", function()
+  					  self.cleanUp()
+					end)
 				
 			end
 		end,
 
 
 		onTriggerAction = function(self,context)
-			context.damage = 0
+			context.damage *= 0.5
+			self.Entity.RemoveStatusByID(self.blockID)
+			task.wait(0.2)
+			task.defer(function()
+				context.source.Entity.TakeDamage(5, self)
+			end)
 			return context.damage
 		end,
 

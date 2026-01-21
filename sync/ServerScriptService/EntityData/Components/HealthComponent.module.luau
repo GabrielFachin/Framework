@@ -98,7 +98,9 @@ Aplica dano à entidade
 function HealthComponent:TakeDamage(amount : number, source : any)
 	if self.IsDead then return false end
 
-	if amount <= 0 then return false, 0 end --dodge futuro
+	if amount <= 0 then return false, 0 end
+
+	local config 
 	
 	local context = {
 		damage = amount,
@@ -107,7 +109,7 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 		effects = {},
 	}
 	if source then
-		local config = (source.skillData) and source.skillData.data or source.data
+		config = source.data
 		if config then
 			if config.traits ~= nil then
 				context.traits = table.clone(config.traits)
@@ -115,6 +117,8 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 
 			if config.effects ~= nil then
 				context.effects = table.clone(config.effects)
+			else
+				context.effects = {}
 			end
 
 			if config then
@@ -124,8 +128,10 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 	end
 
 	-- Se tem StatusComponent, valida o hit e aplica modificadores
-	local statusComp = self.Entity:GetComponent(self.Entity.ComponentKey.Status)
+	local statusComp = self.Entity:HasComponent(self.Entity.ComponentKey.Status)
 	if statusComp then
+		local found 
+		local newAmount
 		local canHit, reason = self:_ValidateHit(context)
 		if not canHit then
 			return false, reason
@@ -133,7 +139,6 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 		--busca por todas as TAGS ativas na entidade
 		local ActiveTags,owner = self.Entity:GetActiveTags()
 		local blockTag = StateTable.Enum.Tags.block
-		local newAmount = nil
 
 		--se encontrar a block de tag ativa, e se a source não ignorar block 
 		--então roda o trigger do runner do block
@@ -150,11 +155,11 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 				local blockRunner = owner[blockTag]
 				if blockRunner then
 					--se passou do limite de recursão ou se tem tag de blockBreak, quebra o block
-					if config and config.traits[stateTable.Enum.Traits.BlockBreak] then 
+					if config and config.traits and config.traits[StateTable.Enum.Traits.BlockBreak] then 
 						blockRunner:Stop(true)
 					else
-					local resultContext = blockRunner:TriggerAction(context)
-					if resultContext then context = resultContext end
+					local resultDamage = blockRunner:TriggerAction(context)
+					if resultDamage then context.damage = resultDamage end
 					end
 				end
 			end
@@ -162,16 +167,16 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 
 			-- Alterações de dano pós block
 		if self.OnDamage then
-			local preMitigationAmount = task.spawn(self.OnDamage, self, amount, source)
+			local preMitigationAmount = task.spawn(self.OnDamage, self, context.damage, source)
 					if preMitigationAmount then
-						newAmount = preMitigationAmount
+						context.damage = preMitigationAmount
 					end
 				end
 	end
 	
 	-- Aplica dano
 	local lastHP = self.HP
-	self.HP = math.max(0, self.HP - amount)
+	self.HP = math.max(0, self.HP - context.damage)
 	print(self.HP)
 	if self.Entity:IsPlayer() then UpdateHPBar:FireClient(self.Entity.Player,self.HP,self.MaxHP) end
 	local actualDamage = lastHP - self.HP
@@ -188,11 +193,12 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 		self:Die(source)
 	end
 
-	if context.effects then
-		local statusComp = self.Entity:GetComponent(self.Entity.ComponentKey.Status)
+
+	if context.effects ~= nil then
 		if statusComp then
 			for _, effectData in ipairs(context.effects) do
-				self.Entity:ApplyStatus(effectData,nil, source)
+				warn(effectData)
+				self.Entity.ApplyStatus(effectData,nil, source)
 			end
 		end
 	end

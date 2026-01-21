@@ -1,12 +1,13 @@
 local SkillHandler = {}
 local Server = game:GetService("ServerScriptService")
+local Storage = game:GetService("ServerStorage")
 
 local SkillRunner = require(Server.Modules.SkillRunner)
 local DataManager = require(Server.EntityData.DataManager)
 local SkillFactory = require(Server.Modules.SkillFactory)
-local StateTable = require(Server.Modules.Combat.StateTable)
+local StateTable = require(Storage.Modules.Combat.StateTable)
 
-function HandleMovementInput(ID, moveDir)
+function SkillHandler.HandleMovementInput(ID, dir)
 
 	local entityCore = DataManager.Get(ID) 	--Salva o EntityCore do player que chamou a função
 	local dirNormal = (dir and dir.Magnitude > 0) and dir.Unit or Vector3.zero --normaliza direção
@@ -18,7 +19,7 @@ function HandleMovementInput(ID, moveDir)
 	return false
 end
 
-function HandleSkillInput(ID,skillIndex)
+function SkillHandler.HandleSkillInput(ID,skillIndex)
 
 	local entityCore = DataManager.Get(ID) 	--Salva o EntityCore da entidade que chamou a função
 
@@ -77,20 +78,18 @@ function HandleSkillInput(ID,skillIndex)
 		
 		
 
-		local maxCooldown = entityCore.GetCooldown(skillName) --Pega o cooldown restante da skill
 
 			if not skill.data.ChainHistory then
 		    ChainHistory = {
-            rootOrigin = Entity
+            rootOrigin = entityCore,
             rootSkill = skillName,
             history = {skillName},
             depth = 1,
-            uniqueChainID = stateTable.Enum.Types.Skill .. skillName.. tostring(tick()),
+            uniqueChainID = StateTable.Enum.Types.Skill .. skillName.. tostring(tick()),
 			chainStart = tick()
 			}
 		end
 		
-
 		local runner = SkillRunner.new(
 			skill,
 			entityCore,
@@ -99,7 +98,8 @@ function HandleSkillInput(ID,skillIndex)
 			ChainHistory) --lança skill(após checagem de cooldown,validação pelo EntityData e preparação de fallback pelo SkillFactory)
 		runner:start()
 	end
+	local maxCooldown = entityCore.GetCooldown(skillName) --Pega o cooldown restante da skill
 	return true,skillName,maxCooldown
 end
 
-return Handler
+return SkillHandler

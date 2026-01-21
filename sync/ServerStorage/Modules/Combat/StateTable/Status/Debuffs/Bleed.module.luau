@@ -7,7 +7,7 @@ local Bleed = {
 		stackOnSelf = true, 
 		maxStacks = 10,
 		duration = 5, 
-		tickRate = 0.5, 
+		tickRate = 1, 
 		damage = 1,
 		
 		traits = {
@@ -22,6 +22,7 @@ local Bleed = {
 		end,
 
 		onStep = function(self, dt)
+
 			self._tickTimer += dt
 			local tickRate = self.skillData.data.tickRate or 1 
 			

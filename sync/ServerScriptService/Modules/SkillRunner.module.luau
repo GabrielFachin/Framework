@@ -33,11 +33,13 @@ function SkillRunner.new(skillData,Entity,name,SRtype,ChainHistory) --Instancia 
 	self.weaponHitboxModule = require(Storage.Modules.Combat.ShapecastHitbox)   --Prepara o modulo do shapecast para facil acesso e criação de hitboxes
 
 
-
+	--Remove ChainHistory antes de copiar os dados.
+    local originalChainHistory = skillData.ChainHistory
+    skillData.ChainHistory = nil
 
 	--=====DADOS VITAIS=====--
 
-	self.skillData = Utils.deepCopy(skillData)   --Informações extras da skill que vai rodar
+	self.skillData = Utils.copySkill(skillData)   --Informações extras da skill que vai rodar
 	self.Entity = Entity		 				 --Tabela de dados do player que usou a habilidade
 
 
@@ -78,8 +80,13 @@ function SkillRunner.new(skillData,Entity,name,SRtype,ChainHistory) --Instancia 
 
 	--=====HISTÓRICO DE INTERAÇÕES SEQUENCIAIS=====--
 
-	--Se a skill já tem um histórico, então salve no runner
+	--Retorna o ChainHistory
+	skillData.ChainHistory = originalChainHistory
+
+	--Se a skill já tem um histórico, então salve no runner e adicione mais no contexto
     if skillData.ChainHistory then
+		skillData.ChainHistory.depth += 1
+		table.insert(skillData.ChainHistory.history,name)
         self.ChainHistory = skillData.ChainHistory
 	elseif ChainHistory then -- se não tiver mas foi fornecido, salve na skill aqui
 		skillData.ChainHistory = ChainHistory
@@ -190,7 +197,7 @@ function SkillRunner:Recast(checkOnly : boolean?)
 		self.skillData.callbacks.onRecast(self)
 		return true
 	end
-
+	return false
 end
 
 

@@ -57,18 +57,37 @@ function Utils.percent(part, whole)
 end
 
 
-function Utils.deepCopy(original)
-	local copy
-	if type(original) == 'table' then
-		copy = {}
-		for key, value in next, original, nil do
-			copy[Utils.deepCopy(key)] = Utils.deepCopy(value)
-		end
-		setmetatable(copy, Utils.deepCopy(getmetatable(original)))
-	else
-		copy = original
+local function cloneFunction(fn)
+	return function(...)
+		return fn(...)
 	end
+end
+
+function Utils.copySkill(skill)
+	local copy = {
+		data = {},
+		callbacks = {}
+	}
+	for key, value in pairs(skill.data) do
+		if type(value) == "table" then
+			local t = {}
+			for k, v in pairs(value) do
+				t[k] = v
+			end
+			copy.data[key] = t
+		else
+			copy.data[key] = value
+		end
+	end
+
+	for name, fn in pairs(skill.callbacks) do
+		if type(fn) == "function" then
+			copy.callbacks[name] = cloneFunction(fn)
+		end
+	end
+
 	return copy
 end
+
 
 return Utils

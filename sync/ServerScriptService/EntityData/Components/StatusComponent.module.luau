@@ -84,7 +84,7 @@ Aplica um status à entidade
 @param ID - ID único do status STRING (opcional)
 @return ID do status STRING ou nil se não aplicado
 ]]
-function StatusComponent:ApplyStatus(statusData : {}, duration : number?, sourceSkill : any?, ID : string?,targetEntity: {}?) : string?
+function StatusComponent:ApplyStatus(statusData, duration : number?, sourceSkill : any?, ID : string?,targetEntity: {}?) : string?
 
 	local canApply= self:_ValidateApplication(statusData, sourceSkill)
 
@@ -94,7 +94,7 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 
 	-- Gera ID único se não fornecido
 	if not ID then
-		ID = self:GenerateUniqueEffectID(sourceSkill and sourceSkill.skillName or "Generic")
+		ID = self:GenerateUniqueEffectID(statusData.data.name or "Generic")
 	end
 
 	local factoryData = SkillFactory.GetStatus(statusData)
@@ -129,7 +129,6 @@ function StatusComponent:ApplyStatus(statusData : {}, duration : number?, source
 	-- Prepara dados
 	local data = table.clone(factoryData)
 	data.ID = ID
-	data.StatusComponent = self
 	data.data.castTime = 0
     data.ChainHistory = nextChainHistory
 	
@@ -265,7 +264,6 @@ function StatusComponent:_CreateRunner(data : {[string]: any}, name : string, du
 		self:_OnRunnerFinished(name, runner)
 		self:_MarkTagsDirty()
 	end
-	
 	runner:start()
 	return runner
 end
@@ -336,7 +334,7 @@ Gera um ID único para um status
 ]]
 function StatusComponent:GenerateUniqueEffectID(sourceName : string) : string
 	sourceName = sourceName or "Generic"
-	return sourceName .. "_" .. tostring(tick()):gsub("%.", "") .. "_" .. math.random(1000, 999999)
+	return sourceName .. "_" .. tostring(tick()):gsub("%.", "") .. "_" .. math.random(100, 9999)
 end
 
 
