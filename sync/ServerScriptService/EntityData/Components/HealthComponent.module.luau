@@ -167,7 +167,6 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 		self:Die(source)
 	end
 
-
 	if context.effects ~= nil then
 		if statusComp then
 			for _, effectData in ipairs(context.effects) do

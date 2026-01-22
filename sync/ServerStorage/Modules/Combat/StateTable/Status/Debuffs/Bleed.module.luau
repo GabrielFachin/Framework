@@ -19,6 +19,7 @@ local Bleed = {
 	callbacks = {
 		onStart = function(self)
 			self._tickTimer = 0
+			warn("oioi")
 		end,
 
 		onStep = function(self, dt)

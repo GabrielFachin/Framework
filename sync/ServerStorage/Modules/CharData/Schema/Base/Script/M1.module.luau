@@ -7,7 +7,7 @@ local Skill = {
 		duration = 5,
 		castTime = 0,
 		tags = {[StateTable.Enum.Tags.block] = true},
-		effects = {StateTable.Status.Bleed,StateTable.States.Stun}
+		effects = {StateTable.Status.Bleed}
 	},
 
 	callbacks = {
@@ -36,7 +36,7 @@ local Skill = {
 
 			local shield = statsTable:BuildEffect(statsTable.Status.StatusShield,
 			StateTable.Enum.SkillBreakpoints.onTrigger,
-		    function(runner,context) return self:TriggerAction(context)
+		    function(runner,context) warn("SHIELD ATINGIDO") return self:TriggerAction(context)
 			end)
 
 			local block = statsTable:BuildEffect(statsTable.Status.GenericBlock,
@@ -65,7 +65,7 @@ local Skill = {
 		
 			self.Entity.ApplyStatus(shield,9999,self)
 
-			self.blockID = self.Entity.ApplyStatus(block,9999,self)
+			--self.blockID = self.Entity.ApplyStatus(block,9999,self)
 
 			self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
 
