@@ -80,14 +80,15 @@ function SkillHandler.HandleSkillInput(ID,skillIndex)
 
 
 			if not skill.data.ChainHistory then
-		    ChainHistory = {
+		    data = {
             rootOrigin = entityCore,
             rootSkill = skillName,
             history = {skillName},
             depth = 1,
-            uniqueChainID = StateTable.Enum.Types.Skill .. skillName.. tostring(tick()),
 			chainStart = tick()
 			}
+
+			ChainHistory = StateTable.BuildHistory(data)
 		end
 		
 		local runner = SkillRunner.new(

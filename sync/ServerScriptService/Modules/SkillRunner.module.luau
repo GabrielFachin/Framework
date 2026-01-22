@@ -93,17 +93,28 @@ function SkillRunner.new(skillData,Entity,name,SRtype,ChainHistory) --Instancia 
 		self.ChainHistory = ChainHistory
 	else
      -- Por fim, se não existe ChainHistory e nem foi fornecido, crie um aqui
-        self.ChainHistory = {
-            rootOrigin = Entity and Entity or "Unknown",
-            rootSkill = name,
-            history = {name},
-            depth = 1,
-            uniqueChainID = "SYSTEM_" .. tostring(tick()),
-			chainStart = tick()
-        }
-		self.data.ChainHistory = self.ChainHistory
+        local data = {
+			rootOrigin = Entity and Entity or nil,
+			rootSkill = name or nil,
+		}
+		self.ChainHistory = StateTable.BuildHistory(data)
+
     end
-	
+
+	if tick() - self.ChainHistory.lastInteraction >= 1 then
+		self.ChainHistory.lastInteraction = tick()
+		self.ChainHistory.tempDepth = 1 
+	else
+		self.ChainHistory.tempDepth += 1
+	end
+
+	self.data.ChainHistory = self.ChainHistory
+
+
+	if self.ChainHistory.tempDepth >= self.statusTable.Enum.MAX_RECURSION then
+		return nil
+	end
+
 	return self
 end
 
@@ -116,6 +127,7 @@ end
 
 
 function SkillRunner:start()
+
 	
 	--Conecta com o heartbeat global para rodar o onStep
 	self.connection.Register(self,self.type)
@@ -146,6 +158,11 @@ end
 Controla o tempo de execução do SkillRunner (atualizado pelo Heartbeat global)
 ]]
 function SkillRunner:_internalUpdate(dt)
+
+	--Se muitas interações acontecerem em pouco tempo, corta a execução
+	if self.ChainHistory.tempDepth >= self.statusTable.Enum.MAX_RECURSION then
+		self:endSkill(false)
+	end
 	
 	--Controle do timer da skill
 	 self.elapsedTime += dt
@@ -205,7 +222,7 @@ end
 Trigger externo, usado especialmente mas não exclusivamente por blocks e shields de efeitos
 @param data - dados de quem deu trigger
 ]]
-function SkillRunner:TriggerAction(context : {}?)
+function SkillRunner:TriggerAction(context)
     local skillSettings = self.skillData.data
     local hasFilterConfig = skillSettings.ShieldsFrom or skillSettings.ShieldsFromType
 
@@ -214,12 +231,9 @@ function SkillRunner:TriggerAction(context : {}?)
             return nil 
         end
     end
-
-	if tick() - self.ChainHistory.chainStart <= 1						--Se é spam
-	and self.ChainHistory.depth > self.statusTable.Enum.MAX_RECURSION 	--Se estourou o limite de recursão
-	then return nil end													--Então cancela o trigger
-    	if self.skillData.callbacks.onTriggerAction then
-    	    return self.skillData.callbacks.onTriggerAction(self, context)
+											--Então cancela o trigger
+		if self.skillData.callbacks.onTrigger then
+    	    return self.skillData.callbacks.onTrigger(self, context)
     	end
     
     return nil
@@ -245,7 +259,7 @@ function SkillRunner:endSkill(cancel)
 			if not stop then self.state = STATES.Running end	   --Permita que somente a ação ocorra sem parar a skill.
 		end
 	end	
-	
+
 	if self.state == STATES.Ended then return end
 	self.state = STATES.Ended
 
@@ -255,7 +269,7 @@ function SkillRunner:endSkill(cancel)
 		self.skillData.callbacks.onEnd(self)
 	end
 	
-	if self.Entity then
+	if self.Entity and self.Entity:HasComponent(self.Entity.ComponentKey.Combat) then
 		self.Entity.RemoveActiveSkill(self.skillName, self)
 		if self.Entity:HasComponent(self.Entity.ComponentKey.Weapon) then
 			self.Entity.RemoveHitboxOwner(self) --Limpa a hitbox

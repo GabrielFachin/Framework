@@ -53,7 +53,16 @@ function StateTable:BuildEffect(spell : {}, callbackName : string, action: () ->
 end
 
 function StateTable:CheckBlockFilter(runner,context)
-	return Helper.CheckBlockFilter(runner, context)
+	return Helper.CheckBlockFilter(runner,context)
+end 
+
+
+function StateTable.BuildContext(source)
+	return Helper.BuildContext(source)
+end
+
+function StateTable.BuildHistory(data)
+	return Helper.BuildHistory(data)
 end
 
 return StateTable

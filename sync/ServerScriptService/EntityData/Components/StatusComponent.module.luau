@@ -85,7 +85,7 @@ Aplica um status à entidade
 @return ID do status STRING ou nil se não aplicado
 ]]
 function StatusComponent:ApplyStatus(statusData, duration : number?, sourceSkill : any?, ID : string?,targetEntity: {}?) : string?
-
+	statusData["Entity"] = sourceSkill.Entity or nil
 	local canApply= self:_ValidateApplication(statusData, sourceSkill)
 
 	if not canApply then
@@ -103,26 +103,19 @@ function StatusComponent:ApplyStatus(statusData, duration : number?, sourceSkill
 	-- Preparação do Contexto para o novo Status
     local nextChainHistory
     if sourceSkill and sourceSkill.ChainHistory then
-        local newHistory = table.clone(sourceSkill.ChainHistory.history)  -- Clona o histórico
-        table.insert(newHistory, factoryData.data.name or "UnknownStatus")
-        
-        nextChainHistory = {
-            rootOrigin = sourceSkill.ChainHistory.rootOrigin,
-            rootSkill = sourceSkill.ChainHistory.rootSkill,
-            history = newHistory,
-            depth = sourceSkill.ChainHistory.depth + 1,
-            uniqueChainID = sourceSkill.ChainHistory.uniqueChainID,
-			chainStart = tick()
-        }
+		local ch = sourceSkill.ChainHistory
+		table.insert(ch.history, factoryData.data.name or "Unknown")
+		ch.depth += 1
+
+		nextChainHistory = ch
     else
     -- Se não tiver sourceSkill, cria novo
-    nextChainHistory = {
-        rootOrigin = "Unknown",
+    data = {
         rootSkill = factoryData.data.name,
         history = {factoryData.data.name},
         depth = 1,
-        uniqueChainID = "STATUS_" .. tostring(tick())
     }
+	nextChainHistory = StateTable.BuildHistory(data)
     end
 
 
@@ -131,6 +124,7 @@ function StatusComponent:ApplyStatus(statusData, duration : number?, sourceSkill
 	data.ID = ID
 	data.data.castTime = 0
     data.ChainHistory = nextChainHistory
+	data.data.Entity = sourceSkill and sourceSkill.Entity or nil
 	
 	if data.data.category == "PlayerState" then
 		warn("[StatusComponent] PlayerState settado com função errada!")
@@ -187,7 +181,7 @@ function StatusComponent:ApplyStatus(statusData, duration : number?, sourceSkill
 			counter = 1,
 			runner = runner,
 			sourceSkill = sourceSkill,
-			ID = ID
+			ID = ID,
 		}
 		
 		self:_MarkTagsDirty()
@@ -210,7 +204,7 @@ function StatusComponent:ApplyStatus(statusData, duration : number?, sourceSkill
 			data = data,
 			runner = runner,
 			sourceSkill = sourceSkill,
-			ID = ID
+			ID = ID,
 		})
 		
 		group[meta.name] = list
@@ -234,7 +228,7 @@ function StatusComponent:ApplyStatus(statusData, duration : number?, sourceSkill
 		data = data,
 		runner = runner,
 		sourceSkill = sourceSkill,
-		ID = ID
+		ID = ID,
 	}
 	
 	self:_MarkTagsDirty()
@@ -260,11 +254,13 @@ function StatusComponent:_CreateRunner(data : {[string]: any}, name : string, du
 	local runner = SkillRunner.new(data, targetEntity, name,StateTable.Enum.Types.Status)
 	
 	-- Callback de finalização
-	runner.onFinish = function()
-		self:_OnRunnerFinished(name, runner)
-		self:_MarkTagsDirty()
+	if runner then
+		runner.onFinish = function()
+			self:_OnRunnerFinished(name, runner)
+			self:_MarkTagsDirty()
+		end
+		runner:start()
 	end
-	runner:start()
 	return runner
 end
 
@@ -316,9 +312,12 @@ function StatusComponent:_TriggerShield(immunityTag, activeShields,incomingData,
 	local runner = activeShields[immunityTag]
 
 	if runner then
+		local context = StateTable.BuildContext(incomingData)
+		context.incomingStatus = incomingData
+		context.targetEntity = self.Entity
 		
 		 --Chama a ação de trigger no shield com a skill que está tentando aplicar o status
-		local blocked = runner:TriggerAction(incomingData)
+		local blocked = runner:TriggerAction(context)
 			if blocked then return true end
 	end
 	

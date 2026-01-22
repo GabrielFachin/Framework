@@ -5357,13 +5357,6 @@
           "className": "Folder",
           "children": [
             {
-              "name": "MovementController",
-              "className": "ModuleScript",
-              "filePaths": [
-                "sync/ServerStorage/Modules/MovementController.module.luau"
-              ]
-            },
-            {
               "name": "SkillScheduler",
               "className": "ModuleScript",
               "filePaths": [

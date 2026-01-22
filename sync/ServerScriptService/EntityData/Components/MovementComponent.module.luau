@@ -4,7 +4,6 @@
 
 
 local Storage = game:GetService("ServerStorage")
-local MovementController = require(Storage.Modules.MovementController)
 local EntityWrapper = require(Storage.Modules.EntityWrapper)
 
 local MovementComponent = {}
@@ -86,7 +85,6 @@ function MovementComponent:StartTracking()
 	if self._tracked then return end
 
 	--Movement controller ainda não foi atualizado pra suportar entidades genéricas, atualizar!
-	MovementController.Track(self.Entity)
 	self._tracked = true
 end
 
@@ -96,7 +94,6 @@ Se desinscreve do controller de movimento
 function MovementComponent:StopTracking()
 	if not self._tracked then return end
 
-	MovementController.Untrack(self.Entity)
 	self._tracked = false
 end
 
@@ -132,7 +129,6 @@ end
 Função de inicialização do componente, inicia tracking pro MovementController automaticamente
 ]]
 function MovementComponent:OnAdded()
-	MovementController.Track(self.Entity)
 end
 
 

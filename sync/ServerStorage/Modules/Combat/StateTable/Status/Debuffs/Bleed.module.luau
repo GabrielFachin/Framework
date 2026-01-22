@@ -7,7 +7,7 @@ local Bleed = {
 		stackOnSelf = true, 
 		maxStacks = 10,
 		duration = 5, 
-		tickRate = 1, 
+		tickRate = 0.5, 
 		damage = 1,
 		
 		traits = {

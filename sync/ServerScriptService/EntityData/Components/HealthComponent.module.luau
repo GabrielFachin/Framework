@@ -100,33 +100,7 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 
 	if amount <= 0 then return false, 0 end
 
-	local config 
-	
-	local context = {
-		damage = amount,
-		source = source,
-		traits = {},
-		effects = {},
-	}
-	if source then
-		config = source.data
-		if config then
-			if config.traits ~= nil then
-				context.traits = table.clone(config.traits)
-			end
-
-			if config.effects ~= nil then
-				context.effects = table.clone(config.effects)
-			else
-				context.effects = {}
-			end
-
-			if config then
-				config.depth = (config.depth or 0) + 1
-			end
-		end
-	end
-
+	local context = StateTable.BuildContext(source)
 	-- Se tem StatusComponent, valida o hit e aplica modificadores
 	local statusComp = self.Entity:HasComponent(self.Entity.ComponentKey.Status)
 	if statusComp then
@@ -151,13 +125,13 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 			end
 
 			--se não encontrou trait de ignore block
-			if not found or config == nil then
+			if not found or context.data == nil then
 				local blockRunner = owner[blockTag]
 				if blockRunner then
-					--se passou do limite de recursão ou se tem tag de blockBreak, quebra o block
-					if config and config.traits and config.traits[StateTable.Enum.Traits.BlockBreak] then 
+					if context.data and context.data.traits and context.data.traits[StateTable.Enum.Traits.BlockBreak] then 
 						blockRunner:Stop(true)
 					else
+
 					local resultDamage = blockRunner:TriggerAction(context)
 					if resultDamage then context.damage = resultDamage end
 					end
@@ -197,7 +171,6 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 	if context.effects ~= nil then
 		if statusComp then
 			for _, effectData in ipairs(context.effects) do
-				warn(effectData)
 				self.Entity.ApplyStatus(effectData,nil, source)
 			end
 		end

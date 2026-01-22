@@ -15,6 +15,10 @@ local Skill = {
 		onStep = function(self, dt)
 		end,
 
+		onTrigger = function(self,context)
+			
+		end,
+
 		onEnd = function(self)
 		end,
 	}

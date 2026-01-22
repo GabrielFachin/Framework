@@ -36,12 +36,13 @@ local Skill = {
 
 			local shield = statsTable:BuildEffect(statsTable.Status.StatusShield,
 			StateTable.Enum.SkillBreakpoints.onTrigger,
-		    function(runner,context) warn("shield atingido por:",context.data.name)
+		    function(runner,context) return self:TriggerAction(context)
 			end)
 
 			local block = statsTable:BuildEffect(statsTable.Status.GenericBlock,
 			StateTable.Enum.SkillBreakpoints.onTrigger,
-			function(runner,context) return self:TriggerAction(context) end)
+			function(runner,context) return self:TriggerAction(context) 
+			end)
 
 			self.damage = 2
 			
@@ -62,11 +63,11 @@ local Skill = {
 			
 			self.Entity.StartHitbox(self.data.duration)
 		
-			--self.Entity.ApplyStatus(shield,9999,self)
+			self.Entity.ApplyStatus(shield,9999,self)
 
 			self.blockID = self.Entity.ApplyStatus(block,9999,self)
 
-			--self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
+			self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
 
 			self.cleanUp = function()
 				self.Entity.StopAnimation(self.M1Start,0.2)
@@ -84,13 +85,9 @@ local Skill = {
 		
 		onHit = function(self,hitResult)
 
-
-			local statsTable = self.statusTable
-			
 			local targetEntity = hitResult.target
 			
 			targetEntity.TakeDamage(self.damage,self)
-			targetEntity.ApplyStatus(statsTable.Status.Bleed,9999,self)
 
 		end,
 		
@@ -131,13 +128,14 @@ local Skill = {
 		end,
 
 
-		onTriggerAction = function(self,context)
+		onTrigger = function(self,context)
 			context.damage *= 0.5
 			self.Entity.RemoveStatusByID(self.blockID)
 			task.wait(0.2)
 			task.defer(function()
-				context.source.Entity.TakeDamage(5, self)
+				context.sourceEntity.TakeDamage(5, self)
 			end)
+			warn(context.damage)
 			return context.damage
 		end,
 

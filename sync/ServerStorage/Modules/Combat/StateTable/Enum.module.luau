@@ -41,7 +41,7 @@ enum.reactTags = {
 
 
 enum.SkillBreakpoints = {
-        onTrigger = "onTriggerAction",
+        onTrigger = "onTrigger",
         onRecast = "onRecast",
         onHit = "onHit",
         onEnd = "onEnd"
@@ -84,7 +84,7 @@ enum.Types = {
 }
 
 
-enum.MAX_RECURSION = 20 -- limite de ações recursivas como parrys que ativam parrys
+enum.MAX_RECURSION = 50 -- limite de ações recursivas como parrys que ativam parrys
 
 
 enum.BlockIgnore = {

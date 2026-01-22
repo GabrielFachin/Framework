@@ -110,7 +110,7 @@ function SkillScheduler._Update(dt)
 			local runner = activeStatus[i]
 
 			if runner and runner.state ~= "Ended" then
-				local success, err = pcall(runner._internalUpdate, runner, dt * 2)
+				local success, err = pcall(runner._internalUpdate, runner, dt*2)
 				if not success then
 					warn("[SkillScheduler] Erro em status:", runner.skillName, err)
 					runner:endSkill(true)

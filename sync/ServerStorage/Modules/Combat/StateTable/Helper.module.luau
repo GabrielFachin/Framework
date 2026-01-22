@@ -96,9 +96,6 @@ function Helper.BuildEffect(baseStatus, callbackName, actionFunc)
 	return newStatus
 end
 
-
-
-
 function Helper.CheckBlockFilter(runner, context)
     local data = (runner.data and runner.data.data) or (runner.skillData and runner.skillData.data)
     
@@ -141,6 +138,44 @@ function Helper.CheckBlockFilter(runner, context)
     end
 
     return true 
+end
+
+function Helper.BuildContext(source)
+	local context = {
+		damage = 0,
+		source = source,
+		sourceEntity = nil,
+		traits = {},
+		effects = {},
+	}
+
+	if source then
+		if source.Entity then
+			context.sourceEntity = source.Entity
+		end
+
+		if source.data then
+			context.damage = source.data.damage or 0
+			context.traits = table.clone(source.data.traits or {})
+			context.effects = table.clone(source.data.effects or {})
+		end
+	end
+
+	return context
+end
+
+function Helper.BuildHistory(data)
+    local History = {
+        rootOrigin = data.Entity and data.Entity or "Unknown",
+        rootSkill = data.name or "Unknown",
+        history = {data.name or "Uknown"},
+        depth = data.depth or 1,
+        uniqueChainID = data.uniqueChainID or data.name and data.name .. tostring(tick()) or "SYSTEM_" .. tostring(tick()),
+		chainStart = data.chainStart or tick(),
+		lastInteraction = data.lastInteraction or tick(),
+		tempDepth = data.tempDepth or 0,
+    }
+	return History
 end
 
 return Helper
