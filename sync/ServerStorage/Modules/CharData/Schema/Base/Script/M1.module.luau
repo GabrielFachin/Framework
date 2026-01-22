@@ -129,14 +129,14 @@ local Skill = {
 
 
 		onTrigger = function(self,context)
-			context.damage *= 0.5
+			dmg = context.damage
+			dmg *= 0.1
 			self.Entity.RemoveStatusByID(self.blockID)
 			task.wait(0.2)
 			task.defer(function()
 				context.sourceEntity.TakeDamage(5, self)
 			end)
-			warn(context.damage)
-			return context.damage
+			return dmg
 		end,
 
 		onEnd = function(self)
