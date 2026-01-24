@@ -158,16 +158,16 @@ Devevolve o módulo (requirido) da skill pelo nome ou index
 @return módulo da skill TABLE ou nil se não encontrado
 ]]
 function CombatComponent:GetSkillData(skillName : string, index : number?) : any?
-	local charComp = self.Entity:GetComponent(self.Entity.ComponentKey.Character)
-	if not charComp or not charComp._formFolder then return nil end
+	local charComp = self.Entity:HasComponent(self.Entity.ComponentKey.Character)
+	if not charComp then return nil end
 
 	skillName = skillName or self:GetSkillName(index)
 	if not skillName then
 		warn("[CombatComponent] GetSkillData não recebeu um parametro!")
 		return nil end
 
-	local skillScript = charComp._formFolder:FindFirstChild("Script")
-		and charComp._formFolder.Script:FindFirstChild(skillName)
+	local skillScript = self._formFolder:FindFirstChild("Script")
+		and self._formFolder.Script:FindFirstChild(skillName)
 
 	if not skillScript then return nil end
 
@@ -268,14 +268,14 @@ Cancelamento interno de skills buscando por estados do tipo SelfCast
 @return sucesso BOOLEAN
 ]]
 function CombatComponent:TrySelfCancel() : boolean
-		if self.PlayerState and #self.PlayerState > 0 then
+		if self.PlayerState and next(self.PlayerState) then
 			local playerStates = StateTable.PlayerStates :: PlayerStatesType
 
 			-- Checa se é Self
 			for _, v in pairs(playerStates.Self) do
 				if self.PlayerState.name == v.data.name then
 					local runner = self.PlayerState.runner 
-					if runner and typeof(runner) == "table" and runner.Stop then
+					if runner and typeof(runner) == "table" then
 						runner:Stop(true)
 						return true 
 					end
@@ -297,7 +297,7 @@ end
 valida se a entidade pode continuar a ação
 @return sucesso BOOLEAN
 ]]
-function CombatComponent:CanContinue() : boolean
+function CombatComponent:CanContinue(skill) : boolean
 
 	--Busca por tag de impedimento
 	local statusComp = self.Entity:HasComponent(self.Entity.ComponentKey.Status)
@@ -319,7 +319,7 @@ function CombatComponent:CanContinue() : boolean
 	local playerStates = StateTable.PlayerStates :: PlayerStatesType
 	-- Checa se o estado de player atual é selfCancel
 	for _, stateDef in pairs(playerStates.Self) do
-		if self.PlayerState.name == stateDef.data.name then
+		if self.PlayerState and self.PlayerState.name == stateDef.data.name then
 			return true
 		end
 	end

@@ -1,6 +1,5 @@
 --=================Esse módulo controla o ciclo de vida das skills, TODAS as skills e modificadores são gerados com um SR base=================
 
-local RunService = game:GetService("RunService")
 local ServerStorage = game:GetService("ServerStorage")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Storage = game:GetService("ServerStorage")

@@ -29,14 +29,13 @@ local Skill = {
 			
 --		#Referencias/vars
 
-
 			--Prepara status
 			local statsTable = self.statusTable
 			
 
 			local shield = statsTable:BuildEffect(statsTable.Status.StatusShield,
 			StateTable.Enum.SkillBreakpoints.onTrigger,
-		    function(runner,context) warn("SHIELD ATINGIDO") return self:TriggerAction(context)
+		    function(runner,context) warn("SHIELD ATINGIDO"); return self:TriggerAction(context)
 			end)
 
 			local block = statsTable:BuildEffect(statsTable.Status.GenericBlock,
@@ -129,7 +128,7 @@ local Skill = {
 
 
 		onTrigger = function(self,context)
-			dmg = context.damage
+			local dmg = context.damage
 			dmg = 0 
 			self.Entity.RemoveStatusByID(self.blockID)
 			task.wait(2)

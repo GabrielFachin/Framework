@@ -214,7 +214,6 @@ function HitboxWrapper:_returnHitbox(name: string, hitbox)
 		hitbox:HitStop()
 		table.insert(hitboxPool[poolKey], hitbox)
 	else
-		print(hitbox)
 		hitbox:DestroyHitbox()
 	end
 

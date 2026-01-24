@@ -305,5 +305,7 @@ vale notar que MAX_RECURSION por padrão é 5.
 
 
 SECONDARY TYPE são tabelas de tipos pra permitir modificações de tipo em runTime, NÃO CONFUNDIR COM TYPE, uma vez que type dita como o sistema lidara com aquela skill
+
+qualquer modificação futura de tags que alterem comportamento, como uma nova trait de "instaCast" que ignora silence, devem ser checadas no CanContinue do CombatData
 ]]
 

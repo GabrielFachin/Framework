@@ -39,17 +39,20 @@ function SkillHandler.HandleSkillInput(ID,skillIndex)
 	local max = skill.data.maxInstances--Guarda a quantidade máximas de instâncias permitida daquela skill
 
 	local maxCooldown 
+	local ChainHistory
+
 
 	if not entityCore.HasCooldown(skillName) then --Se não estiver em cooldown, então roda
 
-		if not entityCore.CanContinue() then --Testa se a skill poderia cancelar a anterior (caso tenha uma ativa e o player tenha um estado)
+		--Busca por tags que impossibilitem o player de castar essa skill
+		if not entityCore.CanContinue(skill) then 
 			warn("Skill não pode rodar")
 			return false
 		end
 
 
 		if not skill.data.ChainHistory then
-	    	data = {
+	    	local data = {
         	rootOrigin = entityCore,
         	rootSkill = skillName,
         	history = {skillName},
@@ -58,7 +61,8 @@ function SkillHandler.HandleSkillInput(ID,skillIndex)
 			}
 			ChainHistory = StateTable.BuildHistory(data)
 		end
-		maxCooldown = entityCore.GetCooldown(skillName) --Pega o cooldown restante da skill
+
+		maxCooldown = entityCore.GetCooldown(skillName) --Pega o cooldown total da skill
 		
 		--Se já tiver uma instância ativa dessa skill
 		if #activeRunners > 0 then
@@ -88,7 +92,7 @@ function SkillHandler.HandleSkillInput(ID,skillIndex)
 			return false end -- Se obtiver retorno false (estado encontrado mas não é Self), sai do código
 		
 
-	entityCore.SetCooldown(skillName)
+		entityCore.SetCooldown(skillName)
 	
 	
 	
@@ -99,8 +103,9 @@ function SkillHandler.HandleSkillInput(ID,skillIndex)
 		StateTable.Enum.Types.Skill,
 		ChainHistory) --lança skill(após checagem de cooldown,validação pelo EntityData e preparação de fallback pelo SkillFactory)
 	runner:start()
-	end
 	return true,skillName,maxCooldown
+	end
+return false
 end
 
 return SkillHandler
