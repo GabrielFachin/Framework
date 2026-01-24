@@ -13,13 +13,12 @@ local Bleed = {
 		traits = {
 		Enum.Traits.DOT,
 		Enum.Traits.SoftCancel,
-		Enum.Traits.Stackable}
+		Enum.Traits.Stackable,}
 	},
 	
 	callbacks = {
 		onStart = function(self)
 			self._tickTimer = 0
-			warn("oioi")
 		end,
 
 		onStep = function(self, dt)

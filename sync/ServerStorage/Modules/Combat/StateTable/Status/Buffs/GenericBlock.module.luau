@@ -9,14 +9,13 @@ return {
 		tags = {
 			[Enum.Tags.block] = true
 		},
-		
-		-- Define o que ignora esse buff (TrueHit ignora iFrame)
-		bypassBy = {Enum.Traits.BlockBreak},
         
         ShieldsFromType = {Enum.Types.Skill},
 
         --dados especificos de shield, como apenas dano fisico, só DOT, etc...
-        ShieldsFrom = {}
+        ShieldsFrom = {},
+
+		traits = {Enum.Traits.Unbreakable}
 	},
 	
     --função de exemplo, mas ela pode ser injetada pela skill que aplica o block e redirecionar o trigger pra si mesma

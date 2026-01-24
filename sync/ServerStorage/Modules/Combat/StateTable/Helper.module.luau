@@ -97,32 +97,34 @@ function Helper.BuildEffect(baseStatus, callbackName, actionFunc)
 end
 
 function Helper.CheckBlockFilter(runner, context)
+
     local data = (runner.data and runner.data.data) or (runner.skillData and runner.skillData.data)
     
-    if not data then return true end
 
+    if not data then return true end
     local source = context.source
     local incomingTraits = context.traits or {}
 
     if data.ShieldsFromType then
-		warn("ShieldsFromType:",data.ShieldsFromType)
         local sourceType = source and source.type 
-		warn("Source:",source,"Type:",source.Type)
         local typeMatch = false
         
+		--warn(data.ShieldsFromType)
         for _, Type in pairs(data.ShieldsFromType) do
             if sourceType == Type then
                 typeMatch = true
                 break 
             end
         end
-        
+		
         if not typeMatch then
             return false 
         end
     end
 
-    if data.ShieldsFrom then
+	local HasTraitFilter = next(data.ShieldsFrom)
+	
+    if HasTraitFilter then
         local traitMatch = false
         
         for _, requiredTrait in ipairs(data.ShieldsFrom) do
@@ -158,9 +160,10 @@ function Helper.BuildContext(source)
 			context.damage = source.data.damage or 0
 			context.traits = table.clone(source.data.traits or {})
 			context.effects = table.clone(source.data.effects or {})
+			context.type = source.data.type
+			context.secondaryType = source.data.secondaryType or nil
 		end
 	end
-
 	return context
 end
 

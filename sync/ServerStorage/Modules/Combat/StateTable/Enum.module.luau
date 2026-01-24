@@ -2,7 +2,7 @@ enum = {}
 
              --=====ENUM PRINCIPAL=====-
 
-    --Categoria de status
+    --Categoria de status, runners que ficam armazenados rodando na própia entidade
 enum.Categories = {
         Buff = "Buff",          --Buff
         Hybrid = "Hybrid",      --Status relacionado com buff e debuff
@@ -11,6 +11,7 @@ enum.Categories = {
         Internal = "Internal",  --Categoria interna pra impedir interações inesperadas
     }
 
+    --Estados, status tratados de forma especial pelo sistema
 enum.States = {
         Stun = "Stun",          --Perde todo e qualquer input
         noControl = "noControl",--Perde controle de input de movimentação
@@ -18,21 +19,31 @@ enum.States = {
         Silence = "Silence",    --Impede de usar skills
     }
 
-    --Traits de status
+    --Comportamentos especiais pra runners
 enum.Traits = {
+
+        --STATUS
         DOT = "DamageOverTime",         --Dot
         EffectShield = "EffectShield",  --Escudo de efeito (ignora pre entrada)
+        Stackable = "stackable",        --Status pode stackar.
+
+        
+        --BLOCKS
+        Unbreakable = "Unbreakable",    --Block impossível de quebrar
+        BlockBreak = "BlockBreak",      --Quebra o block do adversário
+        TrueBlock = "TrueBlock",        --Block impossível de ignorar
+
+        --INTERAÇÕES
         TrueHit = "TrueHit",            --Ignora iFrame
-        SoftCancel = "lightCancel",     --Cancelamento fraco (TODO)
-        HeavyCancel = "heavyCancel",    --Cancelamento forte (TODO)
-        BlockBreak = "BlockBreak",      --Quebra o block do adversário (TODO)
-        Stackable = "stackable",
+        SoftCancel = "LightCancel",     --Cancelamento fraco (TODO)
+        HeavyCancel = "HeavyCancel",    --Cancelamento forte (TODO)
     }
 
 
         --====BREAKPOINTS=====--
 
 
+        --Breakpoints do healthComponent (interações internas na entidade)
 enum.reactTags = {
 	    onHeal = "OnHeal",              --Ativa o status quando o alvo recebe cura
 	    onDamage = "OnDamage",          --Ativa o status quando o alvo recebe dano
@@ -40,6 +51,7 @@ enum.reactTags = {
     }
 
 
+    --Breakpoints de runners
 enum.SkillBreakpoints = {
         onTrigger = "onTrigger",
         onRecast = "onRecast",
@@ -53,7 +65,7 @@ enum.SkillBreakpoints = {
     --=====TAGS=====--
 
 
---tags são dados binários envolvendo comportamento de status na entidade
+--tags são dados envolvendo comportamento da entidade.
 enum.Tags = {
     canMove = "canMove",
     canCast = "canCast",
@@ -62,7 +74,6 @@ enum.Tags = {
     block = "block",
     exclusive = "exclusive"
 }
-
 
 
 --fallback pra caso de não declaração dessas tags
@@ -77,6 +88,7 @@ enum.tagsBase = {
 
 --====OUTROS====--
 
+--Tipos de runner
 enum.Types = {
     Skill = "Skill",
     State = "State",
@@ -84,11 +96,17 @@ enum.Types = {
 }
 
 
-enum.MAX_RECURSION = 50 -- limite de ações recursivas como parrys que ativam parrys
+enum.MAX_RECURSION = 50 -- limite de ações recursivas de uma chain em um segundo
 
 
+--Lista de traits que ignoram block
 enum.BlockIgnore = {
-	enum.Traits.TrueHit,
+    [enum.Traits.TrueHit] = enum.Traits.TrueHit,
+}
+
+--Lista de traits que podem quebrar o block
+enum.BlockBreak = {
+    [enum.Traits.BlockBreak] = enum.Traits.BlockBreak,
 }
 
 return enum 

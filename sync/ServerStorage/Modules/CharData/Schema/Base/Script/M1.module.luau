@@ -63,9 +63,9 @@ local Skill = {
 			
 			self.Entity.StartHitbox(self.data.duration)
 		
-			self.Entity.ApplyStatus(shield,9999,self)
+			--self.Entity.ApplyStatus(shield,9999,self)
 
-			--self.blockID = self.Entity.ApplyStatus(block,9999,self)
+			self.blockID = self.Entity.ApplyStatus(block,9999,self)
 
 			self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
 
@@ -130,9 +130,9 @@ local Skill = {
 
 		onTrigger = function(self,context)
 			dmg = context.damage
-			dmg *= 0.1
+			dmg = 0 
 			self.Entity.RemoveStatusByID(self.blockID)
-			task.wait(0.2)
+			task.wait(2)
 			task.defer(function()
 				context.sourceEntity.TakeDamage(5, self)
 			end)
@@ -144,7 +144,7 @@ local Skill = {
 		end,
 		
 		onCancel = function(self)
-				self.callbacks.clearControl(self,self.stateID)
+			self.callbacks.clearControl(self,self.stateID)
 		end,
 		
 	}

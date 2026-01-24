@@ -92,6 +92,7 @@ function StatusComponent:ApplyStatus(statusData, duration : number?, sourceSkill
 		return nil
 	end
 
+
 	-- Gera ID único se não fornecido
 	if not ID then
 		ID = self:GenerateUniqueEffectID(statusData.data.name or "Generic")
@@ -276,14 +277,13 @@ function StatusComponent:_ValidateApplication(statusData, sourceSkill)
 	local effectCategory = statusData.data.category
 	local effectTraits = statusData.data.traits and statusData.data.traits or {}
     local effectName = statusData.data.name
-
 	local foundShield = nil
 
     -- Ordem de prioridade: Categoria > Traits > Nome
     if effectCategory and activeShields[effectCategory] then
         foundShield = effectCategory end
-
 	for v,name in pairs(effectTraits) do
+
 		if name and activeShields[name] then
 			foundShield = name end
 	end

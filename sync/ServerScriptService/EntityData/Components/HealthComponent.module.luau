@@ -32,10 +32,10 @@ function HealthComponent.new(entity, config)
 	self._lastDamageTime = 0
 	
 	-- Callbacks de eventos
-	self.OnDamage = self._Trigger(self, StateTable.reactTags.onDamage)
-	self.OnHeal = self._Trigger(self, StateTable.reactTags.onHeal)
-	self.OnDeath = self._Trigger(self, StateTable.reactTags.onDeath)
-	self.OnRevive = self._Trigger(self, StateTable.reactTags.onRevive)
+	self.OnDamage = self:_Trigger(self, StateTable.reactTags.onDamage)
+	self.OnHeal = self:_Trigger(self, StateTable.reactTags.onHeal)
+	self.OnDeath = self:_Trigger(self, StateTable.reactTags.onDeath)
+	self.OnRevive = self:_Trigger(self, StateTable.reactTags.onRevive)
 
 
 	-- Histórico de dano
@@ -101,11 +101,11 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 	if amount <= 0 then return false, 0 end
 
 	local context = StateTable.BuildContext(source)
+
 	-- Se tem StatusComponent, valida o hit e aplica modificadores
 	local statusComp = self.Entity:HasComponent(self.Entity.ComponentKey.Status)
 	if statusComp then
-		local found 
-		local newAmount
+		local ignore
 		local canHit, reason = self:_ValidateHit(context)
 		if not canHit then
 			return false, reason
@@ -114,26 +114,47 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 		local ActiveTags,owner = self.Entity:GetActiveTags()
 		local blockTag = StateTable.Enum.Tags.block
 
-		--se encontrar a block de tag ativa, e se a source não ignorar block 
+		--se encontrar a tag de block ativa, e se a source não ignorar block 
 		--então roda o trigger do runner do block
 		if ActiveTags[blockTag] then
 			for _,value in pairs(context.traits) do
 				if StateTable.Enum.BlockIgnore[value] then
-					found = true
+					ignore = true
 					break
 				end
+				ignore = false
 			end
 
-			--se não encontrou trait de ignore block
-			if not found or context.data == nil then
-				local blockRunner = owner[blockTag]
-				if blockRunner then
-					if context.data and context.data.traits and context.data.traits[StateTable.Enum.Traits.BlockBreak] then 
-						blockRunner:Stop(true)
-					else
+			local blockRunner = owner[blockTag]
 
-					local resultDamage = blockRunner:TriggerAction(context)
-					if resultDamage then context.damage = resultDamage end
+			--Skippa o block se tiver trait de ignorar block e o block não for TrueBlock
+			local skipBlock = (
+				not (blockRunner.data.traits and table.find(blockRunner.data.traits, StateTable.Enum.Traits.TrueBlock))
+				and ignore
+		)
+
+			--se não encontrou trait de ignore block e se o block não é TrueBlock
+			if not skipBlock then
+				if blockRunner then
+					local canInteract = StateTable.CheckBlockFilter(blockRunner, context)
+					local blockBreak
+					local broke
+					if context.source and context.traits and canInteract then
+						for _,trait in context.traits do	--busca por algum trait que se encaixe em BlockBreak
+							blockBreak = StateTable.Enum.BlockBreak[trait]
+							if blockBreak then break end
+						end
+						local unbreakable = blockRunner.data.traits and table.find(blockRunner.data.traits, StateTable.Enum.Traits.Unbreakable)
+						--Se o block não for inquebravel e eu tiver a intenção de quebrar, quebre/finalize o runner
+						if blockBreak and not unbreakable then
+							blockRunner:Stop(true)
+							broke = true
+						end
+					end
+					
+					if not broke and canInteract then
+						local resultDamage = blockRunner:TriggerAction(context)
+						if resultDamage then context.damage = resultDamage end
 					end
 				end
 			end
@@ -141,7 +162,7 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 
 			-- Alterações de dano pós block
 		if self.OnDamage then
-			local preMitigationAmount = task.spawn(self.OnDamage, self, context.damage, source)
+			local preMitigationAmount = self.OnDamage(self, context.damage, source)
 					if preMitigationAmount then
 						context.damage = preMitigationAmount
 					end

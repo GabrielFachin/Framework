@@ -277,7 +277,7 @@ function CombatComponent:TrySelfCancel() : boolean
 					local runner = self.PlayerState.runner 
 					if runner and typeof(runner) == "table" and runner.Stop then
 						runner:Stop(true)
-						return true
+						return true 
 					end
 				end
 				warn("Skill não pode rodar!")

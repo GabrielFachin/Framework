@@ -302,5 +302,8 @@ Vale comentar que o block TEM segurança contra recursividade, mas a melhor form
 3 - caso o seu parry devolva dano IMEDIATO, use task.defer
 4 - você pode escolher somente uma das soluções, delay e permitir recursividade infinita ou MAX_RECURSION pra quebrar a cadeia.
 vale notar que MAX_RECURSION por padrão é 5.
+
+
+SECONDARY TYPE são tabelas de tipos pra permitir modificações de tipo em runTime, NÃO CONFUNDIR COM TYPE, uma vez que type dita como o sistema lidara com aquela skill
 ]]
 
