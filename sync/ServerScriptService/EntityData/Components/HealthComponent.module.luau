@@ -100,7 +100,7 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 
 	if amount <= 0 then return false, 0 end
 
-	local context = StateTable.BuildContext(source)
+	local context = StateTable.BuildContext(source,amount)
 
 	-- Se tem StatusComponent, valida o hit e aplica modificadores
 	local statusComp = self.Entity:HasComponent(self.Entity.ComponentKey.Status)
@@ -110,6 +110,7 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 		if not canHit then
 			return false, reason
 		end
+
 		--busca por todas as TAGS ativas na entidade
 		local ActiveTags,owner = self.Entity:GetActiveTags()
 		local blockTag = StateTable.Enum.Tags.block
@@ -159,15 +160,16 @@ function HealthComponent:TakeDamage(amount : number, source : any)
 				end
 			end
 		end
+	end
 
 			-- Alterações de dano pós block
-		if self.OnDamage then
-			local preMitigationAmount = self.OnDamage(self, context.damage, source)
-					if preMitigationAmount then
-						context.damage = preMitigationAmount
-					end
-				end
+	if self.OnDamage then
+		local preMitigationAmount = self.OnDamage(self, context.damage, source)
+		if preMitigationAmount then
+			context.damage = preMitigationAmount
+		end
 	end
+
 	
 	-- Aplica dano
 	local lastHP = self.HP

@@ -56,9 +56,8 @@ function StateTable.CheckBlockFilter(runner,context)
 	return Helper.CheckBlockFilter(runner,context)
 end 
 
-
-function StateTable.BuildContext(source)
-	return Helper.BuildContext(source)
+function StateTable.BuildContext(source,amount)
+	return Helper.BuildContext(source,amount)
 end
 
 function StateTable.BuildHistory(data)

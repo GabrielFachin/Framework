@@ -10,7 +10,7 @@ return {
 			[Enum.Tags.block] = true
 		},
         
-        ShieldsFromType = {Enum.Types.Skill},
+        ShieldsFromType = {Enum.Types.Skill,Enum.Types.Status},
 
         --dados especificos de shield, como apenas dano fisico, só DOT, etc...
         ShieldsFrom = {},

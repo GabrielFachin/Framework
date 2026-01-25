@@ -7,7 +7,7 @@ local Skill = {
 		duration = 5,
 		castTime = 0,
 		tags = {[StateTable.Enum.Tags.block] = true},
-		effects = {StateTable.Status.Bleed}
+		--effects = {StateTable.Status.Bleed}
 	},
 
 	callbacks = {
@@ -66,7 +66,7 @@ local Skill = {
 
 			self.blockID = self.Entity.ApplyStatus(block,9999,self)
 
-			self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
+			--self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
 
 			self.cleanUp = function()
 				self.Entity.StopAnimation(self.M1Start,0.2)
@@ -131,10 +131,10 @@ local Skill = {
 			local dmg = context.damage
 			dmg = 0 
 			self.Entity.RemoveStatusByID(self.blockID)
-			task.wait(2)
-			task.defer(function()
-				context.sourceEntity.TakeDamage(5, self)
-			end)
+			--task.wait(2)
+			--task.defer(function()
+				--context.sourceEntity.TakeDamage(5, self)
+			--end)
 			return dmg
 		end,
 

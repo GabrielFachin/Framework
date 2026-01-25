@@ -395,32 +395,6 @@
                   ]
                 },
                 {
-                  "name": "RightUpperArm",
-                  "className": "MeshPart",
-                  "children": [
-                    {
-                      "name": "RightShoulderRigAttachment",
-                      "className": "Attachment"
-                    },
-                    {
-                      "name": "RightElbowRigAttachment",
-                      "className": "Attachment"
-                    },
-                    {
-                      "name": "RightShoulderAttachment",
-                      "className": "Attachment"
-                    },
-                    {
-                      "name": "OriginalSize",
-                      "className": "Vector3Value"
-                    },
-                    {
-                      "name": "RightShoulder",
-                      "className": "Motor6D"
-                    }
-                  ]
-                },
-                {
                   "name": "UpperTorso",
                   "className": "MeshPart",
                   "children": [
@@ -673,6 +647,32 @@
                       "className": "Motor6D"
                     }
                   ]
+                },
+                {
+                  "name": "RightUpperArm",
+                  "className": "MeshPart",
+                  "children": [
+                    {
+                      "name": "RightShoulderRigAttachment",
+                      "className": "Attachment"
+                    },
+                    {
+                      "name": "RightElbowRigAttachment",
+                      "className": "Attachment"
+                    },
+                    {
+                      "name": "RightShoulderAttachment",
+                      "className": "Attachment"
+                    },
+                    {
+                      "name": "OriginalSize",
+                      "className": "Vector3Value"
+                    },
+                    {
+                      "name": "RightShoulder",
+                      "className": "Motor6D"
+                    }
+                  ]
                 }
               ]
             },
@@ -864,10 +864,6 @@
                   "className": "MeshPart",
                   "children": [
                     {
-                      "name": "LeftWristRigAttachment",
-                      "className": "Attachment"
-                    },
-                    {
                       "name": "LeftGripAttachment",
                       "className": "Attachment"
                     },
@@ -878,6 +874,10 @@
                     {
                       "name": "LeftWrist",
                       "className": "Motor6D"
+                    },
+                    {
+                      "name": "LeftWristRigAttachment",
+                      "className": "Attachment"
                     }
                   ]
                 },
@@ -3164,36 +3164,6 @@
               ]
             },
             {
-              "name": "Head",
-              "className": "Part",
-              "children": [
-                {
-                  "name": "Mesh",
-                  "className": "SpecialMesh"
-                },
-                {
-                  "name": "face",
-                  "className": "Decal"
-                },
-                {
-                  "name": "HairAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "HatAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "FaceFrontAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "FaceCenterAttachment",
-                  "className": "Attachment"
-                }
-              ]
-            },
-            {
               "name": "Torso",
               "className": "Part",
               "children": [
@@ -3314,6 +3284,36 @@
                 {
                   "name": "RootJoint",
                   "className": "Motor6D"
+                }
+              ]
+            },
+            {
+              "name": "Head",
+              "className": "Part",
+              "children": [
+                {
+                  "name": "Mesh",
+                  "className": "SpecialMesh"
+                },
+                {
+                  "name": "face",
+                  "className": "Decal"
+                },
+                {
+                  "name": "HairAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "HatAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "FaceFrontAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "FaceCenterAttachment",
+                  "className": "Attachment"
                 }
               ]
             }

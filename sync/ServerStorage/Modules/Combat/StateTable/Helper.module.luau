@@ -142,7 +142,7 @@ function Helper.CheckBlockFilter(runner, context)
     return true 
 end
 
-function Helper.BuildContext(source)
+function Helper.BuildContext(source,amount)
 	local context = {
 		damage = 0,
 		source = source,
@@ -155,13 +155,12 @@ function Helper.BuildContext(source)
 		if source.Entity then
 			context.sourceEntity = source.Entity
 		end
-
 		if source.data then
-			context.damage = source.data.damage or 0
+			context.damage = amount or source.damage or 0
 			context.traits = table.clone(source.data.traits or {})
 			context.effects = table.clone(source.data.effects or {})
-			context.type = source.data.type
-			context.secondaryType = source.data.secondaryType or nil
+			context.type = source.type
+			context.secondaryType = source.secondaryType or nil
 		end
 	end
 	return context

@@ -13,7 +13,8 @@ local Bleed = {
 		traits = {
 		Enum.Traits.DOT,
 		Enum.Traits.SoftCancel,
-		Enum.Traits.Stackable,}
+		Enum.Traits.Stackable,
+		Enum.Traits.BlockBreak}
 	},
 	
 	callbacks = {
