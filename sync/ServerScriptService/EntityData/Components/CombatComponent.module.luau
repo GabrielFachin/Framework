@@ -19,6 +19,8 @@ type PlayerStatesType = {
 
 local ServerStorage = game:GetService("ServerStorage")
 local StateTable = require(ServerStorage.Modules.Combat.StateTable)
+local SkillData = require(ServerStorage.DataBase.SkillDatabase)
+local CharData = require(ServerStorage.DataBase.CharacterDatabase)
 
 local CombatComponent = {}
 CombatComponent.__index = CombatComponent
@@ -34,11 +36,14 @@ function CombatComponent.new(entity, config)
 
 	self.Entity = entity
 
-	-- Skills disponíveis (carregadas depois)
-	self.SkillsData = nil
+	-- Skills disponíveis
+	self.Loadout = {}
+
+	--Cache pra evitar require duplicado
+	self.SkillCache = {}
 
 	-- Cooldown de skills
-	self.Cooldowns = {} -- [skillName] = timestamp
+	self.Cooldowns = {} -- [skillName] = tick() + cooldown
 
 	-- Skills ativas (runners)
 	self.ActiveSkills = {} -- [skillName] = {runner1, runner2, ...}
@@ -46,6 +51,7 @@ function CombatComponent.new(entity, config)
 	-- Personagem e modo
 	self.ChosenChar = config.ChosenChar or "Schema"
 	self.Mode = config.Mode or "Base"
+	self.baseStats = {}
 
 	--Estado de cast
 	self.PlayerState = {
@@ -421,7 +427,102 @@ function CombatComponent:StopAllActiveSkills(cancel : boolean?)
 end
 
 
+--[[
+Atualiza o loadout de Skills (func interna)
+]]
+function CombatComponent:_ApplyLoadout(loadoutData)
+	-- Limpa o atual
+	table.clear(self.Loadout)
 
+	-- Detecta se é slot fixo ou independente
+	local isArray = next(loadoutData) ~= nil
+
+	if isArray then
+		for _, skillKey in ipairs(loadoutData) do
+			self:AddSkill(skillKey) -- Salva no próximo slot livre
+		end
+	else
+		for slot, skillKey in pairs(loadoutData) do
+			self:EquipSkill(slot, skillKey) -- Override no slot definido
+		end
+	end
+end
+
+--[[
+Adiciona uma nova skill no loadout que ocupará o próximo slot livre
+]]
+function CombatComponent:AddSkill(skillKey)
+	local slot = 1
+	while self.Loadout[slot] ~= nil do
+		slot += 1
+	end
+	if self:EquipSkill(slot, skillKey) then return slot end
+	return nil
+end
+
+
+--[[
+Equipa uma skill em um slot dedicado/especificado.
+]]
+function CombatComponent:EquipSkill(slotIndex, skillKey)
+	local skillPointer
+
+	-- Se for string, procura no database
+	if type(skillKey) == "string" then
+		--Verifica Cache
+		if self.SkillCache[skillKey] then
+			skillPointer = self.SkillCache[skillKey]
+		else
+			--Busca o Script Físico
+			local scriptInstance = SkillData._Registry[skillKey]
+			if not scriptInstance then 
+				warn("Skill Key inválida:", skillKey) 
+				return false 
+			end
+			
+			--Require
+			local success, result = pcall(require, scriptInstance)
+			if not success then return warn("Erro no script da skill:", skillKey) end
+			
+			--Aplica nome caso não tenha
+			if not result.data then result.data = {} end
+			if not result.data.name then result.data.name = skillKey end
+			
+			--Salva no cache
+			self.SkillCache[skillKey] = result
+			skillPointer = result
+		end
+	
+	--Se for skill criada via código (table)
+	elseif type(skillKey) == "table" then
+		skillPointer = skillKey
+	end
+
+	if not skillPointer then return false end
+
+	-- Inicializa cooldown se precisar
+	local name = skillPointer.data.name
+	if not self.Cooldowns[name] then self.Cooldowns[name] = 0 end
+
+	-- Salva no slot
+	self.Loadout[slotIndex] = skillPointer
+	
+	return true
+end
+
+--[[
+Remove uma skill de um slot
+]]
+function CombatComponent:UnequipSlot(slotIndex)
+	self.Loadout[slotIndex] = nil
+end
+
+--[[
+Retorna a skill no slot caso presente
+]]
+function CombatComponent:GetSkillFromSlot(slot)
+	return self.Loadout[slot] or nil
+end
 --=============================================================================
 --  CHARACTER E FORMAS
 --=============================================================================
@@ -460,40 +561,33 @@ function CombatComponent:GetChosenChar()
 end
 
 
-function CombatComponent:SetCharMode(Mode)
+function CombatComponent:SetCharMode(charName : string, modeName : string)
 
-    if self.Mode == Mode then return false end
+	--Busca a string no database de char config
+	local charData = CharData[charName]
+	if not charData then return warn("Char não existe:", charName) end
+	
+	local formData = charData[modeName]
+	if not formData then return warn("Modo não existe:", modeName) end
 
-    self.Mode = Mode
+	-- Atualiza estado
+	self.ChosenChar = charName
+	self.Mode = modeName
+	self.BaseStats = formData.Stats
 
-    -- Recarrega folders
-    if not self:_LoadFolders() then
-        return false
-    end
+	-- Aplica Stats
+	self:_ApplyStats(formData.Stats)
 
-    self:LoadSkillsData()
-
-    -- Atualiza stats
-    local stats = self.Entity.GetStats()
-    self.Entity.SetSpeed(stats.Speed or 16)
-    self.Entity.SetJumpForce(stats.JumpPower or 50)
-
-    -- Atualiza HP
-    local health = self.Entity:GetComponent(self.Entity.ComponentKey.Health)
-    if health and stats.MaxHP then
-        local ratio = health:GetHealthRatio()
-        health.MaxHP = stats.MaxHP
-        health:SetHP(stats.MaxHP * ratio) -- Mantém proporção
-    end
-
-    return true
+	-- Aplica Skills
+	self:_ApplyLoadout(formData.Loadout)
+	
+	return true
 end
 
 
 function CombatComponent:GetCharMode()
 	return self.Mode
 end
-
 
 --[[
 Retorna as postas de forma e dados do personagem escolhido.
@@ -503,6 +597,20 @@ function CombatComponent:GetCharFolders()
 	return self._formFolder,self.charFolder
 end
 
+-- Aplica Stats
+function CombatComponent:_ApplyStats(stats)
+	if stats.Speed then self.Entity:SetSpeed(stats.Speed) end
+	if stats.JumpPower then self.Entity:SetJumpForce(stats.JumpPower) end
+	
+	local health = self.Entity:GetComponent("Health")
+	if health and stats.MaxHP then
+		local ratio = health:GetHealthRatio()
+		health:SetMaxHP(stats.MaxHP)
+		health:SetHP(stats.MaxHP * ratio)
+	end
+end
+
+
 --=============================================================================
 --  LIFECYCLE
 --=============================================================================
@@ -511,8 +619,8 @@ end
 Função de inicialização do componente, tenta carregar skills automaticamente
 ]]
 function CombatComponent:OnAdded()
-	-- Tenta carregar skills automaticamente
-		self:LoadSkillsData()
+	-- Carrega personagem padrão
+		self:SetForm(self.ChosenChar, self.Mode)
 end
 
 
@@ -523,6 +631,8 @@ function CombatComponent:Destroy()
 	self:StopAllActiveSkills(true)
 	table.clear(self.Cooldowns)
 	table.clear(self.ActiveSkills)
+	table.clear(self.Loadout)
+	table.clear(self.SkillCache)
 	self.Entity = nil
 end
 
@@ -532,10 +642,11 @@ end
 --=============================================================================
 
 local ExposeAPI = {
-	-- Skills
+	-- Getters skills
 	GetSkillName = function(component, ...) return component:GetSkillName(...) end,
 	GetSkillScript = function(component, ...) return component:GetSkillScript(...) end,
 	GetSkillData = function(component, ...) return component:GetSkillData(...) end,
+	GetSkillFromSlot = function(component, ...) return component:GetSkillFromSlot(...) end,
 
 	-- Cooldowns
 	HasCooldown = function(component, ...) return component:HasCooldown(...) end,
@@ -556,6 +667,12 @@ local ExposeAPI = {
 	SetChosenChar = function(component,...) return component:SetChosenChar(...) end,
 	GetCharMode = function(component,...) return component:GetCharMode(...) end,
 	SetCharMode = function(component,...) return component:SetCharMode(...) end,
+
+	--Loadout
+	EquipSkill = function(component, ...) return component:EquipSkill(...) end,
+	AddSkill = function(component, ...) return component:AddSkill(...) end,
+	UnequipSlot = function(component, ...) return component:UnequipSlot(...) end,
+
 
 	--Validação
 	CanContinue = function(component,...) return component:CanContinue(...) end,

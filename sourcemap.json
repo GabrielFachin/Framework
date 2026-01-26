@@ -6072,6 +6072,38 @@
               "className": "ObjectValue"
             }
           ]
+        },
+        {
+          "name": "DataBase",
+          "className": "Folder",
+          "children": [
+            {
+              "name": "SkillDatabase",
+              "className": "ModuleScript",
+              "filePaths": [
+                "sync/ServerStorage/DataBase/SkillDatabase.module.luau"
+              ],
+              "children": [
+                {
+                  "name": "Schema",
+                  "className": "Folder"
+                }
+              ]
+            },
+            {
+              "name": "CharacterDatabase",
+              "className": "ModuleScript",
+              "filePaths": [
+                "sync/ServerStorage/DataBase/CharacterDatabase.module.luau"
+              ],
+              "children": [
+                {
+                  "name": "Schema",
+                  "className": "Folder"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
