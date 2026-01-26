@@ -1,7 +1,7 @@
 --[[                           COMPONENTE VITAL                                                      ]]
 
-local ServerStorage = game:GetService("ServerStorage")
-local EntityWrapper = require(ServerStorage.Modules.EntityWrapper)
+local ServerScript = game:GetService("ServerScriptService")
+local EntityWrapper = require(ServerScript.EntityData.EntityWrapper)
 
 local CharacterComponent = {}
 CharacterComponent.__index = CharacterComponent

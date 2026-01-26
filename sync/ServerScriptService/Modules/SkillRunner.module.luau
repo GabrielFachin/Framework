@@ -26,10 +26,10 @@ function SkillRunner.new(skillData,Entity,name,SRtype,ChainHistory) --Instancia 
 
 
 	--======REQUIRES======--
-	self.lib = require(Storage.Modules.Animation.AnimationLib) 					--Prepara a lib de animações
-	self.connection = require(Storage.Modules.SkillScheduler) 					--Heartbeat global
-	self.statusTable = require(Storage.Modules.Combat.StateTable) 				--Facilita acesso a aplicação de estados pelas skills
-	self.weaponHitboxModule = require(Storage.Modules.Combat.ShapecastHitbox)   --Prepara o modulo do shapecast para facil acesso e criação de hitboxes
+	self.lib = require(Storage.Modules.Animation.AnimationLib) 							--Prepara a lib de animações
+	self.connection = require(Storage.Modules.SkillScheduler) 							--Heartbeat global
+	self.statusTable = require(Storage.Modules.Combat.StateTable) 						--Facilita acesso a aplicação de estados pelas skills
+	self.weaponHitboxModule = require(Storage.Modules.Combat.Hitbox.ShapecastHitbox)   --Prepara o modulo do shapecast para facil acesso e criação de hitboxes
 
 
 	--Remove ChainHistory antes de copiar os dados.

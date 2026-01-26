@@ -395,6 +395,32 @@
                   ]
                 },
                 {
+                  "name": "RightUpperArm",
+                  "className": "MeshPart",
+                  "children": [
+                    {
+                      "name": "RightShoulderRigAttachment",
+                      "className": "Attachment"
+                    },
+                    {
+                      "name": "RightElbowRigAttachment",
+                      "className": "Attachment"
+                    },
+                    {
+                      "name": "RightShoulderAttachment",
+                      "className": "Attachment"
+                    },
+                    {
+                      "name": "OriginalSize",
+                      "className": "Vector3Value"
+                    },
+                    {
+                      "name": "RightShoulder",
+                      "className": "Motor6D"
+                    }
+                  ]
+                },
+                {
                   "name": "UpperTorso",
                   "className": "MeshPart",
                   "children": [
@@ -647,32 +673,6 @@
                       "className": "Motor6D"
                     }
                   ]
-                },
-                {
-                  "name": "RightUpperArm",
-                  "className": "MeshPart",
-                  "children": [
-                    {
-                      "name": "RightShoulderRigAttachment",
-                      "className": "Attachment"
-                    },
-                    {
-                      "name": "RightElbowRigAttachment",
-                      "className": "Attachment"
-                    },
-                    {
-                      "name": "RightShoulderAttachment",
-                      "className": "Attachment"
-                    },
-                    {
-                      "name": "OriginalSize",
-                      "className": "Vector3Value"
-                    },
-                    {
-                      "name": "RightShoulder",
-                      "className": "Motor6D"
-                    }
-                  ]
                 }
               ]
             },
@@ -864,6 +864,10 @@
                   "className": "MeshPart",
                   "children": [
                     {
+                      "name": "LeftWristRigAttachment",
+                      "className": "Attachment"
+                    },
+                    {
                       "name": "LeftGripAttachment",
                       "className": "Attachment"
                     },
@@ -874,10 +878,6 @@
                     {
                       "name": "LeftWrist",
                       "className": "Motor6D"
-                    },
-                    {
-                      "name": "LeftWristRigAttachment",
-                      "className": "Attachment"
                     }
                   ]
                 },
@@ -3164,6 +3164,36 @@
               ]
             },
             {
+              "name": "Head",
+              "className": "Part",
+              "children": [
+                {
+                  "name": "Mesh",
+                  "className": "SpecialMesh"
+                },
+                {
+                  "name": "face",
+                  "className": "Decal"
+                },
+                {
+                  "name": "HairAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "HatAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "FaceFrontAttachment",
+                  "className": "Attachment"
+                },
+                {
+                  "name": "FaceCenterAttachment",
+                  "className": "Attachment"
+                }
+              ]
+            },
+            {
               "name": "Torso",
               "className": "Part",
               "children": [
@@ -3284,36 +3314,6 @@
                 {
                   "name": "RootJoint",
                   "className": "Motor6D"
-                }
-              ]
-            },
-            {
-              "name": "Head",
-              "className": "Part",
-              "children": [
-                {
-                  "name": "Mesh",
-                  "className": "SpecialMesh"
-                },
-                {
-                  "name": "face",
-                  "className": "Decal"
-                },
-                {
-                  "name": "HairAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "HatAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "FaceFrontAttachment",
-                  "className": "Attachment"
-                },
-                {
-                  "name": "FaceCenterAttachment",
-                  "className": "Attachment"
                 }
               ]
             }
@@ -5343,6 +5343,13 @@
                   ]
                 }
               ]
+            },
+            {
+              "name": "EntityWrapper",
+              "className": "ModuleScript",
+              "filePaths": [
+                "sync/ServerScriptService/EntityData/EntityWrapper.module.luau"
+              ]
             }
           ]
         }
@@ -5361,13 +5368,6 @@
               "className": "ModuleScript",
               "filePaths": [
                 "sync/ServerStorage/Modules/SkillScheduler.module.luau"
-              ]
-            },
-            {
-              "name": "EntityWrapper",
-              "className": "ModuleScript",
-              "filePaths": [
-                "sync/ServerStorage/Modules/EntityWrapper.module.luau"
               ]
             },
             {
@@ -5698,124 +5698,6 @@
                   ]
                 },
                 {
-                  "name": "ShapecastHitbox",
-                  "className": "ModuleScript",
-                  "filePaths": [
-                    "sync/ServerStorage/Modules/Combat/ShapecastHitbox.module.luau"
-                  ],
-                  "children": [
-                    {
-                      "name": "Solvers",
-                      "className": "ModuleScript",
-                      "filePaths": [
-                        "sync/ServerStorage/Modules/Combat/ShapecastHitbox/Solvers.module.luau"
-                      ],
-                      "children": [
-                        {
-                          "name": "Bone",
-                          "className": "ModuleScript",
-                          "filePaths": [
-                            "sync/ServerStorage/Modules/Combat/ShapecastHitbox/Solvers/Bone.module.luau"
-                          ]
-                        },
-                        {
-                          "name": "Raycast",
-                          "className": "ModuleScript",
-                          "filePaths": [
-                            "sync/ServerStorage/Modules/Combat/ShapecastHitbox/Solvers/Raycast.module.luau"
-                          ]
-                        },
-                        {
-                          "name": "Blockcast",
-                          "className": "ModuleScript",
-                          "filePaths": [
-                            "sync/ServerStorage/Modules/Combat/ShapecastHitbox/Solvers/Blockcast.module.luau"
-                          ]
-                        },
-                        {
-                          "name": "Attachment",
-                          "className": "ModuleScript",
-                          "filePaths": [
-                            "sync/ServerStorage/Modules/Combat/ShapecastHitbox/Solvers/Attachment.module.luau"
-                          ]
-                        },
-                        {
-                          "name": "Spherecast",
-                          "className": "ModuleScript",
-                          "filePaths": [
-                            "sync/ServerStorage/Modules/Combat/ShapecastHitbox/Solvers/Spherecast.module.luau"
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "name": "Types",
-                      "className": "ModuleScript",
-                      "filePaths": [
-                        "sync/ServerStorage/Modules/Combat/ShapecastHitbox/Types.module.luau"
-                      ]
-                    },
-                    {
-                      "name": "Hitbox",
-                      "className": "ModuleScript",
-                      "filePaths": [
-                        "sync/ServerStorage/Modules/Combat/ShapecastHitbox/Hitbox.module.luau"
-                      ]
-                    },
-                    {
-                      "name": "Visualizers",
-                      "className": "ModuleScript",
-                      "filePaths": [
-                        "sync/ServerStorage/Modules/Combat/ShapecastHitbox/Visualizers.module.luau"
-                      ],
-                      "children": [
-                        {
-                          "name": "Raycast",
-                          "className": "ModuleScript",
-                          "filePaths": [
-                            "sync/ServerStorage/Modules/Combat/ShapecastHitbox/Visualizers/Raycast.module.luau"
-                          ]
-                        },
-                        {
-                          "name": "Blockcast",
-                          "className": "ModuleScript",
-                          "filePaths": [
-                            "sync/ServerStorage/Modules/Combat/ShapecastHitbox/Visualizers/Blockcast.module.luau"
-                          ]
-                        },
-                        {
-                          "name": "Spherecast",
-                          "className": "ModuleScript",
-                          "filePaths": [
-                            "sync/ServerStorage/Modules/Combat/ShapecastHitbox/Visualizers/Spherecast.module.luau"
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "name": "Settings",
-                      "className": "ModuleScript",
-                      "filePaths": [
-                        "sync/ServerStorage/Modules/Combat/ShapecastHitbox/Settings.module.luau"
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "HitboxWrapper",
-                  "className": "ModuleScript",
-                  "filePaths": [
-                    "sync/ServerStorage/Modules/Combat/HitboxWrapper.module.luau"
-                  ]
-                },
-                {
-                  "name": "HitboxSpawner",
-                  "className": "ModuleScript",
-                  "filePaths": [
-                    "sync/ServerStorage/Modules/Combat/HitboxSpawner.module.luau"
-                  ]
-                },
-                {
                   "name": "StateTable",
                   "className": "ModuleScript",
                   "filePaths": [
@@ -5939,6 +5821,130 @@
                           "className": "ModuleScript",
                           "filePaths": [
                             "sync/ServerStorage/Modules/Combat/StateTable/States/Stun.module.luau"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Hitbox",
+                  "className": "Folder",
+                  "children": [
+                    {
+                      "name": "HitboxSpawner",
+                      "className": "ModuleScript",
+                      "filePaths": [
+                        "sync/ServerStorage/Modules/Combat/Hitbox/HitboxSpawner.module.luau"
+                      ]
+                    },
+                    {
+                      "name": "HitboxWrapper",
+                      "className": "ModuleScript",
+                      "filePaths": [
+                        "sync/ServerStorage/Modules/Combat/Hitbox/HitboxWrapper.module.luau"
+                      ]
+                    },
+                    {
+                      "name": "ShapecastHitbox",
+                      "className": "ModuleScript",
+                      "filePaths": [
+                        "sync/ServerStorage/Modules/Combat/Hitbox/ShapecastHitbox.module.luau"
+                      ],
+                      "children": [
+                        {
+                          "name": "Solvers",
+                          "className": "ModuleScript",
+                          "filePaths": [
+                            "sync/ServerStorage/Modules/Combat/Hitbox/ShapecastHitbox/Solvers.module.luau"
+                          ],
+                          "children": [
+                            {
+                              "name": "Bone",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/Combat/Hitbox/ShapecastHitbox/Solvers/Bone.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Raycast",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/Combat/Hitbox/ShapecastHitbox/Solvers/Raycast.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Blockcast",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/Combat/Hitbox/ShapecastHitbox/Solvers/Blockcast.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Attachment",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/Combat/Hitbox/ShapecastHitbox/Solvers/Attachment.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Spherecast",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/Combat/Hitbox/ShapecastHitbox/Solvers/Spherecast.module.luau"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Types",
+                          "className": "ModuleScript",
+                          "filePaths": [
+                            "sync/ServerStorage/Modules/Combat/Hitbox/ShapecastHitbox/Types.module.luau"
+                          ]
+                        },
+                        {
+                          "name": "Hitbox",
+                          "className": "ModuleScript",
+                          "filePaths": [
+                            "sync/ServerStorage/Modules/Combat/Hitbox/ShapecastHitbox/Hitbox.module.luau"
+                          ]
+                        },
+                        {
+                          "name": "Visualizers",
+                          "className": "ModuleScript",
+                          "filePaths": [
+                            "sync/ServerStorage/Modules/Combat/Hitbox/ShapecastHitbox/Visualizers.module.luau"
+                          ],
+                          "children": [
+                            {
+                              "name": "Raycast",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/Combat/Hitbox/ShapecastHitbox/Visualizers/Raycast.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Blockcast",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/Combat/Hitbox/ShapecastHitbox/Visualizers/Blockcast.module.luau"
+                              ]
+                            },
+                            {
+                              "name": "Spherecast",
+                              "className": "ModuleScript",
+                              "filePaths": [
+                                "sync/ServerStorage/Modules/Combat/Hitbox/ShapecastHitbox/Visualizers/Spherecast.module.luau"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Settings",
+                          "className": "ModuleScript",
+                          "filePaths": [
+                            "sync/ServerStorage/Modules/Combat/Hitbox/ShapecastHitbox/Settings.module.luau"
                           ]
                         }
                       ]

@@ -6,7 +6,7 @@ local component = require(ServerScriptService.EntityData.ComponentsExport)
 local components = {
 	Character = component.Character,
 	Health = component.Health,
-    --Status = component.Status
+    Status = component.Status
 }
 
 for i = 0,100,1 do
@@ -23,7 +23,7 @@ for i = 0,100,1 do
     part1.Anchored = false
     part1.BrickColor = BrickColor.new("Bright yellow")
     part1.Parent = model
-
+    
 
     
     DataManager.Create(model, components)

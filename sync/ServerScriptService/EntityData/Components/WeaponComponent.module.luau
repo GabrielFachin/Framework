@@ -6,7 +6,7 @@
 
 local RS = game:GetService("ReplicatedStorage")
 local Storage = game:GetService("ServerStorage")
-local HitboxWrapper = require(Storage.Modules.Combat.HitboxWrapper)
+local HitboxWrapper = require(Storage.Modules.Combat.Hitbox.HitboxWrapper)
 
 local WeaponComponent = {}
 WeaponComponent.__index = WeaponComponent

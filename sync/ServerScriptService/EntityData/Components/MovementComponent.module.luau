@@ -3,8 +3,8 @@
 ]]
 
 
-local Storage = game:GetService("ServerStorage")
-local EntityWrapper = require(Storage.Modules.EntityWrapper)
+local ServerScript = game:GetService("ServerScriptService")
+local EntityWrapper = require(ServerScript.EntityData.EntityWrapper)
 
 local MovementComponent = {}
 MovementComponent.__index = MovementComponent

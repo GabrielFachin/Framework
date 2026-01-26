@@ -62,11 +62,11 @@ local Skill = {
 			
 			self.Entity.StartHitbox(self.data.duration)
 		
-			--self.Entity.ApplyStatus(shield,9999,self)
+			self.Entity.ApplyStatus(shield,9999,self)
 
-			self.blockID = self.Entity.ApplyStatus(block,9999,self)
+			--self.blockID = self.Entity.ApplyStatus(block,9999,self)
 
-			--self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
+			self.Entity.ApplyStatus(statsTable.Status.Bleed,9999,self)
 
 			self.cleanUp = function()
 				self.Entity.StopAnimation(self.M1Start,0.2)
