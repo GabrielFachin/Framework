@@ -207,9 +207,10 @@ function CombatComponent:SetCooldown(skillName : string, customCooldown : number
 
 	-- Se não forneceu cooldown customizado, busca no módulo
 	if not cd then
-		local skillData = self:GetSkillData(skillName)
-		if skillData and skillData.data then
-			cd = skillData.data.cooldown
+			warn(self.SkillCache,skillName,self.SkillCache[skillName])
+		if self.SkillCache and self.SkillCache[skillName].data then
+			local skill = self.SkillCache[skillName]
+			cd = skill.data.cooldown
 		end
 	end
 
@@ -435,7 +436,7 @@ function CombatComponent:_ApplyLoadout(loadoutData)
 	table.clear(self.Loadout)
 
 	-- Detecta se é slot fixo ou independente
-	local isArray = next(loadoutData) ~= nil
+	local isArray = typeof(loadoutData) == "table" and next(loadoutData) ~= nil
 
 	if isArray then
 		for _, skillKey in ipairs(loadoutData) do
@@ -620,7 +621,7 @@ Função de inicialização do componente, tenta carregar skills automaticamente
 ]]
 function CombatComponent:OnAdded()
 	-- Carrega personagem padrão
-		self:SetForm(self.ChosenChar, self.Mode)
+		self:SetCharMode(self.ChosenChar, self.Mode)
 end
 
 

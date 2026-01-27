@@ -1,7 +1,9 @@
 --[[                           COMPONENTE VITAL                                                      ]]
 
 local ServerScript = game:GetService("ServerScriptService")
+local ServerStorage = game:GetService("ServerStorage")
 local EntityWrapper = require(ServerScript.EntityData.EntityWrapper)
+local DB = require(ServerStorage.DataBase.CharacterDatabase)
 
 local CharacterComponent = {}
 CharacterComponent.__index = CharacterComponent
@@ -32,17 +34,9 @@ Retorna a tabela de Stats do personagem
 ]]
 function CharacterComponent:GetStats() : {}
 	if not self.Entity:HasComponent(self.Entity.ComponentKey.Combat) then return {Speed = 16, JumpForce = 20} end
-
-	local formFolder,_ = self.Entity.GetCharFolders()
-
-	local dataFolder = formFolder:FindFirstChild("Data")
-	if not dataFolder then return {} end
-
-	local baseModule = dataFolder:FindFirstChild("Base")
-	if not baseModule then return {} end
-
-	local success, charData = pcall(require, baseModule)
-	if not success then return {} end
+	local char = self.Entity:GetChosenChar()
+	local mode = self.Entity:GetCharMode()
+	local charData = DB[char][mode]
 
 	return charData
 end
@@ -52,8 +46,11 @@ Retorna um status especifico do char sendo usado
 @param statName STRING
 ]]
 function CharacterComponent:GetStat(statName : string, default)
-	local Stats = self:GetStats()
-	return Stats[statName] or default
+	local charData = self:GetStats()
+
+	local result = charData["Stats"][statName] or charData[statName] or default
+	warn(result,statName)
+	return result
 end
 --=============================================================================
 --  CHARACTER MODEL

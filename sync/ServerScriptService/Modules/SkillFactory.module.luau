@@ -20,38 +20,31 @@ local skillCache = {}
 
 
 -- Prepara e devolve o módulo da skill com callbacks garantidos
-function SkillFactory.GetSkill(skillModule)
-	if skillCache[skillModule] then
+function SkillFactory.GetSkill(skillInput)
+	local skill
+	
+	-- Se for um moduleScript não carregado
+	if typeof(skillInput) == "Instance" and skillInput:IsA("ModuleScript") then
+		if skillCache[skillInput] then return skillCache[skillInput] end
 		
-		return skillCache[skillModule]
+		local success, res = pcall(require, skillInput)
+		if not success then return nil end
+		skill = res
+		skillCache[skillInput] = skill
 		
-		
-	end
-
-	local success, skill = pcall(require, skillModule)
-	if not success then
-		warn("Erro ao carregar módulo de skill:", skill)
+	-- Se for uma tabela de dados
+	elseif type(skillInput) == "table" then
+		skill = skillInput
+	else
 		return nil
 	end
-	if not skill then
-		warn("Módulo de skill retornou nil")
-		return nil
-	end
 
-	-- Aplica metatable nas callbacks, se existirem
-	if not skill.callbacks then
-		skill.callbacks = {}
-	end
+	-- Injeta callbacks padrão se faltar
+	if not skill.callbacks then skill.callbacks = {} end
 	setmetatable(skill.callbacks, { __index = SkillDefaults })
 	
-	-- Prepara as instancias máximas da habilidade
-	if not skill.data.maxInstances then
-		skill.data.maxInstances = 1
-	end
+	if not skill.data.maxInstances then skill.data.maxInstances = 1 end
 
-
-	-- Cache final
-	skillCache[skillModule] = skill
 	return skill
 end
 

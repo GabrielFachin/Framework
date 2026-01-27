@@ -1,9 +1,9 @@
 --=================Esse módulo controla o ciclo de vida das skills, TODAS as skills e modificadores são gerados com um SR base=================
 
-local ServerStorage = game:GetService("ServerStorage")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerScript = game:GetService("ServerScriptService")
 local Storage = game:GetService("ServerStorage")
-local StateTable = require(ServerStorage.Modules.Combat.StateTable)
+local StateTable = require(Storage.Modules.Combat.StateTable)
 local Utils = require(ReplicatedStorage.Utils)
 
 local SkillRunner = {}
@@ -27,7 +27,7 @@ function SkillRunner.new(skillData,Entity,name,SRtype,ChainHistory) --Instancia 
 
 	--======REQUIRES======--
 	self.lib = require(Storage.Modules.Animation.AnimationLib) 							--Prepara a lib de animações
-	self.connection = require(Storage.Modules.SkillScheduler) 							--Heartbeat global
+	self.connection = require(ServerScript.Modules.SkillScheduler) 							--Heartbeat global
 	self.statusTable = require(Storage.Modules.Combat.StateTable) 						--Facilita acesso a aplicação de estados pelas skills
 	self.weaponHitboxModule = require(Storage.Modules.Combat.Hitbox.ShapecastHitbox)   --Prepara o modulo do shapecast para facil acesso e criação de hitboxes
 

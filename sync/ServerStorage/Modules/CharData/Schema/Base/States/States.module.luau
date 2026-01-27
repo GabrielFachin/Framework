@@ -1,1 +1,0 @@
---Script pra criação de possíveis estados e mudanças de flags por estado

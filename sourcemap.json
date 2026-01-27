@@ -5261,6 +5261,13 @@
               "filePaths": [
                 "sync/ServerScriptService/Modules/GlobalAntiCheat.module.luau"
               ]
+            },
+            {
+              "name": "SkillScheduler",
+              "className": "ModuleScript",
+              "filePaths": [
+                "sync/ServerScriptService/Modules/SkillScheduler.module.luau"
+              ]
             }
           ]
         },
@@ -5287,6 +5294,13 @@
               "className": "ModuleScript",
               "filePaths": [
                 "sync/ServerScriptService/EntityData/ComponentsExport.module.luau"
+              ]
+            },
+            {
+              "name": "EntityWrapper",
+              "className": "ModuleScript",
+              "filePaths": [
+                "sync/ServerScriptService/EntityData/EntityWrapper.module.luau"
               ]
             },
             {
@@ -5343,13 +5357,6 @@
                   ]
                 }
               ]
-            },
-            {
-              "name": "EntityWrapper",
-              "className": "ModuleScript",
-              "filePaths": [
-                "sync/ServerScriptService/EntityData/EntityWrapper.module.luau"
-              ]
             }
           ]
         }
@@ -5363,13 +5370,6 @@
           "name": "Modules",
           "className": "Folder",
           "children": [
-            {
-              "name": "SkillScheduler",
-              "className": "ModuleScript",
-              "filePaths": [
-                "sync/ServerStorage/Modules/SkillScheduler.module.luau"
-              ]
-            },
             {
               "name": "BaseSkills",
               "className": "Folder",
@@ -5388,191 +5388,6 @@
               "className": "Folder",
               "children": [
                 {
-                  "name": "GenericChar",
-                  "className": "Folder",
-                  "children": [
-                    {
-                      "name": "Base",
-                      "className": "Folder",
-                      "children": [
-                        {
-                          "name": "Data",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Base",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Data/Base.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Script",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Dash",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Dash.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "M1",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/M1.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill1",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Skill1.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill2",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Skill2.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill3",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Skill3.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Ultimate",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Script/Ultimate.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Skills",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Skills",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/Skills/Skills.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "States",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "States",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/GenericChar/Base/States/States.module.luau"
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "AlbertR",
-                  "className": "Folder",
-                  "children": [
-                    {
-                      "name": "Base",
-                      "className": "Folder",
-                      "children": [
-                        {
-                          "name": "Data",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Base",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Data/Base.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Script",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Dash",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Dash.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "M1",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/M1.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill1",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Skill1.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill2",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Skill2.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill3",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Skill3.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Ultimate",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Script/Ultimate.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Skills",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Skills",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/AlbertR/Base/Skills/Skills.module.luau"
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
                   "name": "!Doc",
                   "className": "Folder",
                   "children": [
@@ -5581,105 +5396,6 @@
                       "className": "ModuleScript",
                       "filePaths": [
                         "sync/ServerStorage/Modules/CharData/!Doc/DOC.module.luau"
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "Schema",
-                  "className": "Folder",
-                  "children": [
-                    {
-                      "name": "Base",
-                      "className": "Folder",
-                      "children": [
-                        {
-                          "name": "Data",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Base",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Data/Base.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Script",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Dash",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Dash.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "M1",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/M1.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill1",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Skill1.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill2",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Skill2.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Skill3",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Skill3.module.luau"
-                              ]
-                            },
-                            {
-                              "name": "Ultimate",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Script/Ultimate.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "Skills",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "Skills",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/Skills/Skills.module.luau"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "name": "States",
-                          "className": "Folder",
-                          "children": [
-                            {
-                              "name": "States",
-                              "className": "ModuleScript",
-                              "filePaths": [
-                                "sync/ServerStorage/Modules/CharData/Schema/Base/States/States.module.luau"
-                              ]
-                            }
-                          ]
-                        }
                       ]
                     }
                   ]
@@ -6086,6 +5802,54 @@
               "children": [
                 {
                   "name": "Schema",
+                  "className": "Folder",
+                  "children": [
+                    {
+                      "name": "Dash",
+                      "className": "ModuleScript",
+                      "filePaths": [
+                        "sync/ServerStorage/DataBase/SkillDatabase/Schema/Dash.module.luau"
+                      ]
+                    },
+                    {
+                      "name": "M1",
+                      "className": "ModuleScript",
+                      "filePaths": [
+                        "sync/ServerStorage/DataBase/SkillDatabase/Schema/M1.module.luau"
+                      ]
+                    },
+                    {
+                      "name": "Skill1",
+                      "className": "ModuleScript",
+                      "filePaths": [
+                        "sync/ServerStorage/DataBase/SkillDatabase/Schema/Skill1.module.luau"
+                      ]
+                    },
+                    {
+                      "name": "Skill2",
+                      "className": "ModuleScript",
+                      "filePaths": [
+                        "sync/ServerStorage/DataBase/SkillDatabase/Schema/Skill2.module.luau"
+                      ]
+                    },
+                    {
+                      "name": "Skill3",
+                      "className": "ModuleScript",
+                      "filePaths": [
+                        "sync/ServerStorage/DataBase/SkillDatabase/Schema/Skill3.module.luau"
+                      ]
+                    },
+                    {
+                      "name": "Ultimate",
+                      "className": "ModuleScript",
+                      "filePaths": [
+                        "sync/ServerStorage/DataBase/SkillDatabase/Schema/Ultimate.module.luau"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "GenericChar",
                   "className": "Folder"
                 }
               ]
@@ -6099,6 +5863,19 @@
               "children": [
                 {
                   "name": "Schema",
+                  "className": "Folder",
+                  "children": [
+                    {
+                      "name": "Base",
+                      "className": "ModuleScript",
+                      "filePaths": [
+                        "sync/ServerStorage/DataBase/CharacterDatabase/Schema/Base.module.luau"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "GenericChar",
                   "className": "Folder"
                 }
               ]

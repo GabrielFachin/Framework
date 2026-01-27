@@ -22,90 +22,80 @@ end
 function SkillHandler.HandleSkillInput(ID,skillIndex)
 
 	local entityCore = DataManager.Get(ID) 	--Salva o EntityCore da entidade que chamou a função
+	if not entityCore then return false end
 
-	local skillScript = entityCore.GetSkillScript(skillIndex) --Pega o script da skill
-	if not skillScript then  warn("Skill não encontrada") 
-	return false end
-
-
-	local skill = SkillFactory.GetSkill(skillScript) -- Injeta o fallback da skill pra evitar erros de pointer nil caso a função não esteja declarada, além de preparar maxInstances padrão (1)
+	if not entityCore:HasComponent(entityCore.ComponentKey.Combat) then return false end
 
 
+	local skillData = entityCore.GetSkillFromSlot(skillIndex)
+	if not skillData then return false end
 
-	local skillName = entityCore.GetSkillName(skillIndex) -- Pega o nome da skill pra checagem de multiplos requests
+	local skill = SkillFactory.GetSkill(skillData)
 
-	local activeRunners = entityCore.GetActiveSkills(skillName) --Busca instâncias ativas da skill na entidade
+	local skillName = skill.data.name
 
 	local max = skill.data.maxInstances--Guarda a quantidade máximas de instâncias permitida daquela skill
 
 	local maxCooldown 
 	local ChainHistory
+	local activeRunners = entityCore.GetActiveSkills(skillName) --Busca instâncias ativas da skill na entidade
 
+	if entityCore.HasCooldown(skillName) then return false end --Se estiver em cooldown, retorne false.
 
-	if not entityCore.HasCooldown(skillName) then --Se não estiver em cooldown, então roda
+	--Busca por tags que impossibilitem o player de castar essa skill
+	if not entityCore.CanContinue(skill) then 
+		warn("Skill não pode rodar")
+		return false
+	end
 
-		--Busca por tags que impossibilitem o player de castar essa skill
-		if not entityCore.CanContinue(skill) then 
-			warn("Skill não pode rodar")
-			return false
-		end
+	if not skill.data.ChainHistory then
+		local data = {
+    	rootOrigin = entityCore,
+    	rootSkill = skillName,
+    	history = {skillName},
+    	depth = 1,
+		chainStart = tick()
+		}
+		ChainHistory = StateTable.BuildHistory(data)
+	end
 
-
-		if not skill.data.ChainHistory then
-	    	local data = {
-        	rootOrigin = entityCore,
-        	rootSkill = skillName,
-        	history = {skillName},
-        	depth = 1,
-			chainStart = tick()
-			}
-			ChainHistory = StateTable.BuildHistory(data)
-		end
-
-		maxCooldown = entityCore.GetCooldown(skillName) --Pega o cooldown total da skill
-		
-		--Se já tiver uma instância ativa dessa skill
-		if #activeRunners > 0 then
-
-			--Se o número de instâncias for maior do que o máximo
-			if #activeRunners >= max then 
-
-				--Se o máximo for 1 (padrão de skill de recast apenas, sem spawns)
-				if max == 1 then
-
-					--Pego o primeiro runner da lista
-					local runner = activeRunners[1]
-
-						local canRecast = entityCore:TrySelfCancel() --tenta cancelar a skill atual
-						if not canRecast then return false end
-						runner:Recast() --Roda o recast
-						entityCore.SetCooldown(skillName)
-						return true,skillName end
-
-				return false
+	maxCooldown = entityCore.GetCooldown(skillName) --Pega o cooldown total da skill
+	
+	--Se já tiver uma instância ativa dessa skill e for maior do que o máximo
+	if #activeRunners > 0 and #activeRunners >= max then 
+		--Se o máximo for 1 (padrão de skill de recast apenas, sem spawns)
+		if max == 1 then
+		--Pego o primeiro runner da lista
+			local runner = activeRunners[1]
+			if entityCore:TrySelfCancel() then --tenta cancelar a skill atual
+				runner:Recast() 				--Roda o recast
+				entityCore.SetCooldown(skillName)
+				return true,skillName 
 			end
 		end
-			
-		local cancel = entityCore.TrySelfCancel()
+		return false
+	end
 		
-		if not cancel then --Cancela a skill anterior se ela for responsável por um state Self
-			return false end -- Se obtiver retorno false (estado encontrado mas não é Self), sai do código
-		
+	--Cancela a skill anterior se ela for responsável por um state Self
+	--Se obtiver retorno false (estado encontrado mas não é Self), sai do código
+	if not entityCore.TrySelfCancel() then return false end
+	
+	entityCore.SetCooldown(skillName)
 
-		entityCore.SetCooldown(skillName)
-	
-	
-	
+	--inicializa o runner da skill
 	local runner = SkillRunner.new(
 		skill,
 		entityCore,
 		skillName,
 		StateTable.Enum.Types.Skill,
-		ChainHistory) --lança skill(após checagem de cooldown,validação pelo EntityData e preparação de fallback pelo SkillFactory)
+		ChainHistory)
+
+	if not runner then return false end --caso o runner seja apagado na criação devido a stack overflow.
+
 	runner:start()
 	return true,skillName,maxCooldown
-	end
-return false
 end
+
+
 
 return SkillHandler
