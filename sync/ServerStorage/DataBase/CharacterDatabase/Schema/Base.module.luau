@@ -9,8 +9,12 @@ return {
 		JumpForce = 50,
 	},
 	Loadout = {
-	[1] = Keys.Schema.M1
+		Slots = {
+			[1] = Keys.Schema.M1
+		}
 	},
+
+
 	Weapon = "Martelo",
 	attachTo = "Right Arm"
 }

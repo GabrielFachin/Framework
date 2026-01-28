@@ -1,7 +1,7 @@
 local Skill = {
 
 	data = {
-		cooldown = 5,
+		cooldown = 2,
 		duration = 1,
 		castTime = 0,
 		anim = "anim",

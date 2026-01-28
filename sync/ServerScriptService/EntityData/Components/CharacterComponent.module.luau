@@ -49,7 +49,6 @@ function CharacterComponent:GetStat(statName : string, default)
 	local charData = self:GetStats()
 
 	local result = charData["Stats"][statName] or charData[statName] or default
-	warn(result,statName)
 	return result
 end
 --=============================================================================

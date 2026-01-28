@@ -47,4 +47,6 @@ ScanFolder(script, SkillDatabase.Keys, "")
 table.freeze(SkillDatabase.Keys)
 table.freeze(SkillDatabase._Registry)
 
+warn(SkillDatabase._Registry)
+
 return SkillDatabase

@@ -9,7 +9,7 @@ local components = {
     Status = component.Status
 }
 
-for i = 0,100,1 do
+for i = 0,0,1 do
     model = Instance.new("Model")
     model.Parent = workspace
 
@@ -27,6 +27,7 @@ for i = 0,100,1 do
 
     
     DataManager.Create(model, components)
+
 
 end
 

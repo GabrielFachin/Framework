@@ -1,9 +1,5 @@
---[[
-	- Lista de skills disponíveis
-	- Cooldowns de skills
-	- Runners ativos
-	- Validação de cast
-]]
+
+--=====TIPAGEM=====--
 
 type PlayerStatesType = {
     Self: {
@@ -15,7 +11,6 @@ type PlayerStatesType = {
         globalCast: any,
     }
 }
-
 
 local ServerStorage = game:GetService("ServerStorage")
 local StateTable = require(ServerStorage.Modules.Combat.StateTable)
@@ -140,7 +135,7 @@ Devevolve o script (não requirido) da skill no índice fornecido
 @param index - índice da skill (opcional se fornecer name) NUMBER
 @param name - nome da skill STRING (opcional, se fornecido, ignora index)
 ]]
-function CombatComponent:GetSkillScript(index : number?, name : string?) : Instance?
+function CombatComponent:GetSkillScript(index : number?, name : string?)
 	local charComp = self.Entity:GetComponent(self.Entity.ComponentKey.Character)
 	if not charComp then return nil end
 
@@ -207,7 +202,6 @@ function CombatComponent:SetCooldown(skillName : string, customCooldown : number
 
 	-- Se não forneceu cooldown customizado, busca no módulo
 	if not cd then
-			warn(self.SkillCache,skillName,self.SkillCache[skillName])
 		if self.SkillCache and self.SkillCache[skillName].data then
 			local skill = self.SkillCache[skillName]
 			cd = skill.data.cooldown
@@ -432,18 +426,28 @@ end
 Atualiza o loadout de Skills (func interna)
 ]]
 function CombatComponent:_ApplyLoadout(loadoutData)
+	if typeof(loadoutData) ~= "table" then warn("[CombatComponent],ApplyFunc, Loadout =~ table"); return end
+	warn(loadoutData)
+
+	local StructureCheck = loadoutData.Slots ~= nil or loadoutData.List ~= nil
+	assert(StructureCheck,"[CombatComponent] formatação de loadout inválida, confira tipo (slots ou list)") 
+	if not StructureCheck then return end
+
+
 	-- Limpa o atual
 	table.clear(self.Loadout)
 
-	-- Detecta se é slot fixo ou independente
-	local isArray = typeof(loadoutData) == "table" and next(loadoutData) ~= nil
+	local isList = loadoutData.List or false
 
-	if isArray then
-		for _, skillKey in ipairs(loadoutData) do
+
+	if isList then
+		warn(loadoutData)
+		for _, skillKey in ipairs(loadoutData.List) do
+			warn("oi")
 			self:AddSkill(skillKey) -- Salva no próximo slot livre
 		end
 	else
-		for slot, skillKey in pairs(loadoutData) do
+		for slot, skillKey in pairs(loadoutData.Slots) do
 			self:EquipSkill(slot, skillKey) -- Override no slot definido
 		end
 	end
@@ -453,10 +457,12 @@ end
 Adiciona uma nova skill no loadout que ocupará o próximo slot livre
 ]]
 function CombatComponent:AddSkill(skillKey)
+	warn("hohoho")
 	local slot = 1
 	while self.Loadout[slot] ~= nil do
 		slot += 1
 	end
+	warn(self.Loadout)
 	if self:EquipSkill(slot, skillKey) then return slot end
 	return nil
 end
@@ -625,6 +631,7 @@ function CombatComponent:OnAdded()
 end
 
 
+
 --[[
 Função de destruição do componente, para todas as skills ativas e limpa tabelas
 ]]
@@ -687,6 +694,7 @@ local ExposeAPI = {
 	GetCharFolders = function(component,...) return component:GetCharFolders(...)end,
 
 }
+
 
 return {
 	new = CombatComponent.new,
