@@ -303,7 +303,8 @@ function HealthComponent:GetHP()
 end
 
 function HealthComponent:GetMaxHP()
-	return self.MaxHP
+	self.MaxHP = self.Entity:GetStat("MaxHP", 100)
+	return self.maxHP
 end
 
 function HealthComponent:SetHP(value)
@@ -320,6 +321,9 @@ function HealthComponent:SetHP(value)
 end
 
 function HealthComponent:SetMaxHP(value)
+	self.Entity:SetBaseStat("MaxHP", value)
+	self:GetMaxHP()
+
 	local ratio = self.HP / self.MaxHP
 	self.MaxHP = math.max(1, value)
 	self.HP = math.floor(self.MaxHP * ratio)

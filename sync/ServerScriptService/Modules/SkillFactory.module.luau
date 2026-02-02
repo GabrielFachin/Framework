@@ -3,14 +3,13 @@ local SkillFactory = {}
 -- Funções padrão para as skills
 local SkillDefaults = {
 	onStart = function() end,
-	onStep = function() end,
+	--onStep = function() end,
 	onEnd = function() end,
-	onHit = function() end,
-	onStop = function() end,
+	--onHit = function() end,
 	onCancel = function()end,
 	
 	
-	onRecast = function()return false end,
+	--onRecast = function()return false end,
 }
 
 

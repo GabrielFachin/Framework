@@ -1,4 +1,5 @@
 local EntityCore = require(script.Parent.EntityCore)
+local CharacterDatabase = require(game.ServerStorage.DataBase.CharacterDatabase)
 
 local DataManager = {}
 local entityMap = {
@@ -38,11 +39,14 @@ function DataManager.Create(Entity,components : {})
 	local Player
 
 	--Salva esse ID no mapa de entidades
-	if typeof(Entity) == "table" then Model = Entity.Model Player = Entity.Player
+	if typeof(Entity) == "table" then Model = Entity.Model; Player = Entity.Player
 	else
-		Model = Entity Player = nil
+		Model = Entity; Player = nil
 	end
 	local core = EntityCore.new(Model,entityType,id,Player)
+
+	local statsConfig = {}
+	
 
 	--DEBUG
 	local compList = {}

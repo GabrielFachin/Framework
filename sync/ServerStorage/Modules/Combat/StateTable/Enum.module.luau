@@ -67,11 +67,14 @@ enum.SkillBreakpoints = {
 
 --tags são dados envolvendo comportamento da entidade.
 enum.Tags = {
-    canMove = "canMove",
-    canCast = "canCast",
-    canRotate = "canRotate",
+    canMove = "canMove",         --Pode se mover
+    canCast = "canCast",         --Pode usar skills
+    canRotate = "canRotate",     --Pode rotacionar o char
+    canDisplace = "canDisplace", --Pode ser deslocado por forças externas
+
     iFrame = "iFrame",
     block = "block",
+
     exclusive = "exclusive"
 }
 
@@ -81,6 +84,7 @@ enum.tagsBase = {
 	canMove = true,
 	canCast = true,
 	canRotate = true,
+    canDisplace = true,
 	iFrame = false,
     block = false,
 	}
@@ -95,6 +99,14 @@ enum.Types = {
     Status = "Status"
 }
 
+
+--Modificadores de atributos
+enum.ModifierType = {
+    Flat = "Flat",                      -- Soma flat
+    AddPercent = "AddPercent",          -- Stack de somas percentuais (percent += 0.2,0.5)
+    MultPercent = "MultPercent",        -- Multiplicação no final da fórmula (Total * 0.5)
+    Override = "Override",              -- Substitui o valor por inteiro
+}
 
 enum.MAX_RECURSION = 50 -- limite de ações recursivas de uma chain em um segundo
 

@@ -129,7 +129,11 @@ function SkillRunner:start()
 
 	
 	--Conecta com o heartbeat global para rodar o onStep
-	self.connection.Register(self,self.type)
+	if self.skillData.callbacks.onStep then
+		self.connection.Register(self,self.type)
+	else
+		self.connection = nil
+	end
 	
 	self.state = STATES.Casting --Estado de inicialização da skill
 
@@ -162,7 +166,11 @@ function SkillRunner:_internalUpdate(dt)
 	if self.ChainHistory.tempDepth >= self.statusTable.Enum.MAX_RECURSION then
 		self:endSkill(false)
 	end
-	
+
+	--Se a skill não tiver onStep, nao rode heartbeat
+	if self.connection == nil then return end
+
+
 	--Controle do timer da skill
 	 self.elapsedTime += dt
 
