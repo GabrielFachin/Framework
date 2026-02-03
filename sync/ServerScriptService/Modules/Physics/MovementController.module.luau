@@ -13,9 +13,9 @@ function MovementController.Unregister(entity)
     trackedEntitys[entity] = nil
 end
 
-function MovementController.ProcessEntity(entity, dt)
-    local wrapper = entity:GetMovementWrapper()
-    local entity = entity.Entity
+function MovementController.ProcessEntity(comp, dt)
+    local wrapper = comp:GetMovementWrapper()
+    local entity = comp.Entity
     
     if not wrapper or not entity then return end
 
@@ -44,8 +44,8 @@ function MovementController.ProcessEntity(entity, dt)
     -- ============================================================
     
     -- Busca os Stats calculados do frame atual
-    local currentSpeed = entity:GetStat("Speed", 16)
-    local currentJump = entity:GetStat("JumpForce", 50)
+    local currentSpeed = entity:GetStat(StateTable.Enum.Stats.Speed, 16)
+    local currentJump = entity:GetStat(StateTable.Enum.Stats.JumpForce, 50)
 
     -- Aplica os valores físicos no Wrapper
     wrapper:SetSpeed(currentSpeed)

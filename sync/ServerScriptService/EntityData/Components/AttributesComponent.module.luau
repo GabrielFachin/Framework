@@ -3,19 +3,15 @@ AttributeComponents.__index = AttributeComponents
 
 local ServerStorage = game:GetService("ServerStorage")
 local Enum = require(ServerStorage.Modules.Combat.StateTable.Enum)
+local DB = require(ServerStorage.DataBase.CharacterDatabase)
+local StateTable = require(ServerStorage.Modules.Combat.StateTable)
 
 function AttributeComponents.new(entity, config)
     local self = setmetatable({}, AttributeComponents)
     self.Entity = entity
 
-    -- Valores Base (vindos do CharacterDatabase)
-    self.BaseAttributes = config.BaseAttributes or {
-        Speed = 16,
-        JumpForce = 50,
-        MaxHP = 100,
-        Defense = 0,
-        DamageMult = 1,
-    }
+    -- Busca por config padrão (override)
+    self.BaseStats = config.BaseStats or nil
 
     -- Modificadores ativos
     -- Ex: table["Speed"]["BuffID"] = { Type = "Flat", Value = -0.5 }
@@ -28,8 +24,9 @@ end
 --  PIPELINE ATRIBUTOS
 --=============================================================================
 
-function AttributeComponents:GetAttribute(AttributeName, default)
-    local base = self.BaseAttributes[AttributeName] or default or 0
+function AttributeComponents:GetStat(AttributeName, default)
+    
+    local base = self.BaseStats[AttributeName] or default or 0
     local mods = self.Modifiers[AttributeName]
 
     if not mods then return base end
@@ -69,8 +66,21 @@ function AttributeComponents:GetAttribute(AttributeName, default)
     return math.max(0, result) -- Impede que atributos fiquem negativos
 end
 
-function AttributeComponents:SetBase(AttributeName, value)
-    self.BaseAttributes[AttributeName] = value
+function AttributeComponents:SetStat(AttributeName, value)
+    self.BaseStats[AttributeName] = value
+end
+
+--[[
+Retorna a tabela de Stats do personagem
+@return tabela de Stats TABLE
+]]
+function AttributeComponents:GetStats() : {}
+	if not self.Entity:HasComponent(self.Entity.ComponentKey.Combat) then return {Speed = 16, JumpForce = 20} end
+	local char = self.Entity:GetChosenChar()
+	local mode = self.Entity:GetCharMode()
+	local charData = DB[char][mode]
+
+	return charData
 end
 
 --=============================================================================
@@ -92,9 +102,40 @@ function AttributeComponents:RemoveModifier(AttributeName, sourceID)
     end
 end
 
+
+function AttributeComponents:OnAdded()
+
+		local charData = self:GetStats()
+        if not self.BaseStats then
+             local DefaultStats =  
+                {
+                    Speed = 16,
+                    JumpForce = 50,
+                    MaxHP = 100,
+                    Defense = 0,
+                    DamageMult = 1,
+                }
+
+            if not charData then
+
+                self.BaseStats = DefaultStats
+            end
+
+            self.BaseStats = {
+                Speed = charData["Stats"][StateTable.Enum.Stats.Speed] or DefaultStats.Speed,
+                JumpForce = charData["Stats"][StateTable.Enum.Stats.JumpForce] or DefaultStats.JumpForce,
+                MaxHP = charData["Stats"][StateTable.Enum.Stats.MaxHP] or DefaultStats.MaxHP,
+                Defense = charData["Stats"][StateTable.Enum.Stats.Defense] or DefaultStats.Defense,
+                DamageMult = charData["Stats"][StateTable.Enum.Stats.DamageMult] or DefaultStats.DamageMult,
+
+            }
+        end
+end
+
 local ExposeAPI = {
-    GetAttribute = function(component, ...) return component:GetAttribute(...) end,
-    SetBaseAttribute = function(component, ...) return component:SetBase(...) end,
+    GetStats = function(component, ...) return component:GetStats(...) end,
+    GetStat = function(component, ...) return component:GetStat(...) end,
+    SetStat = function(component, ...) return component:SetStat(...) end,
     AddModifier = function(component, ...) return component:AddModifier(...) end,
     RemoveModifier = function(component, ...) return component:RemoveModifier(...) end,
 }

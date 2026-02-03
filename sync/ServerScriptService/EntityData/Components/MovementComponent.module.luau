@@ -2,6 +2,8 @@ local MovementComponent = {}
 MovementComponent.__index = MovementComponent
 
 local ServerScript = game:GetService("ServerScriptService")
+local ServerStorage = game:GetService("ServerStorage")
+local StateTable = require(ServerStorage.Modules.Combat.StateTable)
 local MovementController = require(ServerScript.Modules.Physics.MovementController) 
 
 function MovementComponent.new(entity, config)
@@ -18,6 +20,22 @@ function MovementComponent.new(entity, config)
 
     self.MovementWrapper = nil
     return self
+end
+
+function MovementComponent:SetSpeed(value)
+    self.MovementWrapper:SetSpeed(value)
+end
+
+function MovementComponent:SetJumpForce(value)
+    self.MovementWrapper:SetJumpForce(value)
+end
+
+function MovementComponent:GetSpeed()
+    return self.Entity:GetStat(StateTable.Enum.Stats.Speed)
+end
+
+function MovementComponent:GetJumpForce()
+    return self.Entity:GetStat(StateTable.Enum.Stats.JumpForce)
 end
 
 function MovementComponent:SetMovement()
@@ -66,6 +84,7 @@ local ExposeAPI = {
     SetFrozen = function(Component, f) Component.IsFrozen = f end,
     SetMovement = function(Component) return Component:SetMovement() end,
     GetMovementWrapper = function(Component) return Component.MovementWrapper end,
+    SetSpeed = function(Component,...) return Component.SetSpeed end,
 }
 
 return { new = MovementComponent.new, ExposeAPI = ExposeAPI }

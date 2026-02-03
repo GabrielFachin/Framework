@@ -1,9 +1,7 @@
 --[[                           COMPONENTE VITAL                                                      ]]
 
 local ServerScript = game:GetService("ServerScriptService")
-local ServerStorage = game:GetService("ServerStorage")
 local EntityWrapper = require(ServerScript.EntityData.EntityWrapper)
-local DB = require(ServerStorage.DataBase.CharacterDatabase)
 
 local CharacterComponent = {}
 CharacterComponent.__index = CharacterComponent
@@ -24,33 +22,6 @@ function CharacterComponent.new(entity, config)
 	return self
 end
 
---=============================================================================
---  STATS
---=============================================================================
-
---[[
-Retorna a tabela de Stats do personagem
-@return tabela de Stats TABLE
-]]
-function CharacterComponent:GetStats() : {}
-	if not self.Entity:HasComponent(self.Entity.ComponentKey.Combat) then return {Speed = 16, JumpForce = 20} end
-	local char = self.Entity:GetChosenChar()
-	local mode = self.Entity:GetCharMode()
-	local charData = DB[char][mode]
-
-	return charData
-end
-
---[[
-Retorna um status especifico do char sendo usado
-@param statName STRING
-]]
-function CharacterComponent:GetStat(statName : string, default)
-	local charData = self:GetStats()
-
-	local result = charData["Stats"][statName] or charData[statName] or default
-	return result
-end
 --=============================================================================
 --  CHARACTER MODEL
 --=============================================================================
@@ -175,10 +146,6 @@ end
 --=============================================================================
 
 local ExposeAPI = {
-	-- Stats
-	GetStats = function(component) return component:GetStats() end,
-	GetStat = function(component, ...) return component:GetStat(...) end,
-
 	-- Character Model
 	SetEntity = function(component, ...) return component:SetEntity(...) end,
 	GetCharacterWrapper = function(component, ...) return component:GetCharacterWrapper(...) end,

@@ -548,8 +548,8 @@ function CombatComponent:SetChosenChar(Char)
 
     -- Atualiza stats
     local stats = self.Entity.GetStats()
-    self.Entity.SetSpeed(stats.Speed or 16)
-    self.Entity.SetJumpForce(stats.JumpPower or 50)
+    self.Entity.SetAttribute(StateTable.Enum.Stats.Speed, stats.speed or StateTable.Enum.Stats.Speed, 16)
+    self.Entity.SetAttribute(StateTable.Enum.Stats.JumpForce, stats.JumpPower or StateTable.Enum.Stats.JumpForce, 50)
 
     -- Atualiza HP
     local health = self.Entity:GetComponent(self.Entity.ComponentKey.Health)

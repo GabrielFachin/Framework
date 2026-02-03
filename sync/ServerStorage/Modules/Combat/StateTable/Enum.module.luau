@@ -108,6 +108,16 @@ enum.ModifierType = {
     Override = "Override",              -- Substitui o valor por inteiro
 }
 
+
+--Tipos de atributos
+enum.Stats = {
+    Speed = "Speed",
+    MaxHP = "MaxHP",
+    JumpForce = "JumpForce",
+    Defense = "Defense",
+    DamageMult = "DamageMult",
+}
+
 enum.MAX_RECURSION = 50 -- limite de ações recursivas de uma chain em um segundo
 
 
